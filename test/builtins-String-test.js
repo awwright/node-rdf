@@ -42,12 +42,12 @@ vows.describe('String builtins').addBatch(
 	, "equals": function(t){ assert.strictEqual(t, '<http://slashdot.org/>'); }
 	}
 , 'String.l().n3() "PLAINLITERAL"':
-	{ topic: "0xDEADBEEFCAFE".l().n3()
-	, "equals": function(t){ assert.strictEqual(t, '"PLAINLITERAL"'); }
+	{ topic: "PLAINLITERAL WITH A SPACE".l().n3()
+	, "equals": function(t){ assert.strictEqual(t, '"PLAINLITERAL WITH A SPACE"'); }
 	}
-, 'String.l(en).n3() "English"@en':
-	{ topic: "English".l("en").n3()
-	, "equals": function(t){ assert.strictEqual(t, '"English"@en'); }
+, 'String.l(en).n3() "English language literal"@en':
+	{ topic: "English language literal".l("en").n3()
+	, "equals": function(t){ assert.strictEqual(t, '"English language literal"@en'); }
 	}
 , 'String.tl(xsd:string).n3() "XSD String"^^<http://www.w3.org/2001/XMLSchema#string>':
 	{ topic: "XSD String".tl("xsd:string").n3()
