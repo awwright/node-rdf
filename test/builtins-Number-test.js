@@ -22,7 +22,7 @@ vows.describe('Number builtins').addBatch(
 , "Number.NEGATIVE_INFINITY": generateNumberTest(Number.NEGATIVE_INFINITY, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#double", '"-INF"^^<http://www.w3.org/2001/XMLSchema#double>')
 , "Number.NaN": generateNumberTest(Number.NaN, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#double", '"NaN"^^<http://www.w3.org/2001/XMLSchema#double>')
 , "(8.5432)": generateNumberTest(8.5432, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#decimal", '8.5432')
-, "42": generateNumberTest(42, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#integer", '42')
-, "-42": generateNumberTest(-42, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#integer", '-42')
-, "0": generateNumberTest(0, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#integer", '0')
+, "(42)": generateNumberTest(42, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#integer", '42')
+, "(-42)": generateNumberTest(-42, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#integer", '-42')
+, "(0)": generateNumberTest(0, "TypedLiteral", "http://www.w3.org/2001/XMLSchema#integer", '0')
 }).export(module);

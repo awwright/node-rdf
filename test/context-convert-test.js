@@ -1,105 +1,57 @@
 var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
+var util=require('util');
 
-function tl(value, type){ return value.tl(type); }
-
-vows.describe('rdf.context').addBatch(
-{ 'convertType xsd:string "A STRING"':
-	{ topic: function(){ return rdf.context.convertType(tl("A STRING", "xsd:string".resolve())); }
-	, "==='A STRING'": function(t){ assert.strictEqual(t, "A STRING"); }
-	}
-
-, 'convertType xsd:boolean "true"':
-	{ topic: function(){ return rdf.context.convertType(tl("true", "xsd:boolean")); }
-	, "===true": function(t){ assert.strictEqual(t, true); }
-	}
-, 'convertType xsd:boolean "1"':
-	{ topic: function(){ return rdf.context.convertType(tl("1", "xsd:boolean")); }
-	, "===true": function(t){ assert.strictEqual(t, true); }
-	}
-, 'convertType xsd:boolean "false"':
-	{ topic: function(){ return rdf.context.convertType(tl("false", "xsd:boolean")); }
-	, "===false": function(t){ assert.strictEqual(t, false); }
-	}
-
-, 'convertType xsd:boolean "0"':
-	{ topic: function(){ return rdf.context.convertType(tl("0", "xsd:boolean")); }
-	, "===false": function(t){ assert.strictEqual(t, false); }
-	}
-, 'convertType xsd:float "0.5"':
-	{ topic: function(){ return rdf.context.convertType(tl("0.5", "xsd:float")); }
-	, "===0.5": function(t){ assert.strictEqual(t, 0.5); }
-	}
-, 'convertType xsd:float "INF"':
-	{ topic: function(){ return rdf.context.convertType(tl("INF", "xsd:float")); }
-	, "===Number.POSITIVE_INFINITY": function(t){ assert.strictEqual(t, Number.POSITIVE_INFINITY); }
-	}
-, 'convertType xsd:float "-INF"':
-	{ topic: function(){ return rdf.context.convertType(tl("-INF", "xsd:float")); }
-	, "===Number.NEGATIVE_INFINITY": function(t){ assert.strictEqual(t, Number.NEGATIVE_INFINITY); }
-	}
-, 'convertType xsd:float "NaN"':
-	{ topic: function(){ return rdf.context.convertType(tl("NaN", "xsd:float")); }
-	, "===Number.NaN": function(t){ assert.isNaN(t); }
-	}
-, 'convertType xsd:integer "-14000"':
-	{ topic: function(){ return rdf.context.convertType(tl("-14000", "xsd:integer")); }
-	, "===-14000": function(t){ assert.equal(t, -14000); }
-	}
-, 'convertType xsd:long "-9223372036854775808"':
-	{ topic: function(){ return rdf.context.convertType(tl("-9223372036854775808", "xsd:long")); }
-	, "===-9223372036854775808": function(t){ assert.equal(t, -9223372036854775808); }
-	}
-, 'convertType xsd:long "9223372036854775807"':
-	{ topic: function(){ return rdf.context.convertType(tl("9223372036854775807", "xsd:long")); }
-	, "===9223372036854775807": function(t){ assert.equal(t, 9223372036854775807); }
-	}
-, 'convertType xsd:double "1.578125"':
-	{ topic: function(){ return rdf.context.convertType(tl("1.578125", "xsd:double")); }
-	, "===1.578125": function(t){ assert.equal(t, 1.578125); }
-	}
-, 'convertType xsd:nonPositiveInteger "-42"':
-	{ topic: function(){ return rdf.context.convertType(tl("-42", "xsd:nonPositiveInteger")); }
-	, "===-42": function(t){ assert.equal(t, -42); }
-	}
-, 'convertType xsd:nonPositiveInteger "0"':
-	{ topic: function(){ return rdf.context.convertType(tl("0", "xsd:nonPositiveInteger")); }
-	, "===0": function(t){ assert.strictEqual(t, 0); }
-	}
-, 'convertType xsd:nonNegativeInteger "42"':
-	{ topic: function(){ return rdf.context.convertType(tl("42", "xsd:nonNegativeInteger")); }
-	, "===42": function(t){ assert.equal(t, 42); }
-	}
-, 'convertType xsd:nonNegativeInteger "0"':
-	{ topic: function(){ return rdf.context.convertType(tl("0", "xsd:nonNegativeInteger")); }
-	, "===0": function(t){ assert.strictEqual(t, 0); }
-	}
-, 'convertType xsd:negativeInteger "-42"':
-	{ topic: function(){ return rdf.context.convertType(tl("-42", "xsd:negativeInteger")); }
-	, "===-42": function(t){ assert.strictEqual(t, -42); }
-	}
-, 'convertType xsd:long "-2147483648"':
-	{ topic: function(){ return rdf.context.convertType(tl("-2147483648", "xsd:long")); }
-	, "===-2147483648": function(t){ assert.equal(t, -2147483648); }
-	}
-, 'convertType xsd:long "2147483647"':
-	{ topic: function(){ return rdf.context.convertType(tl("2147483647", "xsd:long")); }
-	, "===2147483647": function(t){ assert.equal(t, 2147483647); }
-	}
-
-, 'convertType xsd:date "2000-01-01"':
-	{ topic: function(){ return rdf.context.convertType(tl("2000-01-01", "xsd:date")); }
-	, "===2147483647": function(t){ assert.equal(t, 2147483647); }
-	}
-, 'convertType xsd:time "2000-01-01"':
-	{ topic: function(){ return rdf.context.convertType(tl("2000-01-01", "xsd:date")); }
-	, "===2147483647": function(t){ assert.equal(t, 2147483647); }
-	}
-, 'convertType xsd:dateTime "2000-01-01"':
-	{ topic: function(){ return rdf.context.convertType(tl("2000-01-01", "xsd:date")); }
-	, "===2147483647": function(t){ assert.equal(t, 2147483647); }
-	}
+function tl(value, type){ return value.tl(type).valueOf(); }
+var batches = {};
 
 
-}).export(module);
+function strictCompare(nv){
+	var test = function(t){ assert.strictEqual(t, nv); };
+	test.nativeValue = nv;
+	return test;
+}
+
+function dateCompare(nv){
+	var test = function(t){ assert.instanceOf(t, Date); assert.strictEqual(t.getTime(), nv.getTime()); };
+	test.nativeValue = nv;
+	return test;
+}
+
+function NaNCompare(t){ assert.isNaN(t); }
+NaNCompare.nativeValue = Number.NaN;
+
+function addBatch(literal, type, test){
+	// Literal must be a string
+	var unit = batches['('+util.inspect(literal)+').t('+type+')'] =
+		{ topic: function(){ return literal.tl(type).valueOf(); }
+		};
+	unit['.valueOf()==='+util.inspect(test.nativeValue)] = test;
+}
+
+addBatch("A STRING", 'xsd:string', strictCompare("A STRING"));
+addBatch("true", "xsd:boolean", strictCompare(true));
+addBatch("1", "xsd:boolean", strictCompare(true));
+addBatch("false", "xsd:boolean", strictCompare(false));
+addBatch("0", "xsd:boolean", strictCompare(false));
+addBatch("0.5", "xsd:float", strictCompare(0.5));
+addBatch("INF", "xsd:float", strictCompare(Number.POSITIVE_INFINITY));
+addBatch("-INF", "xsd:float", strictCompare(Number.NEGATIVE_INFINITY));
+addBatch("NaN", "xsd:float", NaNCompare);
+addBatch("-14000", "xsd:integer", strictCompare(-14000));
+addBatch("-9223372036854775808", "xsd:long", strictCompare(-9223372036854775808));
+addBatch("9223372036854775807", "xsd:long", strictCompare(9223372036854775807));
+addBatch("1.578125", "xsd:float", strictCompare(1.578125));
+addBatch("-42", "xsd:nonPositiveInteger", strictCompare(-42));
+addBatch("0", "xsd:nonPositiveInteger", strictCompare(0));
+addBatch("42", "xsd:nonNegativeInteger", strictCompare(42));
+addBatch("0", "xsd:nonNegativeInteger", strictCompare(0));
+addBatch("-42", "xsd:negativeInteger", strictCompare(-42));
+addBatch("-2147483648", "xsd:long", strictCompare(-2147483648));
+addBatch("2147483647", "xsd:long", strictCompare(2147483647));
+addBatch("2000-01-01", "xsd:date", dateCompare(new Date('Sat, 01 Jan 2000 00:00:00 GMT')));
+//addBatch("21:32:52", "xsd:time", dateCompare(new Date('Sat, 01 Jan 2000 00:00:00 GMT'))); // There's no good way to represent just time... Ignore this guy?
+addBatch("2001-10-26T21:32:52.12679", "xsd:dateTime", dateCompare(new Date('2001-10-26T21:32:52.12679'))); // FIXME of course this is going to pass
+
+vows.describe('rdf.context.convert').addBatch(batches).export(module);

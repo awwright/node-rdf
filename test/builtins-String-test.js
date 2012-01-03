@@ -1,6 +1,7 @@
 var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
+require('rdf/SetBuiltins');
 
 vows.describe('String builtins').addBatch(
 { "String.resolve rdf:type":
@@ -42,8 +43,12 @@ vows.describe('String builtins').addBatch(
 	, "equals": function(t){ assert.strictEqual(t, '<http://slashdot.org/>'); }
 	}
 , 'String.l().n3() "PLAINLITERAL"':
-	{ topic: "PLAINLITERAL WITH A SPACE".l().n3()
-	, "equals": function(t){ assert.strictEqual(t, '"PLAINLITERAL WITH A SPACE"'); }
+	{ topic: "PLAINLITERAL".l().n3()
+	, "equals": function(t){ assert.strictEqual(t, '"PLAINLITERAL"'); }
+	}
+, 'String.l().n3() "PLAIN LITERAL"':
+	{ topic: "PLAIN LITERAL WITH A SPACE".l().n3()
+	, "equals": function(t){ assert.strictEqual(t, '"PLAIN LITERAL WITH A SPACE"'); }
 	}
 , 'String.l(en).n3() "English language literal"@en':
 	{ topic: "English language literal".l("en").n3()

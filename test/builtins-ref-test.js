@@ -1,6 +1,7 @@
 var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
+require('rdf/SetBuiltins');
 
 function generateRefTest(topic, n3out){
 	var n3rep = this.title;
@@ -16,7 +17,7 @@ function generateRefTest(topic, n3out){
 	return context;
 }
 
-vows.describe('Number builtins').addBatch(
+vows.describe('Object builtins').addBatch(
 { '{a: "rdfs:Class"}': generateRefTest({a: "rdfs:Class"}, "_:topic rdf:type rdfs:Class .")
 , '{a: 42}': generateRefTest({a: 42}, "_:topic rdf:type 42 .")
 }).export(module);
