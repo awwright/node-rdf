@@ -43,6 +43,7 @@ addBatch("-14000", "xsd:integer", strictCompare(-14000));
 addBatch("-9223372036854775808", "xsd:long", strictCompare(-9223372036854775808));
 addBatch("9223372036854775807", "xsd:long", strictCompare(9223372036854775807));
 addBatch("1.578125", "xsd:float", strictCompare(1.578125));
+addBatch("-1.2344e56", "xsd:float", strictCompare(-1.2344e56));
 addBatch("-42", "xsd:nonPositiveInteger", strictCompare(-42));
 addBatch("0", "xsd:nonPositiveInteger", strictCompare(0));
 addBatch("42", "xsd:nonNegativeInteger", strictCompare(42));
