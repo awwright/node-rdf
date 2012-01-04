@@ -52,7 +52,7 @@ addBatch("-42", "xsd:negativeInteger", strictCompare(-42));
 addBatch("-2147483648", "xsd:long", strictCompare(-2147483648));
 addBatch("2147483647", "xsd:long", strictCompare(2147483647));
 addBatch("2000-01-01", "xsd:date", dateCompare(new Date('Sat, 01 Jan 2000 00:00:00 GMT')));
-//addBatch("21:32:52", "xsd:time", dateCompare(new Date('Sat, 01 Jan 2000 00:00:00 GMT'))); // There's no good way to represent just time... Ignore this guy?
+//addBatch("21:32:52", "xsd:time", dateCompare(new Date('Sat, 01 Jan 2000 00:00:00 GMT'))); // There's no good way to represent just time-of-day... Ignore this guy?
 addBatch("2001-10-26T21:32:52.12679", "xsd:dateTime", dateCompare(new Date('2001-10-26T21:32:52.12679'))); // FIXME of course this is going to pass
 
 vows.describe('rdf.context.convert').addBatch(batches).export(module);

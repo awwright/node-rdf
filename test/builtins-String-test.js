@@ -23,7 +23,7 @@ vows.describe('String builtins').addBatch(
 		{ topic: function(){ rdf.context.setMapping("unknownprefixfoo2", "http://example.com/2/ex/42/"); return rdf.context; }
 		, "Check CURIE":
 			{ topic: function(context){ return context.resolveCurie("unknownprefixfoo2:answer"); }
-			, "Equals <http://example.com/2/ex/42/answer>": function(t){ assert.strictEqual(t.value, "http://example.com/2/ex/42/answer"); }
+			, "Equals <http://example.com/2/ex/42/answer>": function(t){ assert.strictEqual(t.valueOf(), "http://example.com/2/ex/42/answer"); }
 			, "<http://example.com/2/ex/42/answer>.equals": function(t){ assert.isTrue("http://example.com/2/ex/42/answer".equals(t)); }
 			}
 		}
