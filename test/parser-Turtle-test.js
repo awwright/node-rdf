@@ -14,14 +14,14 @@ function addDocument(turtle, triples){
 		var graph = new rdf.IndexedGraph;
 		var turtleParser = new (require('rdf/TurtleParser').Turtle)(env, undefined, undefined, graph);
 		turtleParser.parse(turtle, undefined, undefined, graph);
-		console.error(graph);
+		console.log("\n"+turtle+"\n"+require('util').inspect(graph.index, false, 5, true)+"\n\n\n");
 		return graph;
 	} };
 	batch["length==="+triples.length] = function(graph){ assert.strictEqual(graph.length, triples.length); }
 	for(var i=0; i<triples.length; i++){
 		var triple = triples[i];
 		batch["Exists: "+triple.toString()] = function(graph){
-			assert.strictEqual(graph.filter({subject:triple.subject, predicate:triple.predicate, object:triple.object}).length, 1);
+			assert.isTrue(graph.some(function(v){ return triple.equals(v); }));
 		}
 	}
 }
