@@ -2,40 +2,42 @@ var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
 var env=rdf.environment;
-
-
-
+require('rdf/SetBuiltins');
 
 var batches = {};
 var id=0;
 function addDocument(turtle, triples){
 	if(turtle instanceof Array) turtle=turtle.join("\n");
-	var batch = batches['#'+(++id)+': '+turtle.replace(/\n/g,"\\n ")] = { topic: function(){
+	var batch = batches['#'+(++id)+': '+turtle.replace(/\n/g,"\\n ").replace(/\t/g," ")] = { topic: function(){
 		var graph = new rdf.IndexedGraph;
 		var turtleParser = new (require('rdf/TurtleParser').Turtle)(env, undefined, undefined, graph);
 		turtleParser.parse(turtle, undefined, undefined, graph);
-		console.log("\n"+turtle+"\n"+require('util').inspect(graph.index, false, 5, true)+"\n\n\n");
+		//console.log("\n"+turtle+"\n"+require('util').inspect(graph.index, false, 5, true)+"\n\n\n");
 		return graph;
 	} };
 	batch["length==="+triples.length] = function(graph){ assert.strictEqual(graph.length, triples.length); }
 	for(var i=0; i<triples.length; i++){
 		var triple = triples[i];
-		batch["Exists: "+triple.toString()] = function(graph){
+		batch["Exists: "+triple.toString()] = (function(triple){ return function(graph){
 			assert.isTrue(graph.some(function(v){ return triple.equals(v); }));
-		}
+		} })(triple);
 	}
+	return batch;
 }
 
 addDocument('<http://example.com/report> a <http://example.com/Document>.',
 	[ env.createTriple("http://example.com/report", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.com/Document")
 	]);
+
 addDocument('<http://example.com/report> rdf:type <http://example.com/Document>.',
 	[ env.createTriple("http://example.com/report", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.com/Document")
 	]);
+
 addDocument('<http://example.com/report> rdf:value "22".',
-	[ env.createTriple("http://example.com/report", "http://www.w3.org/1999/02/22-rdf-syntax-ns#value", env.createLiteral("22"))
+	[ env.createTriple("http://example.com/report", "http://www.w3.org/1999/02/22-rdf-syntax-ns#value", env.createLiteral("22",null,null))
 	]);
-addDocument(
+
+var a = addDocument(
 	[ '# this is a complete turtle document'
 	, '@prefix foo: <http://example.org/ns#> .'
 	, '@prefix : <http://other.example.org/ns#> .'
@@ -44,7 +46,92 @@ addDocument(
 	],
 	[ env.createTriple("http://example.org/ns#bar", "http://example.org/ns#", 'http://other.example.org/ns#')
 	, env.createTriple("http://other.example.org/ns#bar", "http://other.example.org/ns#", 'http://example.org/ns#bar')
-	, env.createTriple("http://other.example.org/ns#bar", "http://other.example.org/ns3#", 'http://example.org/ns#bar')
+	]);
+a["Does not exist: <http://example.org/> <http://example.org/> <http://example.org/>."] = function(graph){
+	assert.isFalse(graph.some(function(v){ return env.createTriple('http://example.org/','http://example.org/','http://example.org/').equals(v); }));
+}
+
+addDocument(
+	[ '@prefix m: <http://magnode.org/>.'
+	, '<http://magnode.org/admin/auth/login>'
+	, '	a m:HTTPAuthForm;'
+	, '	m:domain "/";'
+	, '	m:action "/createSession";'
+	, '	m:credentials <http://example.org/admin/auth/password>.'
+	],
+	[ env.createTriple('http://magnode.org/admin/auth/login', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://magnode.org/HTTPAuthForm')
+	, env.createTriple('http://magnode.org/admin/auth/login', 'http://magnode.org/domain', env.createLiteral('/',null,null))
+	, env.createTriple('http://magnode.org/admin/auth/login', 'http://magnode.org/action', env.createLiteral('/createSession',null,null))
+	, env.createTriple('http://magnode.org/admin/auth/login', 'http://magnode.org/credentials', 'http://example.org/admin/auth/password')
+	]);
+
+addDocument(
+	[ '</admin/route/main/mongodb>'
+	, '	a m:MongoDBRender;'
+	, '	m:resources'
+	, '		</admin/db/mongodb>,'
+	, '		</admin/db/rdf>,'
+	, '		</admin/router/login> .'
+	],
+	[ env.createTriple('/admin/route/main/mongodb', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://magnode.org/MongoDBRender')
+	, env.createTriple('/admin/route/main/mongodb', 'http://magnode.org/resources', '/admin/db/mongodb')
+	, env.createTriple('/admin/route/main/mongodb', 'http://magnode.org/resources', '/admin/db/rdf')
+	, env.createTriple('/admin/route/main/mongodb', 'http://magnode.org/resources', '/admin/router/login')
+	]);
+
+addDocument(
+	[ '@base <http://magnode.org/>.'
+	, '</admin/route/main/mongodb>'
+	, '	a m:MongoDBRender;'
+	, '	m:resources'
+	, '		</admin/db/mongodb>,'
+	, '		m:,'
+	, '		</admin/db/rdf> .'
+	],
+	[ env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://magnode.org/MongoDBRender')
+	, env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://magnode.org/resources', 'http://magnode.org/admin/db/mongodb')
+	, env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://magnode.org/resources', 'http://magnode.org/')
+	, env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://magnode.org/resources', 'http://magnode.org/admin/db/rdf')
+	]);
+
+// Changing base and prefix
+addDocument(
+	[ '# this is a complete turtle document'
+	, '# In-scope base URI is the document URI at this point'
+	, '<a1> <b1> <c1> .'
+	, '@base <http://example.org/ns/> .'
+	, '# In-scope base URI is http://example.org/ns/ at this point'
+	, '<a2> <http://example.org/ns/b2> <c2> .'
+	, '@base <foo/> .'
+	, '# In-scope base URI is http://example.org/ns/foo/ at this point'
+	, '<a3> <b3> <c3> .'
+	, '@prefix : <bar#> .'
+	, ':a4 :b4 :c4 .'
+	, '@prefix : <http://example.org/ns2#> .'
+	, ':a5 :b5 :c5 .'
+	],
+	[ env.createTriple('a1', 'b1', 'c1')
+	, env.createTriple('http://example.org/ns/a2', 'http://example.org/ns/b2', 'http://example.org/ns/c2')
+	, env.createTriple('http://example.org/ns/foo/a3', 'http://example.org/ns/foo/b3', 'http://example.org/ns/foo/c3')
+	, env.createTriple('http://example.org/ns/foo/bar#a4', 'http://example.org/ns/foo/bar#b4', 'http://example.org/ns/foo/bar#c4')
+	, env.createTriple('http://example.org/ns2#a5', 'http://example.org/ns2#b5', 'http://example.org/ns2#c5')
+	]);
+
+addDocument(
+	'<http://example.org/> rdf:value ().',
+	[ env.createTriple('http://example.org/', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')
+	]);
+
+// Any id for the bnode values passes, so long as different bnodes don't have the same id
+addDocument(
+	'<http://example.org/> rdf:value (1 "2" <http://example.com/3>).',
+	[ env.createTriple('http://example.org/', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:b2')
+	, env.createTriple('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', env.createLiteral("1",null,"http://www.w3.org/2001/XMLSchema#integer"))
+	, env.createTriple('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b3')
+	, env.createTriple('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', env.createLiteral("2",null,null))
+	, env.createTriple('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b4')
+	, env.createTriple('_:b4', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/3')
+	, env.createTriple('_:b4', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')
 	]);
 
 vows.describe('Turtle parsing').addBatch(batches).export(module);
