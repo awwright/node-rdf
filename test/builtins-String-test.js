@@ -20,42 +20,42 @@ vows.describe('String builtins').addBatch(
 	, "Typeof string": function(t){ assert.typeOf(t, "string"); }
 	, ".equals()": function(t){ assert.isTrue("unknownprefixfoo2:bar".equals(t)); }
 	, "Add CURIE mapping":
-		{ topic: function(){ rdf.context.setMapping("unknownprefixfoo2", "http://example.com/2/ex/42/"); return rdf.context; }
+		{ topic: function(){ rdf.environment.setPrefix("unknownprefixfoo2", "http://example.com/2/ex/42/"); return true; }
 		, "Check CURIE":
-			{ topic: function(context){ return context.resolveCurie("unknownprefixfoo2:answer"); }
+			{ topic: function(){ return "unknownprefixfoo2:answer".resolve(); }
 			, "Equals <http://example.com/2/ex/42/answer>": function(t){ assert.strictEqual(t.valueOf(), "http://example.com/2/ex/42/answer"); }
 			, "<http://example.com/2/ex/42/answer>.equals": function(t){ assert.isTrue("http://example.com/2/ex/42/answer".equals(t)); }
 			}
 		}
 	}
-, "String.resolve() resolved URI":
+, "string.resolve() resolved URI":
 	{ topic: "http://slashdot.org/".resolve()
 	, "strictEqual": function(t){ assert.strictEqual(t, 'http://slashdot.org/'); }
 	, "equals": function(t){ assert.equal(t, 'http://slashdot.org/'); }
 	}
-, "String.resolve() bnode syntax":
+, "string.resolve() bnode syntax":
 	{ topic: "_:someBlankNode".resolve()
 	, "strictEqual": function(t){ assert.strictEqual(t, '_:someBlankNode'); }
 	, "equals": function(t){ assert.equal(t, '_:someBlankNode'); }
 	}
-, "String.n3() <http://slashdot.org/>":
+, "string.n3() <http://slashdot.org/>":
 	{ topic: "http://slashdot.org/".n3()
 	, "equals": function(t){ assert.strictEqual(t, '<http://slashdot.org/>'); }
 	}
-, 'String.l().n3() "PLAINLITERAL"':
+, 'string.l().n3() "PLAINLITERAL"':
 	{ topic: "PLAINLITERAL".l().n3()
 	, "equals": function(t){ assert.strictEqual(t, '"PLAINLITERAL"'); }
 	}
-, 'String.l().n3() "PLAIN LITERAL"':
+, 'string.l().n3() "PLAIN LITERAL"':
 	{ topic: "PLAIN LITERAL WITH A SPACE".l().n3()
 	, "equals": function(t){ assert.strictEqual(t, '"PLAIN LITERAL WITH A SPACE"'); }
 	}
-, 'String.l(en).n3() "English language literal"@en':
+, 'string.l(en).n3() "English language literal"@en':
 	{ topic: "English language literal".l("en").n3()
 	, "equals": function(t){ assert.strictEqual(t, '"English language literal"@en'); }
 	}
-, 'String.tl(xsd:string).n3() "XSD String"^^<http://www.w3.org/2001/XMLSchema#string>':
-	{ topic: "XSD String".tl("xsd:string").n3()
-	, "equals": function(t){ assert.strictEqual(t.value, '"XSD String"^^<http://www.w3.org/2001/XMLSchema#string>'); }
+, 'string.tl(xsd:string).n3() "XSD String"^^<http://www.w3.org/2001/XMLSchema#string>':
+	{ topic: "XSD String".tl("xsd:string".resolve()).n3()
+	, "equals": function(t){ assert.strictEqual(t, '"XSD String"^^<http://www.w3.org/2001/XMLSchema#string>'); }
 	}
 }).export(module);
