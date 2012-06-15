@@ -24,4 +24,16 @@ vows.describe('rdf.environment.resolve').addBatch(
 			}
 		}
 	}
+, "environment.prefixes.resolve default prefix":
+	{ topic: rdf.environment.prefixes.resolve(":bar")
+	, "Equals null": function(t){ assert.isNull(t); }
+	, "addDefaultPrefix":
+		{ topic: function(){ rdf.environment.setDefaultPrefix("http://example.com/2/ex/42/"); return rdf.environment; }
+		, "Lookup prefix": function(t){ assert.strictEqual(t.prefixes[''], "http://example.com/2/ex/42/"); }
+		, "Check CURIE":
+			{ topic: function(environment){ return environment.prefixes.resolve(":answer"); }
+			, "Equals <http://example.com/2/ex/42/answer>": function(t){ assert.strictEqual(t, "http://example.com/2/ex/42/answer"); }
+			}
+		}
+	}
 }).export(module);

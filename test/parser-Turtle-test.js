@@ -9,10 +9,12 @@ var id=0;
 function addDocument(turtle, triples){
 	if(turtle instanceof Array) turtle=turtle.join("\n");
 	var batch = batches['#'+(++id)+': '+turtle.replace(/\n/g,"\\n ").replace(/\t/g," ")] = { topic: function(){
+		// The tests expect bnodes to be numbered starting with 1
+		rdf.BlankNode.NextId = 0;
 		var graph = new rdf.IndexedGraph;
 		var turtleParser = new (require('rdf/TurtleParser').Turtle)(env, undefined, undefined, graph);
 		turtleParser.parse(turtle, undefined, undefined, graph);
-		//console.log("\n"+turtle+"\n"+require('util').inspect(graph.index, false, 5, true)+"\n\n\n");
+		//console.log("\nTurtle:\n\t"+turtle.replace(/\n/g,'\n\t')+"\nTriples:\n\t"+require('util').inspect(graph.index, false, 5, true).replace(/\n/g,'\n\t')+"\n");
 		return graph;
 	} };
 	batch["length==="+triples.length] = function(graph){ assert.strictEqual(graph.length, triples.length); }
@@ -66,32 +68,21 @@ addDocument(
 	]);
 
 addDocument(
-	[ '</admin/route/main/mongodb>'
-	, '	a m:MongoDBRender;'
-	, '	m:resources'
-	, '		</admin/db/mongodb>,'
-	, '		</admin/db/rdf>,'
-	, '		</admin/router/login> .'
+	[ '@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .'
+	, '@prefix dc: <http://purl.org/dc/elements/1.1/> .'
+	, '@prefix ex: <http://example.org/stuff/1.0/> .'
+	, ''
+	, '<http://www.w3.org/TR/rdf-syntax-grammar>'
+	, '  dc:title "RDF/XML Syntax Specification (Revised)" ;'
+	, '  ex:editor ['
+	, '    ex:fullName "Dave Beckett";'
+	, '    ex:homePage <http://purl.org/net/dajobe/>'
+	, '  ] .'
 	],
-	[ env.createTriple('/admin/route/main/mongodb', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://magnode.org/MongoDBRender')
-	, env.createTriple('/admin/route/main/mongodb', 'http://magnode.org/resources', '/admin/db/mongodb')
-	, env.createTriple('/admin/route/main/mongodb', 'http://magnode.org/resources', '/admin/db/rdf')
-	, env.createTriple('/admin/route/main/mongodb', 'http://magnode.org/resources', '/admin/router/login')
-	]);
-
-addDocument(
-	[ '@base <http://magnode.org/>.'
-	, '</admin/route/main/mongodb>'
-	, '	a m:MongoDBRender;'
-	, '	m:resources'
-	, '		</admin/db/mongodb>,'
-	, '		m:,'
-	, '		</admin/db/rdf> .'
-	],
-	[ env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://magnode.org/MongoDBRender')
-	, env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://magnode.org/resources', 'http://magnode.org/admin/db/mongodb')
-	, env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://magnode.org/resources', 'http://magnode.org/')
-	, env.createTriple('http://magnode.org/admin/route/main/mongodb', 'http://magnode.org/resources', 'http://magnode.org/admin/db/rdf')
+	[ env.createTriple('http://www.w3.org/TR/rdf-syntax-grammar', 'http://purl.org/dc/elements/1.1/title', env.createLiteral('RDF/XML Syntax Specification (Revised)',null,null))
+	, env.createTriple('http://www.w3.org/TR/rdf-syntax-grammar', 'http://example.org/stuff/1.0/editor', '_:b1')
+	, env.createTriple('_:b1', 'http://example.org/stuff/1.0/fullName', env.createLiteral('Dave Beckett',null,null))
+	, env.createTriple('_:b1', 'http://example.org/stuff/1.0/homePage', 'http://purl.org/net/dajobe/')
 	]);
 
 // Changing base and prefix
@@ -125,13 +116,13 @@ addDocument(
 // Any id for the bnode values passes, so long as different bnodes don't have the same id
 addDocument(
 	'<http://example.org/> rdf:value (1 "2" <http://example.com/3>).',
-	[ env.createTriple('http://example.org/', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:b2')
-	, env.createTriple('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', env.createLiteral("1",null,"http://www.w3.org/2001/XMLSchema#integer"))
+	[ env.createTriple('http://example.org/', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:b1')
+	, env.createTriple('_:b1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', env.createLiteral("1",null,"http://www.w3.org/2001/XMLSchema#integer"))
+	, env.createTriple('_:b1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b2')
+	, env.createTriple('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', env.createLiteral("2",null,null))
 	, env.createTriple('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b3')
-	, env.createTriple('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', env.createLiteral("2",null,null))
-	, env.createTriple('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b4')
-	, env.createTriple('_:b4', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/3')
-	, env.createTriple('_:b4', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')
+	, env.createTriple('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/3')
+	, env.createTriple('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')
 	]);
 
 vows.describe('Turtle parsing').addBatch(batches).export(module);
