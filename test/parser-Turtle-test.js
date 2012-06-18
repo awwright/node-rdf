@@ -2,7 +2,6 @@ var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
 var env=rdf.environment;
-require('rdf/SetBuiltins');
 
 var batches = {};
 var id=0;
