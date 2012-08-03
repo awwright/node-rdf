@@ -12,7 +12,7 @@ function addDocument(turtle, triples){
 		rdf.BlankNode.NextId = 0;
 		var graph = new rdf.IndexedGraph;
 		var turtleParser = new (require('rdf/TurtleParser').Turtle)(env, undefined, undefined, graph);
-		turtleParser.parse(turtle, undefined, undefined, graph);
+		turtleParser.parse(turtle, undefined, 'http://example.com/', undefined, graph);
 		//console.log("\nTurtle:\n\t"+turtle.replace(/\n/g,'\n\t')+"\nTriples:\n\t"+require('util').inspect(graph.index, false, 5, true).replace(/\n/g,'\n\t')+"\n");
 		return graph;
 	} };
@@ -100,7 +100,7 @@ addDocument(
 	, '@prefix : <http://example.org/ns2#> .'
 	, ':a5 :b5 :c5 .'
 	],
-	[ env.createTriple('a1', 'b1', 'c1')
+	[ env.createTriple('http://example.com/a1', 'http://example.com/b1', 'http://example.com/c1')
 	, env.createTriple('http://example.org/ns/a2', 'http://example.org/ns/b2', 'http://example.org/ns/c2')
 	, env.createTriple('http://example.org/ns/foo/a3', 'http://example.org/ns/foo/b3', 'http://example.org/ns/foo/c3')
 	, env.createTriple('http://example.org/ns/foo/bar#a4', 'http://example.org/ns/foo/bar#b4', 'http://example.org/ns/foo/bar#c4')
