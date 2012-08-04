@@ -1,4 +1,4 @@
-# RDF API implementation for Node.js
+# RDF Interfaces implementation for Node.js
 
 An RDF Interfaces implementation in ECMAScript, designed for Node.js, to implement RDF datatypes with Javascript types and provide related APIs and in-memory utilities.
 
@@ -39,13 +39,14 @@ An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-in
 The Turtle parser must be specifically required with `require('rdf/TurtleParser')` and implements the [Data parser API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#parsing-and-serializing-data).
 
 	var turtleParser = new (require('rdf/TurtleParser').Turtle)(profile);
-	turtleParser.parse(turtle, callback, undefined, graph);
+	turtleParser.parse(turtle, callback, base, filter, graph);
 
 Where:
 
 * `env` is the optional RDF Environment that will resolve prefixes and create bnodes. If left out, a new, empty environment will be created. The enviornment is accessible from the `environment` property.
 * `turtle` is the document body to be processed.
 * `callback` is an optional function(Graph) to be called when processing is completed. This should normally be undefined, the parser is fully synchronous and processing is completed after the parse() function returns.
+* `base` is the base URI that relative URIs will be resolved against.
 * `filter` is an optional function(Triple) that will restrict which triples are added to the output graph. The function takes an input Triple and returns true to include the triple in the output graph.
 * `graph` is an optional Graph that triples will be add()ed to. If left out, a new IndexedGraph will be used.
 
