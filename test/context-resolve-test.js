@@ -1,7 +1,6 @@
 var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
-require('rdf/SetBuiltins');
 
 vows.describe('rdf.environment.resolve').addBatch(
 { "environment.prefixes.resolve rdf:type":

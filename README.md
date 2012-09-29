@@ -54,7 +54,7 @@ Since @base and @prefix directives modify the environment passed to TurtleParser
 
 ### Builtins
 
-Instead of using NamedNode, URIs by default are represented as plain strings. The RDFNode interface may be overloaded onto the standard String object using `require('rdf/SetBuiltins')` or onto a particular prototype by using:
+Instead of using NamedNode, URIs by default are represented as plain strings. The RDFNode interface may be overloaded onto the standard String object using `rdf.setBuiltins()` or onto a particular prototype by using:
 
 	rdf.setObjectProperties(Object.prototype);
 	rdf.setStringProperties(String.prototype);
@@ -63,7 +63,7 @@ Instead of using NamedNode, URIs by default are represented as plain strings. Th
 	rdf.setDateProperties(Date.prototype);
 	rdf.setNumberProperties(Number.prototype);
 
-as done in the SetBuiltins.js file.
+as done in the setBuiltins function call in `lib/Builtins.js`.
 
 This extends the prototype definitions to act as native RDF types as well, for example:
 

@@ -2,7 +2,7 @@ var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
 var util=require('util');
-require('rdf/SetBuiltins');
+rdf.setBuiltins();
 
 var batches = {};
 

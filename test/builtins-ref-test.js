@@ -3,7 +3,7 @@ var assert=require('assert');
 var rdf=require('rdf');
 var env=rdf.environment;
 var util=require('util');
-require('rdf/SetBuiltins');
+rdf.setBuiltins();
 
 var batches = {};
 var id=0;
