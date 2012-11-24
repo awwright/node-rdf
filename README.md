@@ -52,6 +52,12 @@ Where:
 
 Since @base and @prefix directives modify the environment passed to TurtleParser, it's recommended a new TurtleParser be used for each document.
 
+### RDF Environment
+
+The RDF Environment is the context that bnodes are described relative to, and where namespaces/prefixes are defined. The API implements the [RDF Environment API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#rdf-environment-interfaces).
+
+The rdf module creates one such global environment by default, accessible at `rdf.environment`. Others are created where necessary, e.g. when parsing a Turtle document, and may be created using `new rdf.RDFEnvironment`.
+
 ### Builtins
 
 Instead of using NamedNode, URIs by default are represented as plain strings. The RDFNode interface may be overloaded onto the standard String object using `rdf.setBuiltins()` or onto a particular prototype by using:
@@ -74,7 +80,7 @@ This extends the prototype definitions to act as native RDF types as well, for e
 
 Any two values may be compared with each other using the `equals` method:
 
-	(true).equals(new Literal('true',null,'xsd:boolean')) // true
+	(true).equals(rdf.environment.createLiteral('true', null, 'xsd:boolean'.resolve()) // true
 
 The node type may be queried with the `nodeType` method:
 
