@@ -38,7 +38,7 @@ An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-in
 
 The Turtle parser must be specifically required with `require('rdf/TurtleParser')` and implements the [Data parser API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#parsing-and-serializing-data).
 
-	var turtleParser = new (require('rdf/TurtleParser').Turtle)(profile);
+	var turtleParser = new (require('rdf/TurtleParser').Turtle)(env);
 	turtleParser.parse(turtle, callback, base, filter, graph);
 
 Where:
