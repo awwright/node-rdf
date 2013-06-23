@@ -34,16 +34,16 @@ An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-in
 
 An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) with fast querying on any combination of subject, predicate, or object, using three indexes.
 
-### Turtle parser
+### TurtleParser
 
-The Turtle parser must be specifically required with `require('rdf/TurtleParser')` and implements the [Data parser API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#parsing-and-serializing-data).
+An implementation of [the Data parser API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#parsing-and-serializing-data).
 
-	var turtleParser = new (require('rdf/TurtleParser').Turtle)(profile);
+	var turtleParser = new rdf.TurtleParser(environment);
 	turtleParser.parse(turtle, callback, base, filter, graph);
 
 Where:
 
-* `env` is the optional RDF Environment that will resolve prefixes and create bnodes. If left out, a new, empty environment will be created. The enviornment is accessible from the `environment` property.
+* `environment` is the optional RDF Environment that will resolve prefixes and create bnodes. If left out, a new, empty environment will be created. The enviornment is accessible from the `environment` property.
 * `turtle` is the document body to be processed.
 * `callback` is an optional function(Graph) to be called when processing is completed. This should normally be undefined, the parser is fully synchronous and processing is completed after the parse() function returns.
 * `base` is the base URI that relative URIs will be resolved against.
