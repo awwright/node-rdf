@@ -5,7 +5,7 @@ An RDF Interfaces implementation in ECMAScript, designed for Node.js, to impleme
 This implements:
 
 * http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/ (Working draft)
-* http://www.w3.org/TR/2011/WD-turtle-20110809/ (Working draft)
+* http://www.w3.org/TR/2013/CR-turtle-20130219/ (Candidate Recommendation)
 
 See also:
 
