@@ -6,7 +6,7 @@ function rdfns(v){ return "http://www.w3.org/1999/02/22-rdf-syntax-ns#".concat(v
 
 module.exports = function GenerateGraphTest(Graph){
 	var batches = {};
-	batches[Graph.name+' Methods exist'] =
+	batches[Graph.name+' methods exist'] =
 		{ topic: new Graph
 		, 'add exists': function(t){assert.isFunction(t.add)}
 		, 'remove exists': function(t){assert.isFunction(t.remove)}
@@ -22,7 +22,7 @@ module.exports = function GenerateGraphTest(Graph){
 		, 'actions exists': function(t){assert.isArray(t.actions)}
 		, 'addAction exists': function(t){assert.isFunction(t.addAction)}
 		};
-	batches[Graph.name+' Data insert/query'] =
+	batches[Graph.name+' insert/query'] =
 		{ topic: function(){
 			var g = new Graph;
 			g.add(rdf.environment.createTriple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
