@@ -11,7 +11,7 @@ function addDocument(base, turtle, triples){
 	var batch = batches['#'+(++id)+': '+turtle.replace(/\n/g,"\\n ").replace(/\t/g," ")] = { topic: function(){
 		// The tests expect bnodes to be numbered starting with 1
 		rdf.BlankNode.NextId = 0;
-		var graph = new rdf.IndexedGraph;
+		var graph = env.createGraph();
 		var turtleParser = new TurtleParser;
 		turtleParser.parse(turtle, null, base, null, graph);
 		//console.log("\nTurtle:\n\t"+turtle.replace(/\n/g,'\n\t')+"\nTriples:\n\t"+require('util').inspect(graph.index, false, 5, true).replace(/\n/g,'\n\t')+"\n");
@@ -29,7 +29,7 @@ function addDocument(base, turtle, triples){
 
 var manifestBase = 'http://www.w3.org/2013/TurtleTests/manifest.ttl';
 var manifestData = require('fs').readFileSync('test/TurtleTests/manifest.ttl');
-var manifestGraph = new rdf.TripletGraph;
+var manifestGraph = env.createGraph();
 var manifestParse = new TurtleParser;
 manifestParse.parse(manifestData, undefined, manifestBase, null, manifestGraph);
 
@@ -53,7 +53,7 @@ manifestTests.forEach(function(test){
 					{ topic: function(){ require('fs').readFile(filename, 'utf8', this.callback); }
 					, 'parses':
 						function(a, data){
-							var graph = new rdf.TripletGraph;
+							var graph = env.createGraph();
 							var parser = new TurtleParser;
 							parser.parse(data, undefined, file, null, graph);
 						}
@@ -64,7 +64,7 @@ manifestTests.forEach(function(test){
 					{ topic: function(){ require('fs').readFile(filename, 'utf8', this.callback); }
 					, 'parses negative':
 						function(a, data){
-							var graph = new rdf.TripletGraph;
+							var graph = env.createGraph();
 							var parser = new TurtleParser;
 							var err = null;
 							assert['throws'](function(){
