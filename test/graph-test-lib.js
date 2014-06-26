@@ -58,6 +58,10 @@ module.exports = function GenerateGraphTest(Graph){
 			{ topic: function(t){ return t.match('http://example.com/A',rdfns('type'),'http://example.com/Letter'); }
 			, 'length': function(t){ assert.lengthOf(t, 1) }
 			}
+		, 'addAll()':
+			{ topic: function(t){ var g = new Graph; g.addAll(t); return g; }
+			, 'length': function(t2){ assert.lengthOf(t2.toArray(), 7) }
+			}
 		};
 	return batches;
 }
