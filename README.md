@@ -24,7 +24,9 @@ The ultimate documentation is the source code. The lib/rdf.js file should be esp
 
 ### RDFNode
 
-`rdf.Triple`, `rdf.RDFNode`, `rdf.BlankNode`, `rdf.Literal` are implemented as defined under [RDF Interfaces: Basic Node Types](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#basic-node-types). Standard strings are used in place of NamedNode, and `rdf.IRI` is available for more complex manipulations of the URI structure.
+`rdf.Triple`, `rdf.RDFNode`, `rdf.NamedNode`, `rdf.BlankNode`, `rdf.Literal` are implemented as defined under [RDF Interfaces: Basic Node Types](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#basic-node-types).
+
+For parsing the IRI and converting to a URI that can be used in an HTTP request, see the [IRI package](https://github.com/Acubed/node-iri).
 
 ### IndexedGraph
 
