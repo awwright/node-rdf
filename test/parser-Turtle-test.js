@@ -40,7 +40,7 @@ manifestTests.forEach(function(test){
 	var types = manifestGraph.match(test, rdf.rdfns('type')).map(function(v){return v.object});
 
 	var file = manifestGraph.match(test, 'http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action').map(function(v){return v.object})[0];
-	var filename = file.replace('http://www.w3.org/2013/','test/');
+	var filename = file.toString().replace('http://www.w3.org/2013/','test/');
 
 	for(var j=0; j<types.length; j++){
 		switch(types[j]){
