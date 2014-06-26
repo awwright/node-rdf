@@ -17,6 +17,7 @@ module.exports = function GenerateGraphTest(Graph){
 		, 'filter exists': function(t){assert.isFunction(t.filter)}
 		, 'forEach exists': function(t){assert.isFunction(t.forEach)}
 		, 'match exists': function(t){assert.isFunction(t.match)}
+		, 'merge exists': function(t){assert.isFunction(t.merge)}
 		, 'addAll exists': function(t){assert.isFunction(t.addAll)}
 		, 'actions exists': function(t){assert.isArray(t.actions)}
 		, 'addAction exists': function(t){assert.isFunction(t.addAction)}
