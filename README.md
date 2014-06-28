@@ -4,12 +4,12 @@ An RDF Interfaces implementation in ECMAScript, designed for Node.js, to impleme
 
 This implements:
 
-* http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/ (Working draft)
+* http://www.w3.org/TR/2012/NOTE-rdf-interfaces-20120705/ (Working draft)
 * http://www.w3.org/TR/2013/CR-turtle-20130219/ (Candidate Recommendation)
 
 See also:
 
-* http://www.w3.org/TR/2011/WD-rdfa-api-20110419/ (Working draft)
+* http://www.w3.org/TR/2012/NOTE-rdfa-api-20120705/ (Working draft)
 
 Implementation largely adapted from webr3's js3, rdfa-api, and rdf-api implementations:
 
@@ -28,13 +28,9 @@ The ultimate documentation is the source code. The lib/rdf.js file should be esp
 
 For parsing the IRI and converting to a URI that can be used in an HTTP request, see the [IRI package](https://github.com/Acubed/node-iri).
 
-### IndexedGraph
+### Graph
 
-An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) that stores triples in an Array. This is useful for quick inserts and iterating the complete list of triples.
-
-### TripletGraph
-
-An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) with fast querying on any combination of subject, predicate, or object, using three indexes.
+An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) that stores triples in three indexes for fast querying.
 
 ### TurtleParser
 
