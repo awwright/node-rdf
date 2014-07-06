@@ -4,12 +4,13 @@ An RDF Interfaces implementation in ECMAScript, designed for Node.js, to impleme
 
 This implements:
 
-* http://www.w3.org/TR/2012/NOTE-rdf-interfaces-20120705/ (Working draft)
-* http://www.w3.org/TR/2013/CR-turtle-20130219/ (Candidate Recommendation)
+* http://www.w3.org/TR/2012/NOTE-rdf-interfaces-20120705/ (Working Group Note)
+* http://www.w3.org/TR/2014/REC-turtle-20140225/ (Recommendation)
 
 See also:
 
-* http://www.w3.org/TR/2012/NOTE-rdfa-api-20120705/ (Working draft)
+* http://www.w3.org/TR/2012/NOTE-rdfa-api-20120705/ (Working Group Note)
+* http://www.w3.org/TR/2012/NOTE-rdf-api-20120705/ (Working Group Note)
 
 Implementation largely adapted from webr3's js3, rdfa-api, and rdf-api implementations:
 
