@@ -3,9 +3,7 @@ var assert=require('assert');
 var rdf=require('rdf');
 var util=require('util');
 
-function tl(value, type){ return value.tl(type).valueOf(); }
 var batches = {};
-
 
 function strictCompare(nv){
 	var test = function(t){ assert.strictEqual(t, nv); };
@@ -25,7 +23,7 @@ NaNCompare.nativeValue = Number.NaN;
 function addBatch(literal, type, test){
 	// Literal must be a string
 	var unit = batches['('+util.inspect(literal)+').t('+type+')'] =
-		{ topic: function(){ return literal.tl(type).valueOf(); }
+		{ topic: function(){ return rdf.environment.createLiteral(literal, null, type).valueOf(); }
 		};
 	unit['.valueOf()==='+util.inspect(test.nativeValue)] = test;
 }
