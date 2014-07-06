@@ -43,7 +43,7 @@ manifestTests.forEach(function(test){
 	var filename = file.toString().replace('http://www.w3.org/2013/','test/');
 
 	for(var j=0; j<types.length; j++){
-		switch(types[j]){
+		switch(types[j].toString()){
 			case 'http://www.w3.org/ns/rdftest#TestTurtleEval':
 				break;
 			case 'http://www.w3.org/ns/rdftest#TestTurtleNegativeEval':
