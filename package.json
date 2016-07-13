@@ -1,0 +1,8 @@
+{
+    "name": "node-rdf-fork",
+    "version": "v3.0.1-forked",
+    "dependencies": {
+    },
+    "private": true,
+    "license": "UNLICENSED"
+}
