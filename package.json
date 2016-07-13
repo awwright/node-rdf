@@ -1,6 +1,7 @@
 {
     "name": "node-rdf",
     "version": "v3.0.1-forked",
+    "main": "lib/rdf.js",
     "dependencies": {
     },
     "private": true,
