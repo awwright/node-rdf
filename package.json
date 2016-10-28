@@ -1,0 +1,10 @@
+{
+    "name": "node-rdf",
+    "version": "v3.0.1-forked",
+    "main": "lib/rdf.js",
+    "dependencies": {
+        "iri": "^1.1.1"
+    },
+    "private": true,
+    "license": "UNLICENSED"
+}
