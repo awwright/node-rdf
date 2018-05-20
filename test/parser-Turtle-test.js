@@ -2,7 +2,7 @@ var vows=require('vows');
 var assert=require('assert');
 var rdf=require('rdf');
 var env=rdf.environment;
-var TurtleParser = require('rdf/TurtleParser').Turtle;
+var TurtleParser = require('..').TurtleParser;
 
 var batches = {};
 var id=0;

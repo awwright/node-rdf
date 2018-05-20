@@ -77,7 +77,8 @@ generateRefTest('_:topic6', {rdf$value: env.createBlankNode()},
 	foaf:depiction <http://en.wikipedia.org/wiki/Image:Albert_Einstein_Head.jpg> .
 */
 generateRefTest( 'dbr:Albert_Einstein',
-	{ dbp$dateOfBirth: new Date("1879-03-14")
+	{ $context: { 'dbr': 'http://dbpedia.org/resource/',  'dbp': 'http://dbpedia.org/property/', 'foaf': 'http://xmlns.com/foaf/0.1/',}
+	, dbp$dateOfBirth: new Date("1879-03-14")
 	, 'foaf:depiction': 'http://en.wikipedia.org/wiki/Image:Albert_Einstein_Head.jpg'
 	},
 	'dbr:Albert_Einstein dbp:dateOfBirth "1879-03-14"^^xsd:date;\n\tfoaf:depiction <http://en.wikipedia.org/wiki/Image:Albert_Einstein_Head.jpg> .',
