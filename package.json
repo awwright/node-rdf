@@ -1,21 +1,28 @@
-{ "name": "rdf"
-, "description": "RDF datatype integration, RDF Interfaces API, and utility functions"
-, "homepage": "https://github.com/awwright/node-rdf"
-, "author": "Austin Wright"
-, "keywords": ["RDF", "RDF Interfaces", "IRI", "Turtle"]
-, "dependencies":
-	{ "iri": "~1"
+{
+	"name": "rdf",
+	"description": "RDF datatype integration, RDF Interfaces API, and utility functions",
+	"homepage": "https://github.com/awwright/node-rdf",
+	"author": "Austin Wright",
+	"keywords": [
+		"RDF",
+		"RDF Interfaces",
+		"IRI",
+		"Turtle"
+	],
+	"dependencies": {
+		"iri": "~1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/awwright/node-rdf.git",
+		"web": "https://github.com/awwright/node-rdf"
+	},
+	"main": "lib/rdf.js",
+	"scripts": {
+		"test": "vows"
+	},
+	"license": "Unlicense",
+	"devDependencies": {
+		"vows": "^0.8.2"
 	}
-, "repository":
-	{ "type": "git"
-	, "url": "git://github.com/awwright/node-rdf.git"
-	, "web": "https://github.com/awwright/node-rdf"
-	}
-, "main": "lib/rdf.js"
-, "scripts": { "test" : "vows" }
-, "licenses": [
-		{ "type": "Public domain"
-		, "url": "http://unlicense.org/"
-		}
-	]
 }

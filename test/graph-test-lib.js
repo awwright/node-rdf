@@ -63,5 +63,21 @@ module.exports = function GenerateGraphTest(Graph){
 			, 'length': function(t2){ assert.lengthOf(t2.toArray(), 7) }
 			}
 		};
+	batches[Graph.name+' multiple insert'] =
+		{ topic: function(){
+			var g = new Graph;
+			g.add(rdf.environment.createTriple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
+			g.add(rdf.environment.createTriple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
+			return g;
+			}
+		, 'match(null, null, null)':
+			{ topic: function(t){ return t.match(null,null,null); }
+			, 'length': function(t){ assert.lengthOf(t, 1) }
+			}
+		, 'toArray()':
+			{ topic: function(t){ return t.toArray(); }
+			, 'length': function(t){ assert.lengthOf(t, 1) }
+			}
+		};
 	return batches;
 }
