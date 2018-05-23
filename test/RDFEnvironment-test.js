@@ -1,6 +1,6 @@
 var vows=require('vows');
 var assert=require('assert');
-var rdf=require('rdf');
+var rdf=require('..');
 
 vows.describe('rdf.environment.resolve').addBatch( // The builtin RDFEnvironment
 { "rdf.environment":

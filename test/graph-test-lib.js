@@ -1,6 +1,6 @@
-var rdf=require('rdf');
 var vows=require('vows');
 var assert=require('assert');
+var rdf=require('..');
 
 function rdfns(v){ return "http://www.w3.org/1999/02/22-rdf-syntax-ns#".concat(v); }
 

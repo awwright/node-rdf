@@ -1,6 +1,6 @@
 var vows=require('vows');
 var assert=require('assert');
-var rdf=require('rdf');
+var rdf=require('..');
 rdf.setBuiltins();
 
 vows.describe('String builtins').addBatch(
