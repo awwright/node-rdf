@@ -43,7 +43,7 @@ generateRefTest('_:topic1', {a: 'rdfs:Class'},
 
 generateRefTest('_:topic2', {rdf$value: 42},
 	'_:topic2\n\trdf:value 42 .',
-	'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> 42 .',
+	'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#double> .',
 	[ env.createTriple('_:topic2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral('42',null,'http://www.w3.org/2001/XMLSchema#integer'))
 	]);
 
