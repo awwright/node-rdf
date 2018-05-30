@@ -9,7 +9,6 @@ function addNumberTest(t, nodeType, datatype, n3rep){
 		assert.strictEqual(typeof t.nodeType, 'function');
 		assert.strictEqual(t.nodeType(), nodeType);
 		assert.strictEqual(t.n3(), n3rep);
-		assert.strictEqual(t.nodeType(), nodeType);
 		assert.strictEqual(t.datatype, datatype);
 	});
 }
