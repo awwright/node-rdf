@@ -2,6 +2,7 @@ var assert = require('assert');
 var rdf = require('..');
 
 function rdfns(v){ return "http://www.w3.org/1999/02/22-rdf-syntax-ns#".concat(v); }
+function rdfsns(v){ return "http://www.w3.org/2000/01/rdf-schema#".concat(v); }
 
 function triple(s, p, o){
 	return rdf.environment.createTriple(
@@ -30,7 +31,7 @@ module.exports = function GenerateGraphTest(Graph){
 		//it('addAction exists', function(){ assert.equal(typeof t.addAction, 'function'); });
 	});
 	describe(Graph.name+' data', function(){
-		it('add', function(){
+		it('add/match', function(){
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			g.add(triple('http://example.com/Vowel', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://example.com/Letter'));
@@ -64,9 +65,26 @@ module.exports = function GenerateGraphTest(Graph){
 			assert.equal(g.match('http://example.com/A', null, null).length, 1);
 			assert.equal(g.match('http://example.com/A', rdfns('type'), null).length, 1);
 			assert.equal(g.match('http://example.com/A', rdfns('type'), 'http://example.com/Letter').length, 1);
+		});
+		it('addAll', function(){
+			// "the import must not produce any duplicates."
+			var g = new Graph;
+			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
+			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
+			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			var gg = new Graph;
+			assert.equal(gg.length, 0);
 			gg.addAll(g);
+			gg.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			assert.equal(gg.length, g.length);
+			assert.equal(gg.match(null, null, null).length, 2);
+			assert.equal(gg.toArray().length, 2);
+			assert.equal(gg.match(null, rdfns('type'), null).length, 2);
+			assert.equal(gg.match(null, rdfns('type'), 'http://example.com/Letter').length, 1);
+			assert.equal(gg.match('http://example.com/A', null, null).length, 1);
+			assert.equal(gg.match('http://example.com/A', rdfns('type'), null).length, 1);
+			assert.equal(gg.match('http://example.com/A', rdfns('type'), 'http://example.com/Letter').length, 1);
 		});
 		it('every', function(){
 			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
@@ -75,88 +93,102 @@ module.exports = function GenerateGraphTest(Graph){
 			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			assert.ok(g.every(function(triple){
+				return triple.predicate.equals(new rdf.NamedNode(rdfns('type')));
+			}));
+			assert.ok(!g.every(function(triple){
+				return triple.subject.equals(new rdf.NamedNode('http://example.com/Letter'));
+			}));
 		});
 		it('filter', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			assert.equal(g.filter(function(triple){
+				return triple.predicate.equals(new rdf.NamedNode(rdfns('type')));
+			}).length, 4);
+			assert.equal(g.filter(function(triple){
+				return triple.subject.equals(new rdf.NamedNode('http://example.com/Letter'));
+			}).length, 1);
 		});
 		it('forEach', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
-			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
-			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
-		});
-		it('import', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
-			var g = new Graph;
-			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
-			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
-		});
-		it('match', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
-			var g = new Graph;
-			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
-			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('Letter', '@en')));
+			g.add(triple('http://example.com/A', rdfsns('label'), new rdf.Literal('A')));
+			g.add(triple('http://example.com/B', rdfsns('label'), new rdf.Literal('B')));
+			g.add(triple('http://example.com/C', rdfsns('label'), new rdf.Literal('C')));
+			var len = 0;
+			g.forEach(function(triple){
+				len += triple.object.valueOf().length;
+			});
+			assert.equal(len, 9);
 		});
 		it('merge', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
+			var h = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
-			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
-			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			h.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
+			h.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
+			h.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
+			var m = g.merge(h);
+			assert.equal(g.length, 1);
+			assert.equal(h.length, 3);
+			assert.equal(m.length, 4);
 		});
 		it('remove', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			assert.equal(g.length, 4);
+			assert.equal(g.toArray().length, 4);
+			g.remove(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
+			assert.equal(g.length, 3);
+			assert.equal(g.toArray().length, 3);
+			g.remove(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
+			assert.equal(g.length, 3);
+			assert.equal(g.toArray().length, 3);
 		});
 		it('removeMatches', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			assert.equal(g.length, 4);
+			assert.equal(g.toArray().length, 4);
+			g.removeMatches(new rdf.NamedNode('http://example.com/C'), new rdf.NamedNode(rdfns('type')), new rdf.NamedNode('http://example.com/Letter'));
+			assert.equal(g.length, 3);
+			assert.equal(g.toArray().length, 3);
+			g.removeMatches(new rdf.NamedNode('http://example.com/C'), new rdf.NamedNode(rdfns('type')), new rdf.NamedNode('http://example.com/Letter'));
+			assert.equal(g.length, 3);
+			assert.equal(g.toArray().length, 3);
 		});
 		it('some', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			assert.ok(g.every(function(triple){
+				return triple.predicate.equals(new rdf.NamedNode(rdfns('type')));
+			}));
+			assert.ok(!g.every(function(triple){
+				return triple.subject.equals(new rdf.NamedNode('http://example.com/Letter'));
+			}));
 		});
 		it('toArray', function(){
-			// "Universal quantification method, tests whether every Triple in the Graph passes the test implemented by the provided TripleFilter."
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			g.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			assert.fail();
+			var a = g.toArray();
+			assert(Array.isArray(a));
+			assert.equal(a.length, 4);
 		});
 	});
 }
