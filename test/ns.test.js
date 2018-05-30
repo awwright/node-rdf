@@ -2,7 +2,7 @@ var assert = require('assert');
 var rdf = require('..');
 
 describe('ns', function(){
-	it('rdf.rdfns', function(){
+	it('rdf.ns', function(){
 		var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
 		assert.equal(foaf('name'), 'http://xmlns.com/foaf/0.1/name');
 	});
