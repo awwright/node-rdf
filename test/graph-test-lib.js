@@ -190,5 +190,36 @@ module.exports = function GenerateGraphTest(Graph){
 			assert(Array.isArray(a));
 			assert.equal(a.length, 4);
 		});
+		it('equals', function(){
+			// Graph a
+			var ga = new Graph;
+			for(var ba = []; ba.length<5; ba.push(new rdf.BlankNode));
+			ga.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			ga.add(triple(ba[0], rdfns('type'), 'http://example.com/Letter'));
+			ga.add(triple(ba[0], rdfns('type'), ba[1]));
+			ga.add(triple(ba[0], rdfns('type'), ba[2]));
+			ga.add(triple(ba[2], rdfns('type'), ba[3]));
+			ga.add(triple(ba[1], rdfns('type'), ba[4]));
+			// Graph h - positive test
+			var gh = new Graph;
+			for(var bh = []; bh.length<5; bh.push(new rdf.BlankNode));
+			gh.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			gh.add(triple(bh[0], rdfns('type'), 'http://example.com/Letter'));
+			gh.add(triple(bh[0], rdfns('type'), bh[1]));
+			gh.add(triple(bh[0], rdfns('type'), bh[2]));
+			gh.add(triple(bh[2], rdfns('type'), bh[3]));
+			gh.add(triple(bh[1], rdfns('type'), bh[4]));
+			assert(gh.equals(ga));
+			// Graph h - negative test
+			var gm = new Graph;
+			for(var bm = []; bm.length<5; bm.push(new rdf.BlankNode));
+			gm.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			gm.add(triple(bm[0], rdfns('type'), 'http://example.com/Letter'));
+			gm.add(triple(bm[0], rdfns('type'), bm[1]));
+			gm.add(triple(bm[0], rdfns('type'), bm[2]));
+			gm.add(triple(bm[1], rdfns('type'), bm[3])); // this one is different
+			gm.add(triple(bm[1], rdfns('type'), bm[4]));
+			assert(!gm.equals(ga));
+		});
 	});
 }
