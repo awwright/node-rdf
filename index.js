@@ -6,31 +6,31 @@
 
 var api = exports;
 
-api.Triple = require('./RDFNode.js').Triple;
-api.RDFNode = require("./RDFNode.js").RDFNode;
-api.NamedNode = require("./RDFNode.js").NamedNode;
-api.BlankNode = require("./RDFNode.js").BlankNode;
-api.Literal = require("./RDFNode.js").Literal;
+api.Triple = require('./lib/RDFNode.js').Triple;
+api.RDFNode = require("./lib/RDFNode.js").RDFNode;
+api.NamedNode = require("./lib/RDFNode.js").NamedNode;
+api.BlankNode = require("./lib/RDFNode.js").BlankNode;
+api.Literal = require("./lib/RDFNode.js").Literal;
 
-api.Profile = require('./Profile.js').Profile;
-api.RDFEnvironment = require('./RDFEnvironment.js').RDFEnvironment;
+api.Profile = require('./lib/Profile.js').Profile;
+api.RDFEnvironment = require('./lib/RDFEnvironment.js').RDFEnvironment;
 
-api.TurtleParser = require('./TurtleParser.js').Turtle;
+api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 
 api.DataSerializer = function(){}
 
-api.Graph = require("./Graph.js").Graph;
+api.Graph = require("./lib/Graph.js").Graph;
 
-api.setObjectProperties = require('./Builtins').setObjectProperties;
-api.setStringProperties = require('./Builtins').setStringProperties;
-api.setArrayProperties = require('./Builtins').setArrayProperties;
-api.setBooleanProperties = require('./Builtins').setBooleanProperties;
-api.setDateProperties = require('./Builtins').setDateProperties;
-api.setNumberProperties = require('./Builtins').setNumberProperties;
-api.environment = require('./Builtins').environment;
-api.setBuiltins = require('./Builtins').setBuiltins;
-api.unsetBuiltins = require('./Builtins').unsetBuiltins;
-api.ref = require('./Builtins').ref;
+api.setObjectProperties = require('./lib/Builtins').setObjectProperties;
+api.setStringProperties = require('./lib/Builtins').setStringProperties;
+api.setArrayProperties = require('./lib/Builtins').setArrayProperties;
+api.setBooleanProperties = require('./lib/Builtins').setBooleanProperties;
+api.setDateProperties = require('./lib/Builtins').setDateProperties;
+api.setNumberProperties = require('./lib/Builtins').setNumberProperties;
+api.environment = require('./lib/Builtins').environment;
+api.setBuiltins = require('./lib/Builtins').setBuiltins;
+api.unsetBuiltins = require('./lib/Builtins').unsetBuiltins;
+api.ref = require('./lib/Builtins').ref;
 api.parse = function(o, id){
 	return api.ref.call(o, id);
 }
