@@ -1,11 +1,11 @@
 # You could also set to "wget -o -"
 GET="curl"
-VOWS=./node_modules/.bin/vows
+MOCHA=./node_modules/.bin/mocha
 
 all:
 
 test: test/TurtleTests/manifest.ttl
-	$(VOWS)
+	$(MOCHA)
 
 test/TurtleTests/manifest.ttl: | test/TurtleTests
 
