@@ -48,7 +48,7 @@ describe('Profile', function(){
 		profile.setPrefix('ex', 'http://example.com/');
 		assert.equal(typeof profile.resolve, 'function');
 		assert.equal(typeof profile.resolve('ex:type'), 'string');
-		assert.equal(typeof profile.resolve('undefinedTerm'), null);
+		assert.equal(profile.resolve('undefinedTerm'), null);
 	});
 	it("setDefaultVocabulary", function(){
 		var profile = new rdf.Profile;
@@ -109,7 +109,7 @@ describe('Profile', function(){
 		profile.importProfile(other);
 		assert.equal(profile.resolve('ex:a'), 'http://example.com/a');
 		assert.equal(profile.resolve('a'), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/');
+		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/a');
 		assert.equal(profile.resolve('b'), 'http://example.org/type');
 	});
 	it("importProfile (overwrite=false)", function(){
@@ -126,7 +126,7 @@ describe('Profile', function(){
 		profile.importProfile(other, false);
 		assert.equal(profile.resolve('ex:a'), 'http://example.com/a');
 		assert.equal(profile.resolve('a'), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/');
+		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/a');
 		assert.equal(profile.resolve('b'), 'http://example.org/type');
 	});
 	it("importProfile (overwrite=true)", function(){
