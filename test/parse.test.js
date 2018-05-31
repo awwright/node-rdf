@@ -28,7 +28,7 @@ function generateRefTest(subject, topic, n3out, ntout, triplesout){
 	}
 }
 
-describe('Object builtins', function(){
+describe('parse', function(){
 	it('parse(_:topic1)', function(){
 		generateRefTest('_:topic1', {a: 'rdfs:Class'},
 			'_:topic1\n\trdf:type rdfs:Class .',

@@ -77,6 +77,22 @@ describe('Profile', function(){
 		assert.equal(profile.prefixes.resolve('ex:type'), 'http://example.com/type');
 		assert.equal(profile.resolve('ex:type'), 'http://example.com/type');
 	});
+	it("setPrefix negative tests", function(){
+		var profile = new rdf.Profile;
+		assert.equal(typeof profile.setPrefix, 'function');
+		assert.throws(function(){
+			profile.setPrefix('0', 'http://example.com/');
+		});
+		assert.throws(function(){
+			profile.setPrefix('::', 'http://example.com/');
+		});
+		assert.throws(function(){
+			profile.setPrefix(' ', 'http://example.com/');
+		});
+		assert.throws(function(){
+			profile.setPrefix('.', 'http://example.com/');
+		});
+	});
 	it("importProfile", function(){
 		var profile = new rdf.Profile;
 		assert.equal(typeof profile.importProfile, 'function');
@@ -114,10 +130,14 @@ describe('Profile', function(){
 		profile.setPrefix('ex2', 'http://example.com/vocab/foo/');
 		profile.setPrefix('ex', 'http://example.com/');
 		profile.setPrefix('exv', 'http://example.com/vocab/');
+		profile.setPrefix('🐉', 'http://example.com/vocab/dragon/');
 
 		assert.equal(profile.shrink('http://example.com/vocab/a'), 'exv:a');
 		assert.equal(profile.shrink('http://example.com/vocab/foo/b'), 'ex2:b');
 		assert.equal(profile.shrink('http://example.com/c'), 'ex:c');
+		// File is UTF-8 (probably), but escape sequence UTF-16 surrogate pairs
+		// idk I didn't invent it, man
+		assert.equal(profile.shrink('http://example.com/vocab/dragon/🐲'), '\uD83D\uDC09:\uD83D\uDC32');
 		assert.equal(profile.shrink('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'), 'a');
 	});
 });
