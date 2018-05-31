@@ -50,8 +50,10 @@ describe('Turtle test suite', function(){
 									var expectedTriples = expectedGraph.toArray().sort();
 									var outputTriples = graph.toArray().sort();
 
-									//assert.ok(expectedGraph.equals(graph));
-									assert.equal(expectedTriples.join('\n'), outputTriples.join('\n'));
+									if(!expectedGraph.equals(graph)){
+										assert.equal(expectedTriples.join('\n'), outputTriples.join('\n'));
+										assert.ok(expectedGraph.equals(graph));
+									}
 									done();
 								});
 							});
