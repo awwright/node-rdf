@@ -19,8 +19,6 @@ api.RDFEnvironment = require('./lib/RDFEnvironment.js').RDFEnvironment;
 
 api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 
-api.DataSerializer = function(){}
-
 api.Graph = require("./lib/Graph.js").Graph;
 
 api.setObjectProperties = require('./lib/Builtins').setObjectProperties;
