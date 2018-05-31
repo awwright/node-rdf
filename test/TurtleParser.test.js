@@ -73,7 +73,6 @@ describe('Turtle test suite', function(){
 						});
 						break;
 					case 'http://www.w3.org/ns/rdftest#TestTurtleNegativeSyntax':
-						break; // Ignore negative tests for now
 						it('negative test <'+filename+'>', function(done){
 							fs.readFile(filename, 'utf8', function(err, data){
 								if(err) throw err;
