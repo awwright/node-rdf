@@ -45,26 +45,65 @@ describe('Profile', function(){
 	});
 	it("resolve", function(){
 		var profile = new rdf.Profile;
+		profile.setPrefix('ex', 'http://example.com/');
 		assert.equal(typeof profile.resolve, 'function');
+		assert.equal(typeof profile.resolve('ex:type'), 'string');
 	});
 	it("setDefaultVocabulary", function(){
 		var profile = new rdf.Profile;
 		assert.equal(typeof profile.setDefaultVocabulary, 'function');
+		assert.equal(typeof profile.setDefaultVocabulary('http://example.com/q/'), 'undefined');
+		assert.equal(profile.resolve('Friend'), 'http://example.com/q/Friend');
+		assert.equal(profile.terms.resolve('Friend'), 'http://example.com/q/Friend');
 	});
 	it("setDefaultPrefix", function(){
 		var profile = new rdf.Profile;
 		assert.equal(typeof profile.setDefaultPrefix, 'function');
+		assert.equal(typeof profile.setDefaultPrefix('http://example.org/vocab/'), 'undefined');
+		assert.equal(profile.resolve(':Friend'), 'http://example.org/vocab/Friend');
+		assert.equal(profile.prefixes.resolve(':Friend'), 'http://example.org/vocab/Friend');
 	});
 	it("setTerm", function(){
 		var profile = new rdf.Profile;
 		assert.equal(typeof profile.setTerm, 'function');
+		assert.equal(typeof profile.setTerm('a', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'), 'undefined');
+		assert.equal(profile.resolve('a'), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+		assert.equal(profile.terms.resolve('a'), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 	});
 	it("setPrefix", function(){
 		var profile = new rdf.Profile;
 		assert.equal(typeof profile.setPrefix, 'function');
+		assert.equal(typeof profile.setPrefix('ex', 'http://example.com/'), 'undefined');
+		assert.equal(profile.prefixes.resolve('ex:type'), 'http://example.com/type');
+		assert.equal(profile.resolve('ex:type'), 'http://example.com/type');
 	});
 	it("importProfile", function(){
 		var profile = new rdf.Profile;
 		assert.equal(typeof profile.importProfile, 'function');
+		profile.setPrefix('ex', 'http://example.com/');
+
+		var other = new rdf.Profile;
+		other.setPrefix('ex', 'http://example.org/vocab/');
+		other.importProfile(profile);
+		assert.equal(other.resolve('ex:a'), 'http://example.com/a');
+
+	});
+	it("importProfile (overwrite=false)", function(){
+		var profile = new rdf.Profile;
+		profile.setPrefix('ex', 'http://example.com/');
+
+		var other = new rdf.Profile;
+		other.setPrefix('ex', 'http://example.org/vocab/');
+		other.importProfile(profile, false);
+		assert.equal(other.resolve('ex:a'), 'http://example.com/a');
+	});
+	it("importProfile (overwrite=true)", function(){
+		var profile = new rdf.Profile;
+		profile.setPrefix('ex', 'http://example.com/');
+
+		var other = new rdf.Profile;
+		other.setPrefix('ex', 'http://example.org/vocab/');
+		other.importProfile(profile, true);
+		assert.equal(other.resolve('ex:a'), 'http://example.org/vocab/a');
 	});
 });
