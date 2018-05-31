@@ -108,4 +108,16 @@ describe('Profile', function(){
 		profile.importProfile(other, true);
 		assert.equal(profile.resolve('ex:a'), 'http://example.org/vocab/a');
 	});
+	it("shrink", function(){
+		var profile = new rdf.Profile;
+		profile.setTerm('a', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+		profile.setPrefix('ex2', 'http://example.com/vocab/foo/');
+		profile.setPrefix('ex', 'http://example.com/');
+		profile.setPrefix('exv', 'http://example.com/vocab/');
+
+		assert.equal(profile.shrink('http://example.com/vocab/a'), 'exv:a');
+		assert.equal(profile.shrink('http://example.com/vocab/foo/b'), 'ex2:b');
+		assert.equal(profile.shrink('http://example.com/c'), 'ex:c');
+		assert.equal(profile.shrink('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'), 'a');
+	});
 });
