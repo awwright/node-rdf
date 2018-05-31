@@ -84,9 +84,9 @@ describe('Profile', function(){
 
 		var other = new rdf.Profile;
 		other.setPrefix('ex', 'http://example.org/vocab/');
-		other.importProfile(profile);
-		assert.equal(other.resolve('ex:a'), 'http://example.com/a');
 
+		profile.importProfile(other);
+		assert.equal(profile.resolve('ex:a'), 'http://example.com/a');
 	});
 	it("importProfile (overwrite=false)", function(){
 		var profile = new rdf.Profile;
@@ -94,8 +94,9 @@ describe('Profile', function(){
 
 		var other = new rdf.Profile;
 		other.setPrefix('ex', 'http://example.org/vocab/');
-		other.importProfile(profile, false);
-		assert.equal(other.resolve('ex:a'), 'http://example.com/a');
+
+		profile.importProfile(other, false);
+		assert.equal(profile.resolve('ex:a'), 'http://example.com/a');
 	});
 	it("importProfile (overwrite=true)", function(){
 		var profile = new rdf.Profile;
@@ -103,7 +104,8 @@ describe('Profile', function(){
 
 		var other = new rdf.Profile;
 		other.setPrefix('ex', 'http://example.org/vocab/');
-		other.importProfile(profile, true);
-		assert.equal(other.resolve('ex:a'), 'http://example.org/vocab/a');
+
+		profile.importProfile(other, true);
+		assert.equal(profile.resolve('ex:a'), 'http://example.org/vocab/a');
 	});
 });
