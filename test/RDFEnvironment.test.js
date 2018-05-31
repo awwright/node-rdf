@@ -20,6 +20,33 @@ describe('rdf.environment.resolve', function(){
 		env.setDefaultPrefix("http://example.com/2/ex/42/");
 		assert.strictEqual(env.resolve(":answer"), "http://example.com/2/ex/42/answer");
 	});
+	it('createBlankNode', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = env.createBlankNode();
+		assert.ok(t instanceof rdf.BlankNode);
+	});
+	it('createNamedNode', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = env.createNamedNode('http://example.com/');
+		assert.ok(t instanceof rdf.NamedNode);
+	});
+	it('createNamedNode expects string', function(){
+		var env = new rdf.RDFEnvironment;
+		assert.throws(function(){
+			var t = env.createNamedNode();
+		});
+		assert.throws(function(){
+			var t = env.createNamedNode(null);
+		});
+		assert.throws(function(){
+			var t = env.createNamedNode(true);
+		});
+	});
+	it('createLiteral', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = env.createLiteral('Some Literal');
+		assert.ok(t instanceof rdf.Literal);
+	});
 	it('createTriple(iri, iri, iri)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createTriple(
@@ -76,5 +103,20 @@ describe('rdf.environment.resolve', function(){
 				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
 			);
 		});
+	});
+	it('createProfile', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = env.createProfile();
+		assert.ok(t instanceof rdf.Profile);
+	});
+	it('createTermMap', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = env.createTermMap();
+		assert.ok(t instanceof rdf.TermMap);
+	});
+	it('createPrefixMap', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = env.createPrefixMap();
+		assert.ok(t instanceof rdf.PrefixMap);
 	});
 });

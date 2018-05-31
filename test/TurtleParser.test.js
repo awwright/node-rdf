@@ -51,7 +51,7 @@ describe('Turtle test suite', function(){
 									var outputTriples = graph.toArray().sort();
 
 									if(!expectedGraph.equals(graph)){
-										assert.equal(expectedTriples.join('\n'), outputTriples.join('\n'));
+										assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
 										assert.ok(expectedGraph.equals(graph));
 									}
 									done();
