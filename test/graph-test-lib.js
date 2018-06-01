@@ -232,5 +232,25 @@ module.exports = function GenerateGraphTest(Graph){
 			gm.add(triple(bm[1], rdfns('type'), bm[4]));
 			assert(!gm.equals(ga));
 		});
+		it('equals (no bnodes negative)', function(){
+			// Graph a
+			var ga = new Graph;
+			for(var ba = []; ba.length<5; ba.push(new rdf.BlankNode));
+			ga.add(triple('http://example.com/A', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			var gh = new Graph;
+			for(var bh = []; bh.length<5; bh.push(new rdf.BlankNode));
+			gh.add(triple('http://example.com/B', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			assert(!gh.equals(ga));
+		});
+		it('equals (no bnodes positive)', function(){
+			// Graph a
+			var ga = new Graph;
+			for(var ba = []; ba.length<5; ba.push(new rdf.BlankNode));
+			ga.add(triple('http://example.com/A', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			var gh = new Graph;
+			for(var bh = []; bh.length<5; bh.push(new rdf.BlankNode));
+			gh.add(triple('http://example.com/A', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			assert(gh.equals(ga));
+		});
 	});
 }
