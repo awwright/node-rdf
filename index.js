@@ -22,6 +22,7 @@ api.RDFEnvironment = require('./lib/RDFEnvironment.js').RDFEnvironment;
 api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 
 api.Graph = require("./lib/Graph.js").Graph;
+api.ResultSet = require("./lib/ResultSet.js").ResultSet;
 
 api.setObjectProperties = require('./lib/Builtins').setObjectProperties;
 api.setStringProperties = require('./lib/Builtins').setStringProperties;
