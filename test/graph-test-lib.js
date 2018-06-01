@@ -112,6 +112,7 @@ module.exports = function GenerateGraphTest(Graph){
 			assert.equal(g.filter(function(triple){
 				return triple.subject.equals(new rdf.NamedNode('http://example.com/Letter'));
 			}).length, 1);
+			assert.ok(g.filter(function(triple){ return true; }) instanceof rdf.Graph);
 		});
 		it('forEach', function(){
 			var g = new Graph;
