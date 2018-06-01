@@ -24,8 +24,8 @@ describe('Turtle test suite', function(){
 	describe('test', function(){
 
 		manifestTests.forEach(function(test){
-			var types = manifestGraph.match(test, rdf.rdfns('type')).toArray().map(function(v){return v.object});
-			var fileURI = manifestGraph.match(test, m$('action')).toArray().map(function(v){return v.object.toString();})[0];
+			var types = manifestGraph.reference(test).rel(rdf.rdfns('type')).toArray();
+			var fileURI = manifestGraph.reference(test).rel(m$('action')).one().toString();
 			var filename = fileURI.replace('http://www.w3.org/2013/', 'test/');
 
 			for(var j=0; j<types.length; j++){
@@ -33,7 +33,7 @@ describe('Turtle test suite', function(){
 					case 'http://www.w3.org/ns/rdftest#TestTurtleEval':
 						it('evaluation <'+filename+'>', function(done){
 							// First parse the expected data (in N-Triples format)
-							var resultURI = manifestGraph.match(test, m$('result')).toArray().map(function(v){return v.object.toString()})[0];
+							var resultURI = manifestGraph.reference(test).rel(m$('result')).one().toString();
 							var resultFile = resultURI.replace('http://www.w3.org/2013/', 'test/');
 							fs.readFile(resultFile, 'utf8', function(err, data){
 								if(err) throw err;
