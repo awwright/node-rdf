@@ -3,8 +3,6 @@ var rdf = require('..');
 var rdfenv = rdf.environment;
 var util = require('util');
 
-var batches = {};
-
 function addBatch(literal, type, test){
 	// Literal must be a string
 	it('('+util.inspect(literal)+').t(xsd:'+type+')', function(){

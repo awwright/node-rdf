@@ -13,7 +13,6 @@ function triple(s, p, o){
 }
 
 module.exports = function GenerateGraphTest(Graph){
-	var batches = {};
 	describe(Graph.name+' methods exist', function(){
 		var t = new Graph;
 		it('add exists', function(){ assert.equal(typeof t.add, 'function'); });
