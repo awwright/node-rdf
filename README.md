@@ -123,4 +123,18 @@ URIs passed to these functions may be CURIEs and are resolved with the global `r
 
 ## Tests
 
-A vows test suite is found in the tests directory.
+A Mocha test suite is found in the tests directory. Run `make test` to evaluate the tests.
+
+## Index of Files
+
+* bin/turtle-equal.js - executable that determines of two Turtle files encode the same graph
+* bin/turtle-nt.js - executable that prints an N-Triples document of the triples found in the listed Turtle files
+* index.js - exposed module entry point
+* lib/ - additional library files imported by index.js
+* Makefile - Downloads and runs test suite
+* package.json - some metadata about this package
+* README.md - You're looking at it
+* test/*.test.js - Mocha test suite files
+* test/graph-test-lib.js - A generic test for a Graph interface
+* test/TurtleTests/ - Tests from the Turtle test suite are extracted here
+* UNLICENSE - Public Domain dedication
