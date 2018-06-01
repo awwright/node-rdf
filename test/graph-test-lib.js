@@ -129,10 +129,11 @@ module.exports = function GenerateGraphTest(Graph){
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('Letter', '@en')));
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
-			h.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
+			g.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			var len = 0;
 			var matches = g.match(null, rdf.environment.createNamedNode(rdfns('type')), rdf.environment.createNamedNode('http://example.com/Letter'));
-			assert.equal(matches, 1);
+			assert.equal(matches.length, 1);
+			assert.equal(matches.toArray().length, 1);
 			assert(matches instanceof rdf.Graph);
 		});
 		it('merge', function(){
