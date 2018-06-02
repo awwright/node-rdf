@@ -44,7 +44,7 @@ describe('parse', function(){
 			]);
 	});
 	it('parse(_:topic3)', function(){
-		generateRefTest('_:topic3', {rdf$value: "A string.".l()},
+		generateRefTest('_:topic3', {rdf$value: env.createLiteral("A string.")},
 			'_:topic3\n\trdf:value "A string." .',
 			'_:topic3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "A string." .',
 			[ triple('_:topic3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("A string.",null,null))
@@ -58,7 +58,7 @@ describe('parse', function(){
 			]);
 	});
 	it('parse(_:topic5)', function(){
-		generateRefTest('_:topic5', {rdf$value: "2".l()},
+		generateRefTest('_:topic5', {rdf$value: env.createLiteral("2")},
 			'_:topic5\n\trdf:value "2" .',
 			'_:topic5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "2" .',
 			[ triple('_:topic5', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("2"))

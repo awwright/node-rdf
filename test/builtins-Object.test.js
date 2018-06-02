@@ -4,18 +4,59 @@ var env = rdf.environment;
 var util = require('util');
 
 function generateRefTest(subject, topic, n3out, ntout, triplesout){
+	// Setup tests
+	var expectedGraph = new rdf.Graph;
+	expectedGraph.addAll(triplesout);
+
+	// Test interface
 	var t = topic.ref(subject);
 	assert.equal(typeof t.n3, 'function');
 	assert.equal(typeof t.toNT, 'function');
 	assert.equal(typeof t.graphify, 'function');
-	assert.equal(typeof t.toNT, 'function');
-	assert.equal(t.n3(), n3out);
-	assert.equal(t.toNT(), ntout);
+
+	// Run
+	var n3 = t.n3();
+	var NT = t.toNT();
+
+	// test graphify
 	var graph = t.graphify();
-	assert.strictEqual(graph.length, triplesout.length);
-	for(var i=0; i<triplesout.length; i++){
-		var triple = triplesout[i];
-		assert.ok(graph.some(function(v){ return triple.equals(v); }));
+	// Have the data, compare
+	var expectedTriples = expectedGraph.toArray().sort();
+	var outputTriples = graph.toArray().sort();
+	if(!expectedGraph.equals(graph)){
+		assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
+		assert.ok(expectedGraph.equals(graph));
+	}
+	return;
+
+	// test n3
+	assert.equal(n3, n3out);
+
+	// Parse the generated n3 as Turtle
+	var graph = env.createGraph();
+	var parser = new rdf.TurtleParser;
+	parser.parse(n3, undefined, 'http://example.com/', null, graph);
+	// Have the data, compare
+	var expectedTriples = expectedGraph.toArray().sort();
+	var outputTriples = graph.toArray().sort();
+	if(!expectedGraph.equals(graph)){
+		assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
+		assert.ok(expectedGraph.equals(graph));
+	}
+
+	// test toNT
+	assert.equal(NT, ntout);
+
+	// Parse the generated N-Triples
+	var graph = env.createGraph();
+	var parser = new rdf.TurtleParser;
+	parser.parse(NT, undefined, 'http://example.com/', null, graph);
+	// Have the data, compare
+	var expectedTriples = expectedGraph.toArray().sort();
+	var outputTriples = graph.toArray().sort();
+	if(!expectedGraph.equals(graph)){
+		assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
+		assert.ok(expectedGraph.equals(graph));
 	}
 }
 
