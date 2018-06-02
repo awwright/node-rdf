@@ -111,6 +111,8 @@ describe('Profile', function(){
 		assert.equal(profile.resolve('a'), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/a');
 		assert.equal(profile.resolve('b'), 'http://example.org/type');
+		assert.strictEqual(profile.resolve('term'), null);
+		assert.strictEqual(profile.resolve('c:foo'), null);
 	});
 	it("importProfile (overwrite=false)", function(){
 		var profile = new rdf.Profile;
@@ -128,6 +130,8 @@ describe('Profile', function(){
 		assert.equal(profile.resolve('a'), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/a');
 		assert.equal(profile.resolve('b'), 'http://example.org/type');
+		assert.strictEqual(profile.resolve('term'), null);
+		assert.strictEqual(profile.resolve('c:foo'), null);
 	});
 	it("importProfile (overwrite=true)", function(){
 		var profile = new rdf.Profile;
@@ -145,6 +149,8 @@ describe('Profile', function(){
 		assert.equal(profile.resolve('a'), 'http://example.org/type');
 		assert.equal(profile.resolve('fx:a'), 'http://example.org/vocab/a');
 		assert.equal(profile.resolve('b'), 'http://example.org/type');
+		assert.strictEqual(profile.resolve('term'), null);
+		assert.strictEqual(profile.resolve('c:foo'), null);
 	});
 	it("shrink", function(){
 		var profile = new rdf.Profile;
