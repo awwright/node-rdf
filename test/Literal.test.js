@@ -76,6 +76,8 @@ describe('Literal (with builtins)', function(){
 	it("Language instance @en", function(){
 		var t = new rdf.Literal('That Seventies Show', '@en');
 		assert.ok(t instanceof rdf.Literal);
+		assert.equal(t.language, 'en');
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"That Seventies Show"@en');
@@ -89,8 +91,10 @@ describe('Literal (with builtins)', function(){
 		//assert.ok(t.equals('That Seventies Show'));
 	});
 	it("Language instance @fr-be", function(){
-		var t = new rdf.Literal('Cette Série des Années Septante', '@fr-be');
+		var t = new rdf.Literal('Cette Série des Années Septante', 'fr-be');
 		assert.ok(t instanceof rdf.Literal);
+		assert.equal(t.language, 'fr-be');
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
@@ -98,10 +102,14 @@ describe('Literal (with builtins)', function(){
 		assert.ok(t.equals(new rdf.Literal('Cette Série des Années Septante', '@fr-be')));
 		assert.ok(!t.equals(new rdf.Literal('Cette Serie des Annees Septante', '@fr-be')));
 		assert.ok(!t.equals(new rdf.Literal('Cette Série des Années Septante', '@en')));
+
 	});
 	it("Typed instance", function(){
 		var t = new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer');
 		assert.ok(t instanceof rdf.Literal);
+		assert.equal(t.language, undefined);
+		assert.equal(t.datatype, 'http://www.w3.org/2001/XMLSchema#integer');
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/2001/XMLSchema#integer');
 		assert.strictEqual(t.nodeType(), 'TypedLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
@@ -138,10 +146,6 @@ describe('Literal (with builtins)', function(){
 		// TODO probbly should verify the inputs are of the correct range?
 	});
 });
-
-var assert = require('assert');
-var rdf = require('..');
-var rdfenv = rdf.environment;
 
 function testValueOf(literal, type, test){
 	// Literal must be a string
