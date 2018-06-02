@@ -9,6 +9,11 @@ describe('String builtins', function(){
 		rdf.unsetBuiltins();
 	});
 
+	it("String.prototype.profile", function(){
+		var t = "".profile;
+		assert(t instanceof rdf.Profile);
+		assert.strictEqual(t, rdf.environment);
+	});
 	it("String.resolve rdf:type", function(){
 		var t = "rdf:type".resolve();
 		assert.strictEqual(t, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");

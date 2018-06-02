@@ -30,12 +30,12 @@ api.setArrayProperties = require('./lib/Builtins').setArrayProperties;
 api.setBooleanProperties = require('./lib/Builtins').setBooleanProperties;
 api.setDateProperties = require('./lib/Builtins').setDateProperties;
 api.setNumberProperties = require('./lib/Builtins').setNumberProperties;
-api.environment = require('./lib/Builtins').environment;
+api.environment = require('./lib/environment').environment;
 api.setBuiltins = require('./lib/Builtins').setBuiltins;
 api.unsetBuiltins = require('./lib/Builtins').unsetBuiltins;
 api.builtins = require('./lib/Builtins');
 api.parse = function(o, id){
-	return api.ref.call(o, id);
+	return api.builtins.ref.call(o, id);
 }
 
 api.ns = function(ns){
