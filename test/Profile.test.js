@@ -166,6 +166,7 @@ describe('Profile', function(){
 		// File is UTF-8 (probably), but escape sequence UTF-16 surrogate pairs
 		// idk I didn't invent it, man
 		assert.equal(profile.shrink('http://example.com/vocab/dragon/🐲'), '\uD83D\uDC09:\uD83D\uDC32');
+		assert.equal(profile.shrink('http://example.com/vocab/dragon/🐲🐧'), '\uD83D\uDC09:\uD83D\uDC32\uD83D\uDC27');
 		assert.equal(profile.shrink('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'), 'a');
 	});
 });

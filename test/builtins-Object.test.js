@@ -19,13 +19,13 @@ function generateRefTest(subject, topic, n3out, ntout, triplesout){
 	var NT = t.toNT();
 
 	// test graphify
-	var graph = t.graphify();
+	var outputGraph = t.graphify();
 	// Have the data, compare
 	var expectedTriples = expectedGraph.toArray().sort();
-	var outputTriples = graph.toArray().sort();
-	if(!expectedGraph.equals(graph)){
+	var outputTriples = outputGraph.toArray().sort();
+	if(!expectedGraph.equals(outputGraph)){
 		assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
-		assert.ok(expectedGraph.equals(graph));
+		assert(expectedGraph.equals(outputGraph));
 	}
 	return;
 
@@ -33,30 +33,30 @@ function generateRefTest(subject, topic, n3out, ntout, triplesout){
 	assert.equal(n3, n3out);
 
 	// Parse the generated n3 as Turtle
-	var graph = env.createGraph();
+	var outputGraph = env.createGraph();
 	var parser = new rdf.TurtleParser;
-	parser.parse(n3, undefined, 'http://example.com/', null, graph);
+	parser.parse(n3, undefined, 'http://example.com/', null, outputGraph);
 	// Have the data, compare
 	var expectedTriples = expectedGraph.toArray().sort();
-	var outputTriples = graph.toArray().sort();
-	if(!expectedGraph.equals(graph)){
+	var outputTriples = outputGraph.toArray().sort();
+	if(!expectedGraph.equals(outputGraph)){
 		assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
-		assert.ok(expectedGraph.equals(graph));
+		assert(expectedGraph.equals(outputGraph));
 	}
 
 	// test toNT
 	assert.equal(NT, ntout);
 
 	// Parse the generated N-Triples
-	var graph = env.createGraph();
+	var outputGraph = env.createGraph();
 	var parser = new rdf.TurtleParser;
-	parser.parse(NT, undefined, 'http://example.com/', null, graph);
+	parser.parse(NT, undefined, 'http://example.com/', null, outputGraph);
 	// Have the data, compare
 	var expectedTriples = expectedGraph.toArray().sort();
-	var outputTriples = graph.toArray().sort();
-	if(!expectedGraph.equals(graph)){
+	var outputTriples = outputGraph.toArray().sort();
+	if(!expectedGraph.equals(outputGraph)){
 		assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
-		assert.ok(expectedGraph.equals(graph));
+		assert(expectedGraph.equals(outputGraph));
 	}
 }
 
@@ -126,7 +126,7 @@ describe('Object builtins', function(){
 			'dbr:Albert_Einstein dbp:dateOfBirth "1879-03-14"^^xsd:date;\n\tfoaf:depiction <http://en.wikipedia.org/wiki/Image:Albert_Einstein_Head.jpg> .',
 			'<http://dbpedia.org/resource/Albert_Einstein> <http://dbpedia.org/property/dateOfBirth> "1879-03-14T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .\n<http://dbpedia.org/resource/Albert_Einstein> <http://xmlns.com/foaf/0.1/depiction> <http://en.wikipedia.org/wiki/Image:Albert_Einstein_Head.jpg> .',
 			[ env.createTriple("http://dbpedia.org/resource/Albert_Einstein", "http://xmlns.com/foaf/0.1/depiction", 'http://en.wikipedia.org/wiki/Image:Albert_Einstein_Head.jpg')
-			, env.createTriple("http://dbpedia.org/resource/Albert_Einstein", "http://dbpedia.org/property/dateOfBirth", env.createLiteral("1879-03-14",null,'http://www.w3.org/2001/XMLSchema#date'))
+			, env.createTriple("http://dbpedia.org/resource/Albert_Einstein", "http://dbpedia.org/property/dateOfBirth", env.createTypedLiteral("1879-03-14T00:00:00Z",rdf.xsdns('dateTime')))
 			]);
 	});
 });

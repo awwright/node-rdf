@@ -76,7 +76,7 @@ describe('rdf.environment.resolve', function(){
 	});
 	it('createLiteral(value, null, datatype)', function(){
 		var env = new rdf.RDFEnvironment;
-		var t = env.createLiteral('<p>Some Literal</p>', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		var t = env.createLiteral('<p>Some Literal</p>', null, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
 		assert.equal(t.language, undefined);
