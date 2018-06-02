@@ -33,7 +33,7 @@ api.setNumberProperties = require('./lib/Builtins').setNumberProperties;
 api.environment = require('./lib/Builtins').environment;
 api.setBuiltins = require('./lib/Builtins').setBuiltins;
 api.unsetBuiltins = require('./lib/Builtins').unsetBuiltins;
-api.ref = require('./lib/Builtins').ref;
+api.builtins = require('./lib/Builtins');
 api.parse = function(o, id){
 	return api.ref.call(o, id);
 }
