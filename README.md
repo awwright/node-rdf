@@ -1,6 +1,52 @@
-# RDF Interfaces implementation for Node.js
+# RDF Interfaces implementation
 
-An RDF Interfaces implementation in ECMAScript, designed for Node.js, to implement RDF datatypes with Javascript types and provide related APIs and in-memory utilities.
+This package is a set of simple utilities aimed at making it simple to represent RDF data.
+
+RDF can be considered a superset of typical link relationships found on the Web: It allows a collection of directional relationships from some _subject_, with a relationship _predicate_, to some _object_.
+
+On the Web, normally all three are documents. In RDF, the object may also be a literal string containing data; and the subject or object may be an anonymous resource called a _blank node_.
+
+The `NamedNode`, `BlankNode`, and `Literal` objects represent the fundemental types of data that can be found in an RDF Statement. Statements are represented as `Triple`.
+
+RDF doesn't define any representation of a blank nodes, except for the fact it is possible to compare two blank nodes to see if they are the same. In RDF Interfaces, a bnode is uniquely represented as an instance of `BlankNode`. This interface optionally allows a label, this is primarially for debugging, and two instances of BlankNodes with the same label may still represent different blank nodes.
+
+The library also exposes a function to decorate the builtin ECMAScript protoypes with methods.
+
+## Uses
+
+### Use RDF data sources with native data types
+
+Use `Literal#valueOf` to convert between lexical and literal value spaces.
+
+### Use RDF data types as native data types
+
+Use the Builtins functionality.
+
+### Write RDF graphs as native Objects
+
+* call rdf.parse(object, uri) to turn it into a js3Graph
+* With builtins: (object).ref(uri)
+
+js3Graph methods:
+* js3Graph#graphify - same as #toGraph
+* js3Graph#toGraph - returns a Graph instance with the data
+
+### Store RDF statements in memory
+
+Use the provided Graph instance to write logic around RDF data.
+
+### Query information from RDF sources
+
+Use the innovative ResultSet interface to quickly get the data you're looking for.
+
+### Manage documents with RDF data
+
+Use the RDFEnvironment, Profile, TermMap, and ProfileMap interfaces to work with RDF documents that think in terms of CURIEs and Terms.
+
+
+## About
+
+An RDF Interfaces implementation in ECMAScript, primarially designed for Node.js, to implement RDF datatypes with Javascript types and provide related APIs and in-memory utilities.
 
 This implements:
 
@@ -34,6 +80,42 @@ For parsing the IRI and converting to a URI that can be used in an HTTP request,
 ### Graph
 
 An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) that stores triples in three indexes for fast querying.
+
+Graphs in this package are uniquely identified by their instance, and are mutable during execution. Methods with a return value are pure, methods that are mutating have no return value.
+
+#### new Graph
+
+Creates an empty in-memory RDF graph.
+
+#### Graph#add(Triple triple)
+
+Adds a triple to the Graph, if it doesn't already exist.
+
+#### Graph#remove(Triple triple)
+
+Removes the given triple from the Graph if it exists.
+
+#### Graph#removeMatches(subject, predicate, object)
+
+Removes the given triple from the Graph if it exists.
+
+#### Graph#toArray()
+
+Returns an array of Triples currently in the Graph.
+
+#### Graph#some(function callback)
+
+Same behavior as `Array#some`: Evaluates `callback` over each Triple in the Graph, and returns true if the callback returns truthy for any of them.
+
+#### Graph#every(function callback)
+
+Same behavior as `Array#every`: Evaluates `callback` over each Triple in the Graph, and returns true if the callback returns truthy for all of them.
+
+#### Graph#filter(function callback)
+
+Same behavior as `Array#filter`: Evaluates `callback` over each Triple in the Graph, and returns a Graph with the triples that evaluated truthy.
+
+
 
 ### TurtleParser
 
