@@ -47,24 +47,44 @@ describe('String builtins', function(){
 		var t = "_:someBlankNode".resolve();
 		assert.strictEqual(t, '_:someBlankNode');
 	});
-	it("string.n3() <http://slashdot.org/>", function(){
+	it("string.n3()", function(){
 		var t = "http://slashdot.org/".n3();
 		assert.strictEqual(t, '<http://slashdot.org/>');
 	});
-	it('string.l().n3() "PLAINLITERAL"', function(){
+	it("string.toNT()", function(){
+		var t = "http://slashdot.org/".toNT();
+		assert.strictEqual(t, '<http://slashdot.org/>');
+	});
+	it('string.l().n3()', function(){
 		var t = "PLAINLITERAL".l().n3();
 		assert.strictEqual(t, '"PLAINLITERAL"');
 	});
-	it('string.l().n3() "PLAIN LITERAL"', function(){
+	it('string.l().toNT()', function(){
+		var t = "PLAINLITERAL".l().toNT();
+		assert.strictEqual(t, '"PLAINLITERAL"');
+	});
+	it('string.l().n3()', function(){
 		var t = "PLAIN LITERAL WITH A SPACE".l().n3();
 		assert.strictEqual(t, '"PLAIN LITERAL WITH A SPACE"');
 	});
-	it('string.l(en).n3() "English language literal"@en', function(){
+	it('string.l().toNT()', function(){
+		var t = "PLAIN LITERAL WITH A SPACE".l().toNT();
+		assert.strictEqual(t, '"PLAIN LITERAL WITH A SPACE"');
+	});
+	it('string.l(en).n3()', function(){
 		var t = "English language literal".l("en").n3();
 		assert.strictEqual(t, '"English language literal"@en');
 	});
-	it('string.tl(xsd:string).n3() "XSD String"^^<http://www.w3.org/2001/XMLSchema#string>', function(){
+	it('string.l(en).toNT()', function(){
+		var t = "English language literal".l("en").toNT();
+		assert.strictEqual(t, '"English language literal"@en');
+	});
+	it('string.tl(xsd:string).n3()', function(){
 		var t = "XSD String".tl("xsd:string".resolve()).n3();
+		assert.strictEqual(t, '"XSD String"');
+	});
+	it('string.tl(xsd:string).toNT()', function(){
+		var t = "XSD String".tl("xsd:string".resolve()).toNT();
 		assert.strictEqual(t, '"XSD String"^^<http://www.w3.org/2001/XMLSchema#string>');
 	});
 });
