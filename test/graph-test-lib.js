@@ -237,9 +237,11 @@ module.exports = function GenerateGraphTest(Graph){
 			var ga = new Graph;
 			for(var ba = []; ba.length<5; ba.push(new rdf.BlankNode));
 			ga.add(triple('http://example.com/A', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			ga.add(triple('http://example.com/A', rdfsns('label'), rdf.Literal.language('Label', 'en')));
 			var gh = new Graph;
 			for(var bh = []; bh.length<5; bh.push(new rdf.BlankNode));
-			gh.add(triple('http://example.com/B', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			gh.add(triple('http://example.com/B', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class')); // this one is different
+			gh.add(triple('http://example.com/A', rdfsns('label'), rdf.Literal.language('Label', 'en')));
 			assert(!gh.equals(ga));
 		});
 		it('equals (no bnodes positive)', function(){
@@ -247,9 +249,11 @@ module.exports = function GenerateGraphTest(Graph){
 			var ga = new Graph;
 			for(var ba = []; ba.length<5; ba.push(new rdf.BlankNode));
 			ga.add(triple('http://example.com/A', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			ga.add(triple('http://example.com/A', rdfsns('label'), rdf.Literal.language('Label', 'en')));
 			var gh = new Graph;
 			for(var bh = []; bh.length<5; bh.push(new rdf.BlankNode));
 			gh.add(triple('http://example.com/A', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			gh.add(triple('http://example.com/A', rdfsns('label'), rdf.Literal.language('Label', 'en')));
 			assert(gh.equals(ga));
 		});
 	});
