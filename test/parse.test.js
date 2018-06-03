@@ -39,7 +39,7 @@ describe('parse', function(){
 	it('parse(_:topic2)', function(){
 		generateRefTest('_:topic2', {rdf$value: 42},
 			'_:topic2\n\trdf:value 42 .',
-			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#double> .',
+			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#integer> .',
 			[ triple('_:topic2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral('42',null,'http://www.w3.org/2001/XMLSchema#integer'))
 			]);
 	});

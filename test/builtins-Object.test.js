@@ -68,39 +68,47 @@ describe('Object builtins', function(){
 		rdf.unsetBuiltins();
 	});
 
-	it('(_:topic1).ref', function(){
+	it('().ref the a keyword', function(){
 		generateRefTest('_:topic1', {a: 'rdfs:Class'},
 			'_:topic1\n\trdf:type rdfs:Class .',
 			'_:topic1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .',
 			[ env.createTriple('_:topic1', "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", 'http://www.w3.org/2000/01/rdf-schema#Class')
 			]);
 	});
-	it('(_:topic2).ref', function(){
+	it('().ref integer', function(){
+		debugger;
 		generateRefTest('_:topic2', {rdf$value: 42},
 			'_:topic2\n\trdf:value 42 .',
-			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#double> .',
+			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#integer> .',
 			[ env.createTriple('_:topic2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral('42',null,'http://www.w3.org/2001/XMLSchema#integer'))
 			]);
 	});
-	it('(_:topic3).ref', function(){
+	it('().ref decimal', function(){
+		generateRefTest('_:decimal', {rdf$value: 4.4},
+			'_:float\n\trdf:value 4.4 .',
+			'_:float <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#decimal> .',
+			[ env.createTriple('_:float', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral('4.4',null,'http://www.w3.org/2001/XMLSchema#decimal'))
+			]);
+	});
+	it('().ref string', function(){
 		generateRefTest('_:topic3', {rdf$value: "A string.".l()},
 			'_:topic3\n\trdf:value "A string." .',
 			'_:topic3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "A string." .',
-			[ env.createTriple('_:topic3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("A string.",null,null))
+			[ env.createTriple('_:topic3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("A string."))
 			]);
 	});
-	it('(_:topic4).ref', function(){
+	it('().ref string spaces', function(){
 		generateRefTest('_:topic4', {rdf$value: env.createLiteral("A string 2000",null,null)},
 			'_:topic4\n\trdf:value "A string 2000" .',
 			'_:topic4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "A string 2000" .',
 			[ env.createTriple('_:topic4', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("A string 2000"))
 			]);
 	});
-	it('(_:topic5).ref', function(){
+	it('().ref language literal', function(){
 		generateRefTest('_:topic5', {rdf$value: "2".l()},
 			'_:topic5\n\trdf:value "2" .',
 			'_:topic5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "2" .',
-			[ env.createTriple('_:topic5', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("2"))
+			[ env.createTriple('_:topic5', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("The Hobbit", "@en"))
 			]
 		);
 	});
