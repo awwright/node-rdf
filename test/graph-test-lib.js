@@ -136,6 +136,105 @@ module.exports = function GenerateGraphTest(Graph){
 			assert.equal(matches.toArray().length, 1);
 			assert(matches instanceof rdf.Graph);
 		});
+		it('match(iri, iri, iri)', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			var t = graph.match(
+				env.createNamedNode('http://example.com/foo'),
+				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+			);
+			assert.ok(t); // returns empty Graph
+			assert.equal(t.length, 0);
+		});
+		it('match(bnode, iri, bnode)', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			var t = graph.match(
+				env.createNamedNode('http://example.com/foo'),
+				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+			);
+			assert.ok(t); // returns empty Graph
+			assert.equal(t.length, 0);
+		});
+		it('match(iri, iri, literal)', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			var t = graph.match(
+				env.createNamedNode('http://example.com/foo'),
+				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+				env.createLiteral('string!'),
+			);
+			assert.ok(t); // returns empty Graph
+			assert.equal(t.length, 0);
+		});
+		it('match: literal subject throws', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			assert.throws(function(){
+				graph.match(
+					env.createLiteral('string!'),
+					env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+					env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+				);
+			});
+		});
+		it('match: bnode predicate throws', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			assert.throws(function(){
+				graph.match(
+					env.createNamedNode('http://example.com/foo'),
+					env.createBlankNode(),
+					env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+				);
+			});
+		});
+		it('match: literal predicate throws', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			assert.throws(function(){
+				graph.match(
+					env.createNamedNode('http://example.com/foo'),
+					env.createLiteral('string!'),
+					env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+				);
+			});
+		});
+		it('match: variable subject throws', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			assert.throws(function(){
+				graph.match(
+					new rdf.Variable('s'),
+					env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+					env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+				);
+			});
+		});
+		it('match: variable predicate throws', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			assert.throws(function(){
+				graph.match(
+					env.createNamedNode('http://example.com/foo'),
+					new rdf.Variable('p'),
+					env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+				);
+			});
+		});
+		it('match: variable object throws', function(){
+			var env = new rdf.RDFEnvironment;
+			var graph = new Graph;
+			assert.throws(function(){
+				graph.match(
+					env.createNamedNode('http://example.com/foo'),
+					env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+					new rdf.Variable('o'),
+				);
+			});
+		});
 		it('match (NamedNode)', function(){
 			var g = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
