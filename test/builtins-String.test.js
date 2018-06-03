@@ -105,6 +105,6 @@ describe('String builtins', function(){
 	});
 	it('string.tl(xsd:string).toNT()', function(){
 		var t = "XSD String".tl("xsd:string".resolve()).toNT();
-		assert.strictEqual(t, '"XSD String"^^<http://www.w3.org/2001/XMLSchema#string>');
+		assert.strictEqual(t, '"XSD String"');
 	});
 });
