@@ -13,7 +13,7 @@ var manifestGraph = env.createGraph();
 var manifestParse = new TurtleParser;
 manifestParse.parse(manifestData, undefined, manifestBase, null, manifestGraph);
 
-var manifest = manifestGraph.match(manifestBase, m$('entries')).toArray();
+var manifest = manifestGraph.match(manifestBase, m$('entries'), null).toArray();
 var manifestTests = manifestGraph.getCollection(manifest[0].object);
 
 
