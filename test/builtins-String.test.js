@@ -31,13 +31,33 @@ describe('String builtins', function(){
 		assert.ok("unknownprefixfoo2:bar".equals(t));
 	});
 	it("String.resolve defined CURIE", function(){
+		assert.strictEqual("unknownprefixfoo2:answer".resolve(), 'unknownprefixfoo2:answer');
 		rdf.environment.setPrefix("unknownprefixfoo2", "http://example.com/2/ex/42/");
 		var t = "unknownprefixfoo2:answer".resolve();
 		assert.strictEqual(t, "http://example.com/2/ex/42/answer");
 		assert.strictEqual(t.valueOf(), "http://example.com/2/ex/42/answer");
 		assert.ok("http://example.com/2/ex/42/answer".equals(t));
 		rdf.environment.setPrefix("unknownprefixfoo2", null);
-		delete rdf.environment.prefixes['unknownprefixfoo2'];
+		assert.strictEqual("unknownprefixfoo2:answer".resolve(), 'unknownprefixfoo2:answer');
+	});
+	it("String.resolve defined term", function(){
+		assert.strictEqual("term2".resolve(), 'term2');
+		rdf.environment.setTerm("term2", "http://example.com/2/ex/42");
+		var t = "term2".resolve();
+		assert.strictEqual(t, "http://example.com/2/ex/42");
+		//assert.strictEqual(t.valueOf(), "http://example.com/2/ex/42");
+		//assert.ok("http://example.com/2/ex/42".equals(t));
+		rdf.environment.setTerm("term2", null);
+		assert.strictEqual("term2".resolve(), 'term2');
+	});
+	it("String.resolve http: URI", function(){
+		assert.strictEqual("http://example.com/foo".resolve(), 'http://example.com/foo');
+	});
+	it("String.resolve https: URI", function(){
+		assert.strictEqual("https://example.com/foo".resolve(), 'https://example.com/foo');
+	});
+	it("String.resolve urn:uuid: URI", function(){
+		assert.strictEqual("urn:uuid:76E923E9-67CD-47AC-AB72-1C339A31CE57".resolve(), 'urn:uuid:76E923E9-67CD-47AC-AB72-1C339A31CE57');
 	});
 	it("string.resolve() resolved URI", function(){
 		var t = "http://slashdot.org/".resolve();
