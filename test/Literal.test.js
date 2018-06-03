@@ -45,6 +45,8 @@ describe('Literal', function(){
 		assert.ok(t instanceof rdf.Literal);
 		assert.strictEqual(t.nodeType(), 'TypedLiteral');
 		assert.strictEqual(t.termType, 'Literal');
+		assert.equal(t.datatype, 'http://www.w3.org/2001/XMLSchema#integer');
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/2001/XMLSchema#integer');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
 		//assert.strictEqual(t.n3(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
@@ -58,9 +60,44 @@ describe('Literal', function(){
 		assert.ok(t instanceof rdf.Literal);
 		assert.strictEqual(t.nodeType(), 'TypedLiteral');
 		assert.strictEqual(t.termType, 'Literal');
+		assert.equal(t.datatype, 'http://www.w3.org/2001/XMLSchema#integer');
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/2001/XMLSchema#integer');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
 		//assert.strictEqual(t.n3(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
+		assert.ok(t.equals('123'));
+		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
+		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
+		assert.ok(!t.equals('1'));
+	});
+	it("Typed instance (string) (xsd:string)", function(){
+		var t = new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string');
+		assert.ok(t instanceof rdf.Literal);
+		// Leave this behavior undefined for now, consider this deprecated anyways
+		//assert.strictEqual(t.nodeType(), 'TypedLiteral');
+		assert.strictEqual(t.termType, 'Literal');
+		assert.equal(t.datatype, undefined);
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/2001/XMLSchema#string');
+		assert.strictEqual(t.toNT(), '"123"');
+		//assert.strictEqual(t.n3(), '123');
+		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
+		assert.ok(t.equals(new rdf.Literal('123')));
+		assert.ok(t.equals('123'));
+		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
+		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
+		assert.ok(!t.equals('1'));
+	});
+	it("Typed instance (NamedNode) (xsd:string)", function(){
+		var t = new rdf.Literal('123', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#string'));
+		assert.ok(t instanceof rdf.Literal);
+		//assert.strictEqual(t.nodeType(), 'TypedLiteral');
+		assert.strictEqual(t.termType, 'Literal');
+		assert.equal(t.datatype, undefined);
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/2001/XMLSchema#string');
+		assert.strictEqual(t.toNT(), '"123"');
+		//assert.strictEqual(t.n3(), '123');
+		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
+		assert.ok(t.equals(new rdf.Literal('123')));
 		assert.ok(t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
