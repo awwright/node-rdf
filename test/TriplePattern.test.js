@@ -1,103 +1,85 @@
 var assert = require('assert');
 var rdf = require('..');
 
-describe('Triple', function(){
-	it('Triple(iri, iri, iri)', function(){
+describe('TriplePattern', function(){
+	it('TriplePattern(iri, iri, iri)', function(){
 		var env = new rdf.RDFEnvironment;
-		var t = new rdf.Triple(
+		var t = new rdf.TriplePattern(
 			env.createNamedNode('http://example.com/foo'),
 			env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
 			env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
 		);
 		assert.ok(t);
 	});
-	it('Triple(bnode, iri, bnode)', function(){
+	it('TriplePattern(variable, variable, variable)', function(){
 		var env = new rdf.RDFEnvironment;
-		var t = new rdf.Triple(
+		var t = new rdf.TriplePattern(
+			new rdf.Variable('s'),
+			new rdf.Variable('p'),
+			new rdf.Variable('o'),
+		);
+		assert.ok(t);
+	});
+	it('TriplePattern(bnode, iri, bnode)', function(){
+		var env = new rdf.RDFEnvironment;
+		var t = new rdf.TriplePattern(
 			env.createNamedNode('http://example.com/foo'),
 			env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
 			env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
 		);
 		assert.ok(t);
 	});
-	it('Triple(iri, iri, literal)', function(){
+	it('TriplePattern(iri, iri, literal)', function(){
 		var env = new rdf.RDFEnvironment;
-		var t = new rdf.Triple(
+		var t = new rdf.TriplePattern(
 			env.createNamedNode('http://example.com/foo'),
 			env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
 			env.createLiteral('string!'),
 		);
 		assert.ok(t);
 	});
-	it('Triple: literal subject throws', function(){
+	it('TriplePattern: literal subject throws', function(){
 		var env = new rdf.RDFEnvironment;
 		assert.throws(function(){
-			new rdf.Triple(
+			new rdf.TriplePattern(
 				env.createLiteral('string!'),
 				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
 				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
 			);
 		});
 	});
-	it('Triple: bnode predicate throws', function(){
+	it('TriplePattern: bnode predicate throws', function(){
 		var env = new rdf.RDFEnvironment;
 		assert.throws(function(){
-			new rdf.Triple(
+			new rdf.TriplePattern(
 				env.createNamedNode('http://example.com/foo'),
 				env.createBlankNode(),
 				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
 			);
 		});
 	});
-	it('Triple: literal predicate throws', function(){
+	it('TriplePattern: literal predicate throws', function(){
 		var env = new rdf.RDFEnvironment;
 		assert.throws(function(){
-			new rdf.Triple(
+			new rdf.TriplePattern(
 				env.createNamedNode('http://example.com/foo'),
 				env.createLiteral('string!'),
 				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
 			);
 		});
 	});
-	it('Triple: variable subject throws', function(){
-		var env = new rdf.RDFEnvironment;
-		assert.throws(function(){
-			new rdf.Triple(
-				new rdf.Variable('s'),
-				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
-			);
-		});
-	});
-	it('Triple: variable predicate throws', function(){
-		var env = new rdf.RDFEnvironment;
-		assert.throws(function(){
-			new rdf.Triple(
-				env.createNamedNode('http://example.com/foo'),
-				new rdf.Variable('p'),
-				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
-			);
-		});
-	});
-	it('Triple: variable object throws', function(){
-		var env = new rdf.RDFEnvironment;
-		assert.throws(function(){
-			new rdf.Triple(
-				env.createNamedNode('http://example.com/foo'),
-				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-				new rdf.Variable('o'),
-			);
-		});
-	});
 	it("toString", function(){
-		var nn = new rdf.NamedNode('http://example.com/');
-		var t = new rdf.Triple(nn, nn, nn);
-		assert.strictEqual(t.toString(), '<http://example.com/> <http://example.com/> <http://example.com/> .');
+		var t = new rdf.TriplePattern(
+			new rdf.Variable('s'),
+			new rdf.Variable('p'),
+			new rdf.Variable('o'),
+		);
+		assert.strictEqual(t.toString(), '?s ?p ?o .');
 	});
 	it("equals", function(){
 		var nn = new rdf.NamedNode('http://example.com/');
-		var t = new rdf.Triple(nn, nn, nn);
+		var t = new rdf.TriplePattern(nn, nn, nn);
 		var nn2 = new rdf.NamedNode('http://example.com/');
-		assert.ok(t.equals(new rdf.Triple(nn2, nn2, nn2)));
+		assert.ok(t.equals(new rdf.TriplePattern(nn2, nn2, nn2)));
 	});
 });

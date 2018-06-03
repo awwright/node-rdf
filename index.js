@@ -14,8 +14,8 @@ api.NamedNode = require("./lib/RDFNode.js").NamedNode;
 api.BlankNode = require("./lib/RDFNode.js").BlankNode;
 api.Literal = require("./lib/RDFNode.js").Literal;
 
-api.TriplePattern = require('./lib/RDDFNode.js').TriplePattern;
-api.Variable = require('./lib/RDDFNode.js').Variable;
+api.TriplePattern = require('./lib/RDFNode.js').TriplePattern;
+api.Variable = require('./lib/RDFNode.js').Variable;
 
 api.Profile = require('./lib/Profile.js').Profile;
 api.TermMap = require('./lib/Profile.js').TermMap;
