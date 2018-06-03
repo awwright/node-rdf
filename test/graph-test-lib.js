@@ -259,7 +259,7 @@ module.exports = function GenerateGraphTest(Graph){
 			var matches = g.match(null, null, rdf.environment.createLiteral('http://www.w3.org/2000/01/rdf-schema#Class'));
 			assert.equal(matches.length, 1);
 			assert.equal(matches.toArray().length, 1);
-			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class')));
+			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class'))));
 		});
 		it('match (LanguageLiteral)', function(){
 			var g = new Graph;
@@ -272,7 +272,7 @@ module.exports = function GenerateGraphTest(Graph){
 			var matches = g.match(null, null, rdf.environment.createLiteral('http://www.w3.org/2000/01/rdf-schema#Class', '@en'));
 			assert.equal(matches.length, 1);
 			assert.equal(matches.toArray().length, 1);
-			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class')));
+			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en'))));
 		});
 		it('match (xsd:string)', function(){
 			var g = new Graph;
@@ -285,7 +285,7 @@ module.exports = function GenerateGraphTest(Graph){
 			var matches = g.match(null, null, rdf.environment.createLiteral('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string'));
 			assert.equal(matches.length, 1);
 			assert.equal(matches.toArray().length, 1);
-			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfns('type'), rdf.environment.createLiteral('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string'))));
+			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfsns('label'), rdf.environment.createLiteral('http://www.w3.org/2000/01/rdf-schema#Class'))));
 		});
 		it('match (xsd:anyURI)', function(){
 			var g = new Graph;
@@ -298,7 +298,7 @@ module.exports = function GenerateGraphTest(Graph){
 			var matches = g.match(null, null, rdf.environment.createLiteral('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI'));
 			assert.equal(matches.length, 1);
 			assert.equal(matches.toArray().length, 1);
-			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class')));
+			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI'))));
 		});
 		it('merge', function(){
 			var g = new Graph;
