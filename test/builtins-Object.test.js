@@ -76,7 +76,6 @@ describe('Object builtins', function(){
 			]);
 	});
 	it('().ref integer', function(){
-		debugger;
 		generateRefTest('_:topic2', {rdf$value: 42},
 			'_:topic2\n\trdf:value 42 .',
 			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#integer> .',
@@ -105,9 +104,9 @@ describe('Object builtins', function(){
 			]);
 	});
 	it('().ref language literal', function(){
-		generateRefTest('_:topic5', {rdf$value: "2".l()},
-			'_:topic5\n\trdf:value "2" .',
-			'_:topic5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "2" .',
+		generateRefTest('_:topic5', {rdf$value: "The Hobbit".l('en')},
+			'_:topic5\n\trdf:value "The Hobbit"@en .',
+			'_:topic5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "The Hobbit"@en .',
 			[ env.createTriple('_:topic5', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral("The Hobbit", "@en"))
 			]
 		);
@@ -119,6 +118,18 @@ describe('Object builtins', function(){
 			'_:topic6\n\trdf:value _:b1 .',
 			'_:topic6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:b1 .',
 			[ env.createTriple('_:topic6', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:b1')
+			]);
+	});
+	it('(_:topic7).ref objects are unlabeled blank nodes', function(){
+		// Normally, use env.createBlankNode
+		// For deterministic tests, we use BlankNode with a name
+		var b1 = new rdf.BlankNode('_:b1');
+		var b2 = new rdf.BlankNode('_:b2');
+		generateRefTest('_:topic6', {rdf$value: {rdf$value: b2}},
+			'_:topic6\n\trdf:value _:b1 .',
+			'_:topic6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:b1 .',
+			[ env.createTriple('_:topic6', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b1)
+			, env.createTriple(b1, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b2)
 			]);
 	});
 	it('(dbr:Albert_Einstein).ref', function(){

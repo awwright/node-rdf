@@ -36,11 +36,18 @@ describe('parse', function(){
 			[ triple('_:topic1', "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", 'http://www.w3.org/2000/01/rdf-schema#Class')
 			]);
 	});
-	it('parse(_:topic2)', function(){
+	it('parse(_:integer)', function(){
 		generateRefTest('_:topic2', {rdf$value: 42},
 			'_:topic2\n\trdf:value 42 .',
 			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "42"^^<http://www.w3.org/2001/XMLSchema#integer> .',
-			[ triple('_:topic2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createLiteral('42',null,'http://www.w3.org/2001/XMLSchema#integer'))
+			[ triple('_:topic2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createTypedLiteral('42', 'http://www.w3.org/2001/XMLSchema#integer'))
+			]);
+	});
+	it('parse(_:decimal)', function(){
+		generateRefTest('_:topic2', {rdf$value: 4.4},
+			'_:topic2\n\trdf:value 4.4 .',
+			'_:topic2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "4.4"^^<http://www.w3.org/2001/XMLSchema#decimal> .',
+			[ triple('_:topic2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', env.createTypedLiteral('4.4', 'http://www.w3.org/2001/XMLSchema#decimal'))
 			]);
 	});
 	it('parse(_:topic3)', function(){
