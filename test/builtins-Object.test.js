@@ -125,9 +125,9 @@ describe('Object builtins', function(){
 		// For deterministic tests, we use BlankNode with a name
 		var b1 = new rdf.BlankNode('_:b1');
 		var b2 = new rdf.BlankNode('_:b2');
-		generateRefTest('_:topic6', {rdf$value: {rdf$value: b2}},
-			'_:topic6\n\trdf:value _:b1 .',
-			'_:topic6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:b1 .',
+		generateRefTest('_:topic7', {rdf$value: {rdf$value: b2}},
+			'_:topic7\n\trdf:value _:b1 .',
+			'_:topic7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:b1 .',
 			[ env.createTriple('_:topic6', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b1)
 			, env.createTriple(b1, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b2)
 			]);
