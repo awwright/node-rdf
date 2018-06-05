@@ -151,6 +151,18 @@ describe('Object builtins', function(){
 			[ triple('_:topic6', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:target')
 			]);
 	});
+	describe('(_:mval).ref multiple values', function(){
+		// Normally, use env.createBlankNode
+		// For deterministic tests, we use BlankNode with a name
+		generateRefTest('_:topic6',
+			function(){
+				return {rdf$value: new rdf.BlankNode('_:target')};
+			},
+			'_:topic6 rdf:value _:target .',
+			'_:topic6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:target .',
+			[ triple('_:topic6', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:target')
+			]);
+	});
 	describe('(_:topic7).ref objects are unlabeled blank nodes', function(){
 		var b1 = new rdf.BlankNode('_:b1');
 		var b2 = new rdf.BlankNode('_:target');
