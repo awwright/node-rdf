@@ -148,14 +148,14 @@ describe('parse', function(){
 		// Normally, use env.createBlankNode
 		// For deterministic tests, we use BlankNode with a name
 		generateRefTest('_:mval',
-			function(){
-				return {rdfs$label: [
+			function(){ return {
+				rdfs$label: [
 					env.createLiteral("Harry Potter and the Philosopher's Stone", '@en'),
 					env.createLiteral("Harry Potter and the Sorcerer's Stone", "@en-US"),
-				]};
-			},
-			'_:mval rdf:value _:target .',
-			'_:mval <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:target .',
+				],
+			}; },
+			'_:mval\n\trdfs:label "Harry Potter and the Philosopher\'s Stone"@en, "Harry Potter and the Sorcerer\'s Stone"@en-US .',
+			null,
 			[ triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Philosopher's Stone", '@en'))
 			, triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Sorcerer's Stone", '@en-US'))
 			]);
