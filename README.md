@@ -30,20 +30,6 @@ namednode.equals(literal)
 /**/ false
 ```
 
-### Simplify RDF namespaces
-
-Use the `ns` function to create a URI factory.
-
-Use the builtin `rdfns`, `rdfsns`, and `xsdns` functions too.
-
-```javascript
-var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
-foaf('knows')
-/**/ 'http://xmlns.com/foaf/0.1/knows'
-rdf.rdfsns('label')
-/**/ 'http://www.w3.org/2000/01/rdf-schema#label'
-```
-
 ### Represent RDF statements
 
 A `Triple` instance represents an edge in an RDF graph (also known as a Statement).
@@ -71,9 +57,23 @@ results.length
 results.forEach(function(triple){ console.log(triple); });
 ```
 
+### Simplify RDF namespaces
+
+Use the `ns` function to create a URI factory.
+
+Use the builtin `rdfns`, `rdfsns`, and `xsdns` functions too.
+
+```javascript
+var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+foaf('knows')
+/**/ 'http://xmlns.com/foaf/0.1/knows'
+rdf.rdfsns('label')
+/**/ 'http://www.w3.org/2000/01/rdf-schema#label'
+```
+
 ### Query information from RDF sources
 
-Use the ResultSet interface to quickly drill into the specific data you want
+Use the ResultSet interface to quickly drill into the specific data you want:
 
 ```javascript
 var g = e.createGraph();
@@ -98,6 +98,7 @@ var friendNames = g.reference(e.createNamedNode('http://example.com/~a'))
 	.rel(e.createNamedNode(foaf('knows')))
 	.rel(e.createNamedNode(foaf('givenname')))
 	.toArray()
+	.sort()
 	.join(', ');
 
 friendNames
@@ -110,16 +111,19 @@ Use `Literal#valueOf` to convert from lexical data space to native value space:
 
 ```javascript
 rdf.environment.createLiteral('2018-06-04T23:11:25Z', rdf.xsdns('date')).valueOf()
-// 2018-06-04T23:11:25.000Z
+/**/ Date("2018-06-04T23:11:25.000Z")
 
-rdf.environment.createLiteral('24.44', rdf.xsdns('decimal')).valueOf()
-// 24.440
+rdf.environment.createLiteral('24.440', rdf.xsdns('decimal')).valueOf()
+/**/ 24.44
+
+rdf.environment.createLiteral('1', rdf.xsdns('boolean')).valueOf()
+/**/ true
 
 g.add(e.createTriple(e.createNamedNode('http://example.com/~a'), e.createNamedNode(foaf('age')), e.createLiteral('26', rdf.xsdns('integer'))));
 g.add(e.createTriple(e.createNamedNode('http://example.com/~b'), e.createNamedNode(foaf('age')), e.createLiteral('36', rdf.xsdns('integer'))));
 g.add(e.createTriple(e.createNamedNode('http://example.com/~c'), e.createNamedNode(foaf('age')), e.createLiteral('46', rdf.xsdns('integer'))));
 g.add(e.createTriple(e.createNamedNode('http://example.com/~d'), e.createNamedNode(foaf('age')), e.createLiteral('56', rdf.xsdns('integer'))));
-// sum the ages of everyone Alice knows
+// sum the ages of everyone that Alice knows
 var friendAge = g.reference(e.createNamedNode('http://example.com/~a'))
 	.rel(e.createNamedNode(foaf('knows')))
 	.rel(e.createNamedNode(foaf('age')))
@@ -163,7 +167,7 @@ console.log(document.n3());
 This produces:
 
 ```
-[
+<http://webr3.org/#me>
 	rdf:type foaf:Person;
 	foaf:name "Nathan";
 	foaf:age 37;
@@ -173,8 +177,7 @@ This produces:
 		foaf:homepage <http://twitter.com/webr3>
 		];
 	foaf:nick "webr3", "nath";
-	foaf:homepage <http://webr3.org/>
-	]
+	foaf:homepage <http://webr3.org/> .
 ```
 
 Use the `graphify` method to produce an `rdf.Graph` from the data:
