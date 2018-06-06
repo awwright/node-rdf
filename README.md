@@ -12,7 +12,7 @@ RDF doesn't define any representation of a blank nodes, except for the fact it i
 
 The library also exposes a function to decorate the builtin ECMAScript protoypes with methods.
 
-## Uses
+## Features
 
 ### Represent RDF nodes
 
@@ -245,9 +245,43 @@ rdf.unsetBuiltins();
 
 ### Native support for RDF1.1 semantics
 
-`Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString.
+The domains of the functions ensure constistency with all the other applications found in the RDF universe.
 
-The RDF1.1 datatype is available through the `Literal#datatypeIRI` property.
+`Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString. The RDF1.1 datatype is available through the `Literal#datatypeIRI` property.
+
+```
+var literal = env.createLiteral('Foo');
+literal.datatype
+/**/ undefined
+literal.datatypeIRI
+/**/ 'http://www.w3.org/2001/XMLSchema#string'
+
+var literal = env.createLiteral('Foo', '@en');
+literal.datatype
+/**/ undefined
+literal.datatypeIRI
+/**/ 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString'
+
+var literal = env.createLiteral('Foo', rdf.xsdns('string'));
+literal.datatype
+/**/ undefined
+literal.datatypeIRI
+/**/ 'http://www.w3.org/2001/XMLSchema#string'
+```
+
+The data model is enforced in the domain of each of the functions; `Triple` doesn't allow bnodes as predicates, for example:
+
+```javascript
+env.createTriple(env.createBlankNode(), env.createBlankNode(), env.createBlankNode());
+# Error: predicate must be a NamedNode
+#     at new Triple (rdf/lib/RDFNode.js)
+#     at RDFEnvironment.exports.RDFEnvironment.createTriple (rdf/lib/RDFEnvironment.js)
+#     at handleRequest (index.js)
+```
+
+### Public Domain unlicensed
+
+Use this library in whatever application you want! Give credit when you do so, or don't (but preferably the former). Use it to take over the world, or don't (but preferably the latter).
 
 
 ## About
