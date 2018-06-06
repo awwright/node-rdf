@@ -14,34 +14,97 @@ The library also exposes a function to decorate the builtin ECMAScript protoypes
 
 ## Uses
 
+### Query information from RDF sources
+
+Use the ResultSet interface to quickly get the data you're looking for.
+
 ### Use RDF data sources with native data types
 
-Use `Literal#valueOf` to convert between lexical and literal value spaces.
+Use `Literal#valueOf` to convert from lexical data space to native value space:
 
-### Use RDF data types as native data types
+```
+rdf.environment.createLiteral('2018-06-04T23:11:25.944Z', rdf.xsdns('date')).valueOf()
+// [object Date]
+```
 
-Use the Builtins functionality.
+```
+rdf.environment.createLiteral('24.440', rdf.xsdns('decimal')).valueOf()
+// 24.440
+```
 
-### Write RDF graphs as native Objects
+### Compose RDF graphs as native Objects
 
-* call rdf.parse(object, uri) to turn it into a js3Graph
-* With builtins: (object).ref(uri)
+Use the `rdf.parse` function to cast a native object into a graph:
 
-js3Graph methods:
-* js3Graph#graphify - same as #toGraph
-* js3Graph#toGraph - returns a Graph instance with the data
+```
+var rdf = require('rdf');
+var env = rdf.environment;
+var document = rdf.parse({
+	'@id': 'http://webr3.org/#me',
+	'@context': {
+		'@vocab': 'http://xmlns.com/foaf/0.1/',
+		'dbr': 'http://dbpedia.org/resource/',
+		'dbp': 'http://dbpedia.org/property/',
+		'foaf': 'http://xmlns.com/foaf/0.1/',
+	},
+	a: 'foaf:Person', // a CURIE
+	foaf$name: env.createLiteral('Nathan'),                                       // a String, and an RDF Plain Literal
+	foaf$age: new Date().getFullYear() - 1981,                     // a Number, and a Typed Literal with the type xsd:integer
+	foaf$holdsAccount: {                                           // an Object, with a BlankNode reference for the .id
+		label: rdf.environment.createLiteral("Nathan's twitter account", 'en'), // a Literal
+		accountName: env.createLiteral('webr3'),                                   // noticed that you don't need the prefixes yet?
+		homepage: 'http://twitter.com/webr3'
+	},
+	foaf$nick: [env.createLiteral('webr3'), env.createLiteral('nath')],                                  // an Array, also a list of values, like in turtle and n3
+	foaf$homepage: 'http://webr3.org/',                             // A full IRI
+});
+console.log(document.n3());
+```
+
+This produces:
+
+```
+[
+	rdf:type foaf:Person;
+	foaf:name "Nathan";
+	foaf:age 37;
+	foaf:holdsAccount [
+		foaf:label "Nathan's twitter account"@en;
+		foaf:accountName "webr3";
+		foaf:homepage <http://twitter.com/webr3>
+		];
+	foaf:nick "webr3", "nath";
+	foaf:homepage <http://webr3.org/>
+	]
+```
+
+Use the `graphify` method to produce an `rdf.Graph` from the data:
+
+```
+var graph = document.graphify();
+graph.forEach(function(triple){ console.log(triple.toString()); });
+```
 
 ### Store RDF statements in memory
 
 Use the provided Graph instance to write logic around RDF data.
 
-### Query information from RDF sources
-
-Use the innovative ResultSet interface to quickly get the data you're looking for.
 
 ### Manage documents with RDF data
 
 Use the RDFEnvironment, Profile, TermMap, and ProfileMap interfaces to work with RDF documents that think in terms of CURIEs and Terms.
+
+
+### Use RDF data types as native data types
+
+Use the Builtins functionality.
+
+
+### Native support for RDF1.1 semantics
+
+`Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString.
+
+The RDF1.1 datatype is available through the `Literal#datatypeIRI` property.
 
 
 ## About
