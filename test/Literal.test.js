@@ -7,6 +7,8 @@ describe('Literal', function(){
 		assert.ok(t instanceof rdf.Literal);
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
+		assert.strictEqual(t.datatype, undefined);
+		assert.strictEqual(t.datatypeIRI, 'http://www.w3.org/2001/XMLSchema#string');
 		assert.strictEqual(t.toNT(), '"A String"');
 		assert.strictEqual(t.n3(), '"A String"');
 		assert.strictEqual(t.interfaceName, 'Literal'); // 2012 Note variant
@@ -17,6 +19,8 @@ describe('Literal', function(){
 		assert.ok(t instanceof rdf.Literal);
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
+		assert.strictEqual(t.datatype, undefined);
+		assert.strictEqual(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.toNT(), '"That Seventies Show"@en');
 		//assert.strictEqual(t.n3(), '123');
 		// "If tocompare is an instance of RDFNode then this method returns true if an only if all attributes on the two interfaces are equivalent."
@@ -32,6 +36,8 @@ describe('Literal', function(){
 		assert.ok(t instanceof rdf.Literal);
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
+		assert.strictEqual(t.datatype, undefined);
+		assert.strictEqual(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.toNT(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
 		//assert.strictEqual(t.n3(), '123');
 		assert.ok(t.equals(new rdf.Literal('Cette Série des Années Septante', '@fr-be')));
@@ -85,6 +91,22 @@ describe('Literal', function(){
 		assert.ok(t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
+		assert.ok(!t.equals('1'));
+	});
+	it("Typed instance (string) (rdf:langString)", function(){
+		var t = new rdf.Literal('123', '@en', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
+		assert.ok(t instanceof rdf.Literal);
+		// Leave this behavior undefined for now, consider this deprecated anyways
+		//assert.strictEqual(t.nodeType(), 'TypedLiteral');
+		assert.strictEqual(t.termType, 'Literal');
+		assert.equal(t.datatype, undefined);
+		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
+		assert.strictEqual(t.toNT(), '"123"@en');
+		//assert.strictEqual(t.n3(), '123');
+		assert.ok(t.equals('123'));
+		assert.ok(t.equals(new rdf.Literal('123', '@en')));
+		assert.ok(!t.equals(new rdf.Literal('123')));
+		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
 		assert.ok(!t.equals('1'));
 	});
 	it("Typed instance (NamedNode) (xsd:string)", function(){
