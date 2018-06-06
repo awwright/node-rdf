@@ -181,7 +181,7 @@ describe('parse', function(){
 			, triple('_:a', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Sorcerer's Stone", '@en-US'))
 			]);
 	});
-	describe('(_:topic7).ref objects are unlabeled blank nodes', function(){
+	describe('parse(_:topic7) objects are unlabeled blank nodes', function(){
 		var b1 = new rdf.BlankNode('_:b1');
 		var b2 = new rdf.BlankNode('_:target');
 		generateRefTest('_:topic7',
@@ -192,6 +192,35 @@ describe('parse', function(){
 			'_:topic7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:bn .\n_:bn <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> _:target .',
 			[ triple('_:topic7', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b1)
 			, triple(b1, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b2)
+			]);
+	});
+	describe('parse(_:set) lists with @set', function(){
+		var b1 = new rdf.BlankNode('_:b1');
+		var b2 = new rdf.BlankNode('_:target');
+		generateRefTest('_:set',
+			function(){
+				return {rdf$value: {'@set': ['http://example.com/1', 'http://example.com/2']}};
+			},
+			'_:set rdf:value <http://example.com/1>, <http://example.com/2> .',
+			'_:set <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.com/1> .\n_:set <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.com/2> .',
+			[ triple('_:set', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', 'http://example.com/1')
+			, triple('_:set', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', 'http://example.com/2')
+			]);
+	});
+	describe('parse(_:list) collections with @list', function(){
+		var b1 = new rdf.BlankNode('_:b1');
+		var b2 = new rdf.BlankNode('_:target');
+		generateRefTest('_:list',
+			function(){
+				return {rdf$value: {'@list': ['http://example.com/1', 'http://example.com/2']}};
+			},
+			'_:list rdf:value ( <http://example.com/1> <http://example.com/2> ) .',
+			null,
+			[ triple('_:list', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:1')
+			, triple('_:1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/1')
+			, triple('_:1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:2')
+			, triple('_:2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/2')
+			, triple('_:2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')
 			]);
 	});
 	describe('parse(dbr:Albert_Einstein)', function(){

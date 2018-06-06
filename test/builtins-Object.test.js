@@ -201,6 +201,35 @@ describe('Object builtins', function(){
 			, triple(b1, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', b2)
 			]);
 	});
+	describe('(_:set).ref lists with @set', function(){
+		var b1 = new rdf.BlankNode('_:b1');
+		var b2 = new rdf.BlankNode('_:target');
+		generateRefTest('_:set',
+			function(){
+				return {rdf$value: {'@set': ['http://example.com/1', 'http://example.com/2']}};
+			},
+			'_:set rdf:value <http://example.com/1>, <http://example.com/2> .',
+			'_:set <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.com/1> .\n_:set <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> <http://example.com/2> .',
+			[ triple('_:set', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', 'http://example.com/1')
+			, triple('_:set', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', 'http://example.com/2')
+			]);
+	});
+	describe('(_:list).ref collections with @list', function(){
+		var b1 = new rdf.BlankNode('_:b1');
+		var b2 = new rdf.BlankNode('_:target');
+		generateRefTest('_:list',
+			function(){
+				return {rdf$value: {'@list': ['http://example.com/1', 'http://example.com/2']}};
+			},
+			'_:list rdf:value ( <http://example.com/1> <http://example.com/2> ) .',
+			null,
+			[ triple('_:list', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#value', '_:1')
+			, triple('_:1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/1')
+			, triple('_:1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:2')
+			, triple('_:2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.com/2')
+			, triple('_:2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil')
+			]);
+	});
 	describe('(dbr:Albert_Einstein).ref', function(){
 		/*
 			dbp:dateOfBirth "1879-03-14"^^xsd:date ; # we only produce xsd:dateTime
