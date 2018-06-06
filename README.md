@@ -57,6 +57,24 @@ results.length
 results.forEach(function(triple){ console.log(triple); });
 ```
 
+### Compare nodes, triples, and graphs for equality
+
+Use the `NamedNode#equals`, `BlankNode#equals`, `Literal#equals`, `Triple#equals`, and `Graph#equals` methods to compare equality.
+
+Literals verify codepoint, datatype, and language tag equality. Triples verify equality of each three nodes.
+
+Graphs test for isomorphism, that there's a mapping that can map the blank nodes in one graph to the blank nodes in the other one-to-one. If so isomorphic, it returns the mapping.
+
+```javascript
+var graph2 = rdf.environment.createGraph();
+graph2.add(statement1);
+graph2.add(rdf.environment.createTriple(blanknode, rdf.rdfsns('label'), rdf.environment.createLiteral('Price')));
+graph2.add(rdf.environment.createTriple(blanknode, rdf.rdfns('value'), rdf.environment.createLiteral('10.0', rdf.xsdns('decimal'))));
+graph.equals(graph2)
+/**/ { "_:b1": BlankNode("_:b2") }
+
+```
+
 ### Simplify RDF namespaces
 
 Use the `ns` function to create a URI factory.
@@ -105,7 +123,7 @@ friendNames
 /**/ 'Bob, Carol, Dan'
 ```
 
-### Use RDF data sources with native data types
+### Read RDF data sources as native data types
 
 Use `Literal#valueOf` to convert from lexical data space to native value space:
 
