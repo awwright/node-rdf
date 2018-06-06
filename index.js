@@ -42,7 +42,10 @@ api.parse = function(o, id){
 }
 
 api.ns = function(ns){
-	return function(v){return ns+v;};
+	return function(suffix){
+		if(typeof suffix!='string') throw new TypeError('Expected argument[0] `suffix` to be a string');
+		return ns+suffix;
+	};
 }
 api.rdfns = api.ns('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
 api.rdfsns = api.ns('http://www.w3.org/2000/01/rdf-schema#');
