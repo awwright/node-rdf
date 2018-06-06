@@ -217,4 +217,53 @@ describe('parse', function(){
 			, triple("http://dbpedia.org/resource/Albert_Einstein", "http://dbpedia.org/property/dateOfBirth", new rdf.Literal("1879-03-14T00:00:00Z",rdf.xsdns('dateTime')))
 			]);
 	});
+	describe('parse(webr3)', function(){
+		generateRefTest('http://webr3.org/#me',
+			function(){ return {
+					'@id': 'http://webr3.org/#me',
+					'@context': {
+						'@vocab': 'http://xmlns.com/foaf/0.1/',
+						'dbr': 'http://dbpedia.org/resource/',
+						'dbp': 'http://dbpedia.org/property/',
+						'foaf': 'http://xmlns.com/foaf/0.1/',
+					},
+					a: 'foaf:Person', // a CURIE
+					foaf$name: env.createLiteral('Nathan'),
+					foaf$age: new Date().getFullYear() - 1981,
+					foaf$holdsAccount: {
+						a: 'OnlineAccount',
+						rdfs$label: rdf.environment.createLiteral("Nathan's twitter account", 'en'),
+						accountName: env.createLiteral('webr3'),
+						homepage: 'http://twitter.com/webr3'
+					},
+					foaf$nick: [env.createLiteral('webr3'), env.createLiteral('nath')],
+					foaf$homepage: 'http://webr3.org/',
+			}; },
+			'<http://webr3.org/#me>\n'
+			+ '\trdf:type foaf:Person;\n'
+			+ '\tfoaf:name "Nathan";\n'
+			+ '\tfoaf:age 37;\n'
+			+ '\tfoaf:holdsAccount [\n'
+			+ '\t\trdf:type foaf:OnlineAccount;\n'
+			+ '\t\trdfs:label "Nathan\'s twitter account"@en;\n'
+			+ '\t\tfoaf:accountName "webr3";\n'
+			+ '\t\tfoaf:homepage <http://twitter.com/webr3>\n'
+			+ '\t\t];\n'
+			+ '\tfoaf:nick "webr3", "nath";\n'
+			+ '\tfoaf:homepage <http://webr3.org/> .'
+			,
+			null,
+			[ triple("http://webr3.org/#me", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://xmlns.com/foaf/0.1/Person')
+			, triple("http://webr3.org/#me", "http://xmlns.com/foaf/0.1/name", new rdf.Literal("Nathan"))
+			, triple("http://webr3.org/#me", "http://xmlns.com/foaf/0.1/age", new rdf.Literal("37",rdf.xsdns('integer')))
+			, triple("http://webr3.org/#me", "http://xmlns.com/foaf/0.1/homepage", 'http://webr3.org/')
+			, triple("http://webr3.org/#me", "http://xmlns.com/foaf/0.1/holdsAccount", '_:account')
+			, triple("http://webr3.org/#me", "http://xmlns.com/foaf/0.1/nick", new rdf.Literal('webr3'))
+			, triple("http://webr3.org/#me", "http://xmlns.com/foaf/0.1/nick", new rdf.Literal('nath'))
+			, triple("_:account", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", 'http://xmlns.com/foaf/0.1/OnlineAccount')
+			, triple("_:account", "http://www.w3.org/2000/01/rdf-schema#label", new rdf.Literal('Nathan\'s twitter account', '@en'))
+			, triple("_:account", "http://xmlns.com/foaf/0.1/accountName", new rdf.Literal('webr3'))
+			, triple("_:account", "http://xmlns.com/foaf/0.1/homepage", 'http://twitter.com/webr3')
+			]);
+	});
 });
