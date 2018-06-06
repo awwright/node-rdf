@@ -258,7 +258,7 @@ w:me f:nick "nath" .
 ```
 
 
-### Use RDF data types as native data types
+### Treat native data types as RDF data
 
 If you think `rdf.environment.createLiteral` is too verbose, enable builtins mode. This amends the prototype of primitives like `String`:
 
@@ -267,10 +267,16 @@ rdf.setBuiltins();
 
 "http://example.com/".toNT()
 /**/ '<http://example.com/>'
+(3.0).toNT()
+/**/ '"3"^^<http://www.w3.org/2001/XMLSchema#integer>'
+true.toNT()
+/**/ '"true"^^<http://www.w3.org/2001/XMLSchema#boolean>'
+new Date('2112-06-06').toNT()
+/**/ '"2112-06-06T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>'
 "The Hobbit".l('en-GB').toNT()
 /**/ '"The Hobbit"@en-GB'
-"0.4".tl(rdf.xsdns('decimal')).toNT()
-/**/ '"0.4"^^<http://www.w3.org/2001/XMLSchema#decimal>'
+"4.0".tl(rdf.xsdns('decimal')).toNT()
+/**/ '"4.0"^^<http://www.w3.org/2001/XMLSchema#decimal>'
 
 rdf.unsetBuiltins();
 ```
