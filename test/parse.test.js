@@ -154,7 +154,7 @@ describe('parse', function(){
 					env.createLiteral("Harry Potter and the Sorcerer's Stone", "@en-US"),
 				],
 			}; },
-			'_:mval\n\trdfs:label "Harry Potter and the Philosopher\'s Stone"@en, "Harry Potter and the Sorcerer\'s Stone"@en-US .',
+			'_:mval rdfs:label "Harry Potter and the Philosopher\'s Stone"@en, "Harry Potter and the Sorcerer\'s Stone"@en-US .',
 			null,
 			[ triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Philosopher's Stone", '@en'))
 			, triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Sorcerer's Stone", '@en-US'))
