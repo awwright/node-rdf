@@ -225,9 +225,11 @@ _:b2 <http://xmlns.com/foaf/0.1/homepage> <http://twitter.com/webr3> .
 
 Use the `RDFEnvironment`, `Profile`, `TermMap`, and `ProfileMap` interfaces to work with RDF documents that think in terms of CURIEs and Terms.
 
+Here's an example to take an RDF graph, and output a Turtle document with the prefixes applied:
+
 ```javascript
 var profile = env.createProfile();
-profile.loadRequiredDefaults();
+profile.setPrefix('rdf', rdf.rdfns(''));
 profile.setPrefix('w', 'http://webr3.org/#');
 profile.setPrefix('f', 'http://xmlns.com/foaf/0.1/');
 var turtle = docGraph.toArray().map(function(stmt){
@@ -240,6 +242,9 @@ console.log(docGraph.n3(profile));
 This produces:
 
 ```
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix w: <http://webr3.org/#> .
+@prefix f: <http://xmlns.com/foaf/0.1/> .
 w:me rdf:type f:Person .
 w:me f:name "Nathan" .
 w:me f:age xsd:integer .
