@@ -14,31 +14,130 @@ The library also exposes a function to decorate the builtin ECMAScript protoypes
 
 ## Uses
 
+### Represent RDF nodes
+
+The `NamedNode`, `BlankNode`, and `Literal` represent nodes in an RDF graph.
+
+```javascript
+var namednode, blanknode, literal;
+namednode = rdf.environment.createNamedNode('http://example.com/').toNT()
+/**/ '<http://example.com/>'
+blanknode = rdf.environment.createBlankNode().toNT()
+/**/ '_:b1'
+literal = rdf.environment.createLiteral('plain string')
+/**/ '"plain string"'
+namednode.equals(literal)
+/**/ false
+```
+
+### Simplify RDF namespaces
+
+Use the `ns` function to create a URI factory.
+
+Use the builtin `rdfns`, `rdfsns`, and `xsdns` functions too.
+
+```javascript
+var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+foaf('knows')
+/**/ 'http://xmlns.com/foaf/0.1/knows'
+rdf.rdfsns('label')
+/**/ 'http://www.w3.org/2000/01/rdf-schema#label'
+```
+
+### Represent RDF statements
+
+A `Triple` instance represents an edge in an RDF graph (also known as a Statement).
+
+```javascript
+var statement1 = rdf.environment.createTriple(blanknode, namednode, literal);
+statement1.toNT()
+/**/ '_:b1 <http://example.com/> "plain string" .'
+```
+
+### Represent RDF graphs
+
+A `Graph` instance stores and queries.
+
+```javascript
+var graph = rdf.environment.createGraph();
+graph.add(statement1);
+graph.add(rdf.environment.createTriple(blanknode, rdf.rdfsns('label'), rdf.environment.createLiteral('Price')));
+graph.add(rdf.environment.createTriple(blanknode, rdf.rdfns('value'), rdf.environment.createLiteral('10.0', rdf.xsdns('decimal'))));
+graph.length
+/**/ 3
+var results = graph.match(namednode, null, null);
+results.length
+/**/ 1
+results.forEach(function(triple){ console.log(triple); });
+```
+
 ### Query information from RDF sources
 
-Use the ResultSet interface to quickly get the data you're looking for.
+Use the ResultSet interface to quickly drill into the specific data you want
+
+```javascript
+var g = e.createGraph();
+g.add(e.createTriple(e.createNamedNode('http://example.com/~a'), e.createNamedNode(foaf('knows')), e.createNamedNode('http://example.com/~b')));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~a'), e.createNamedNode(foaf('knows')), e.createNamedNode('http://example.com/~c')));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~a'), e.createNamedNode(foaf('knows')), e.createNamedNode('http://example.com/~d')));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~a'), e.createNamedNode(foaf('givenname')), e.createLiteral('Alice')));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~b'), e.createNamedNode(foaf('givenname')), e.createLiteral('Bob')));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~c'), e.createNamedNode(foaf('givenname')), e.createLiteral('Carol')));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~d'), e.createNamedNode(foaf('givenname')), e.createLiteral('Dan')));
+
+// Get the name of Alice
+var aliceName = g.reference(e.createNamedNode('http://example.com/~a'))
+	.rel(e.createNamedNode(foaf('givenname')))
+	.one()
+	.toString();
+aliceName
+/**/ 'Alice'
+
+// Get me all the names of everyone who Alice knows
+var friendNames = g.reference(e.createNamedNode('http://example.com/~a'))
+	.rel(e.createNamedNode(foaf('knows')))
+	.rel(e.createNamedNode(foaf('givenname')))
+	.toArray()
+	.join(', ');
+
+friendNames
+/**/ 'Bob, Carol, Dan'
+```
 
 ### Use RDF data sources with native data types
 
 Use `Literal#valueOf` to convert from lexical data space to native value space:
 
-```
-rdf.environment.createLiteral('2018-06-04T23:11:25.944Z', rdf.xsdns('date')).valueOf()
-// [object Date]
-```
+```javascript
+rdf.environment.createLiteral('2018-06-04T23:11:25Z', rdf.xsdns('date')).valueOf()
+// 2018-06-04T23:11:25.000Z
 
-```
-rdf.environment.createLiteral('24.440', rdf.xsdns('decimal')).valueOf()
+rdf.environment.createLiteral('24.44', rdf.xsdns('decimal')).valueOf()
 // 24.440
+
+g.add(e.createTriple(e.createNamedNode('http://example.com/~a'), e.createNamedNode(foaf('age')), e.createLiteral('26', rdf.xsdns('integer'))));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~b'), e.createNamedNode(foaf('age')), e.createLiteral('36', rdf.xsdns('integer'))));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~c'), e.createNamedNode(foaf('age')), e.createLiteral('46', rdf.xsdns('integer'))));
+g.add(e.createTriple(e.createNamedNode('http://example.com/~d'), e.createNamedNode(foaf('age')), e.createLiteral('56', rdf.xsdns('integer'))));
+// sum the ages of everyone Alice knows
+var friendAge = g.reference(e.createNamedNode('http://example.com/~a'))
+	.rel(e.createNamedNode(foaf('knows')))
+	.rel(e.createNamedNode(foaf('age')))
+	.reduce(function(a, b){ return a.valueOf() + b; }, 0);
+
+friendAge
+/**/ 138
 ```
 
 ### Compose RDF graphs as native Objects
 
 Use the `rdf.parse` function to cast a native object into a graph:
 
-```
+```javascript
 var rdf = require('rdf');
 var env = rdf.environment;
+// the @id, @context, and @vocab keywords work like in JSON-LD
+// string values are assumed to be URIs, unless decorated
 var document = rdf.parse({
 	'@id': 'http://webr3.org/#me',
 	'@context': {
@@ -48,16 +147,16 @@ var document = rdf.parse({
 		'foaf': 'http://xmlns.com/foaf/0.1/',
 	},
 	a: 'foaf:Person', // a CURIE
-	foaf$name: env.createLiteral('Nathan'),                                       // a String, and an RDF Plain Literal
+	foaf$name: env.createLiteral('Nathan'),                        // a String, and an RDF Plain Literal
 	foaf$age: new Date().getFullYear() - 1981,                     // a Number, and a Typed Literal with the type xsd:integer
 	foaf$holdsAccount: {                                           // an Object, with a BlankNode reference for the .id
 		label: rdf.environment.createLiteral("Nathan's twitter account", 'en'), // a Literal
-		accountName: env.createLiteral('webr3'),                                   // noticed that you don't need the prefixes yet?
+		accountName: env.createLiteral('webr3'),                    // noticed that you don't need the prefixes yet?
 		homepage: 'http://twitter.com/webr3'
 	},
-	foaf$nick: [env.createLiteral('webr3'), env.createLiteral('nath')],                                  // an Array, also a list of values, like in turtle and n3
+	foaf$nick: [env.createLiteral('webr3'), env.createLiteral('nath')], // an Array, also a list of values, like in turtle and n3
 	foaf$homepage: 'http://webr3.org/',                             // A full IRI
-});
+}, 'http://webr3.org/#me');
 console.log(document.n3());
 ```
 
@@ -81,23 +180,67 @@ This produces:
 Use the `graphify` method to produce an `rdf.Graph` from the data:
 
 ```
-var graph = document.graphify();
-graph.forEach(function(triple){ console.log(triple.toString()); });
+var docGraph = document.graphify();
+docGraph.forEach(function(triple){ console.log(triple.toString()); });
 ```
 
-### Store RDF statements in memory
+This produces:
 
-Use the provided Graph instance to write logic around RDF data.
+```
+<http://webr3.org/#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://webr3.org/#me> <http://xmlns.com/foaf/0.1/name> "Nathan" .
+<http://webr3.org/#me> <http://xmlns.com/foaf/0.1/age> "37"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://webr3.org/#me> <http://xmlns.com/foaf/0.1/holdsAccount> _:b2 .
+_:b2 <http://xmlns.com/foaf/0.1/label> "Nathan's twitter account"@en .
+_:b2 <http://xmlns.com/foaf/0.1/accountName> "webr3" .
+_:b2 <http://xmlns.com/foaf/0.1/homepage> <http://twitter.com/webr3> .
+<http://webr3.org/#me> <http://xmlns.com/foaf/0.1/homepage> <http://webr3.org/> .
+<http://webr3.org/#me> <http://xmlns.com/foaf/0.1/nick> "webr3" .
+<http://webr3.org/#me> <http://xmlns.com/foaf/0.1/nick> "nath" .
+```
 
 
 ### Manage documents with RDF data
 
 Use the RDFEnvironment, Profile, TermMap, and ProfileMap interfaces to work with RDF documents that think in terms of CURIEs and Terms.
 
+```javascript
+var profile = env.createProfile();
+profile.loadRequiredDefaults();
+profile.setPrefix('w', 'http://webr3.org/#');
+profile.setPrefix('f', 'http://xmlns.com/foaf/0.1/');
+var turtle = docGraph.toArray().map(function(stmt){
+	return stmt.subject.n3(profile) + ' ' + stmt.predicate.n3(profile) + ' ' + stmt.object.n3(profile) + " .\n";
+}).join('')
+console.log(profile.n3());
+console.log(docGraph.n3(profile));
+```
+
+This produces:
+
+```
+w:me rdf:type f:Person .
+w:me f:name "Nathan" .
+w:me f:age xsd:integer .
+w:me f:holdsAccount _:b2 .
+_:b2 f:label "Nathan's twitter account"@en .
+_:b2 f:accountName "webr3" .
+_:b2 f:homepage <http://twitter.com/webr3> .
+w:me f:homepage <http://webr3.org/> .
+w:me f:nick "webr3" .
+w:me f:nick "nath" .
+```
+
 
 ### Use RDF data types as native data types
 
-Use the Builtins functionality.
+If you think `rdf.environment.createLiteral` is too verbose, enable builtins mode. This amends the prototype of primitives like `String`:
+
+```
+rdf.setBuiltins();
+graph.match(null, null, "The Hobbit".l('en-GB'));
+rdf.unsetBuiltins();
+```
 
 
 ### Native support for RDF1.1 semantics
