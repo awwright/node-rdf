@@ -205,7 +205,7 @@ _:b2 <http://xmlns.com/foaf/0.1/homepage> <http://twitter.com/webr3> .
 
 ### Manage documents with RDF data
 
-Use the RDFEnvironment, Profile, TermMap, and ProfileMap interfaces to work with RDF documents that think in terms of CURIEs and Terms.
+Use the `RDFEnvironment`, `Profile`, `TermMap`, and `ProfileMap` interfaces to work with RDF documents that think in terms of CURIEs and Terms.
 
 ```javascript
 var profile = env.createProfile();
@@ -239,9 +239,16 @@ w:me f:nick "nath" .
 
 If you think `rdf.environment.createLiteral` is too verbose, enable builtins mode. This amends the prototype of primitives like `String`:
 
-```
+```javascript
 rdf.setBuiltins();
-graph.match(null, null, "The Hobbit".l('en-GB'));
+
+"http://example.com/".toNT()
+/**/ '<http://example.com/>'
+"The Hobbit".l('en-GB').toNT()
+/**/ '"The Hobbit"@en-GB'
+"0.4".tl(rdf.xsdns('decimal')).toNT()
+/**/ '"0.4"^^<http://www.w3.org/2001/XMLSchema#decimal>'
+
 rdf.unsetBuiltins();
 ```
 
