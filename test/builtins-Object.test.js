@@ -167,6 +167,27 @@ describe('Object builtins', function(){
 			, triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Sorcerer's Stone", '@en-US'))
 			]);
 	});
+	describe('(_:mval).ref multiple values with bnode', function(){
+		// Normally, use env.createBlankNode
+		// For deterministic tests, we use BlankNode with a name
+		generateRefTest('_:mval',
+			function(){ return {
+				rdfs$label: [
+					env.createLiteral("Harry Potter and the Philosopher's Stone", '@en'),
+					{
+						rdf$type: "http://example.com/",
+						rdfs$label: new rdf.Literal("Harry Potter and the Sorcerer's Stone", '@en-US'),
+					},
+				],
+			}; },
+			'_:mval rdfs:label "Harry Potter and the Philosopher\'s Stone"@en, [\n\t\trdf:type <http://example.com/>;\n\t\trdfs:label "Harry Potter and the Sorcerer\'s Stone"@en-US\n\t\t] .',
+			null,
+			[ triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Philosopher's Stone", '@en'))
+			, triple('_:mval', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.BlankNode('_:a'))
+			, triple('_:a', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', new rdf.NamedNode('http://example.com/'))
+			, triple('_:a', 'http://www.w3.org/2000/01/rdf-schema#label', new rdf.Literal("Harry Potter and the Sorcerer's Stone", '@en-US'))
+			]);
+	});
 	describe('(_:topic7).ref objects are unlabeled blank nodes', function(){
 		var b1 = new rdf.BlankNode('_:b1');
 		var b2 = new rdf.BlankNode('_:target');
