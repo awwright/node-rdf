@@ -110,21 +110,28 @@ Graphs test for isomorphism, that there's a mapping that can map the blank nodes
 
 ```javascript
 var graph2 = rdf.environment.createGraph();
-graph2.add(statement1);
+var bn2 = rdf.environment.createBlankNode();
+
 graph2.add(rdf.environment.createTriple(
-	blanknode,
+	bn2,
+	namednode,
+	literal
+	));
+graph2.add(rdf.environment.createTriple(
+	bn2,
 	rdf.environment.createNamedNode(rdf.rdfsns('label')),
-	rdf.environment.createLiteral('Price'))
-	);
+	rdf.environment.createLiteral('Price')
+	));
 graph2.add(rdf.environment.createTriple(
-	blanknode,
+	bn2,
 	rdf.environment.createNamedNode(rdf.rdfns('value')),
-	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal')))
-	);
+	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal'))
+	));
+
 graph.equals(graph2)
 ```
 
-    { '_:b1': BlankNode { nominalValue: 'b1' } }
+    { '_:b1': BlankNode { nominalValue: 'b2' } }
 
 ### Simplify RDF namespaces
 
@@ -145,42 +152,113 @@ rdf.rdfsns('label')
 
     'http://www.w3.org/2000/01/rdf-schema#label'
 
+### Compose RDF graphs as native Objects
+
+Use the `rdf.parse` function to cast a native object into a graph:
+
+```javascript
+var env = rdf.environment;
+function person_(n){ return rdf.environment.createNamedNode('http://example.com/'.concat(n)); }
+function foaf_(n){ return rdf.environment.createNamedNode('http://xmlns.com/foaf/0.1/'.concat(n)); }
+var partyDocument = rdf.parse({
+	"@context": {
+		"@vocab": "http://xmlns.com/foaf/0.1/",
+		"person": "http://example.com/",
+	},
+	"@id": person_('a'),
+	givenname: rdf.environment.createLiteral("Alice"),
+	age: 26,
+	knows: [
+		{
+			"@id": person_('b'),
+			givenname: rdf.environment.createLiteral("Bob"),
+			age: 36,
+			knows: person_('a'),
+		},
+		{
+			"@id": person_('c'),
+			givenname: rdf.environment.createLiteral("Carol"),
+			age: 46,
+			knows: person_('a'),
+		},
+		{
+			"@id": person_('d'),
+			givenname: rdf.environment.createLiteral("Dan"),
+			age: 56,
+			knows: [person_('a'), person_('b')],
+		}
+	]
+})
+console.log(partyDocument.n3());
+```
+
+    [
+    	<http://xmlns.com/foaf/0.1/givenname> "Alice";
+    	<http://xmlns.com/foaf/0.1/age> 26;
+    	<http://xmlns.com/foaf/0.1/knows> [
+    		<http://xmlns.com/foaf/0.1/givenname> "Bob";
+    		<http://xmlns.com/foaf/0.1/age> 36;
+    		<http://xmlns.com/foaf/0.1/knows> person:a
+    		], [
+    		<http://xmlns.com/foaf/0.1/givenname> "Carol";
+    		<http://xmlns.com/foaf/0.1/age> 46;
+    		<http://xmlns.com/foaf/0.1/knows> person:a
+    		], [
+    		<http://xmlns.com/foaf/0.1/givenname> "Dan";
+    		<http://xmlns.com/foaf/0.1/age> 56;
+    		<http://xmlns.com/foaf/0.1/knows> person:a, person:b
+    		]
+    	]
+
+Use the `graphify` method to produce an `rdf.Graph` from the data:
+
+```javascript
+var partyGraph = partyDocument.graphify();
+
+partyGraph
+    .toArray()
+    .sort(function(a,b){ return a.compare(b); })
+    .forEach(function(triple){ console.log(triple.toString()); });
+```
+
+    <http://example.com/a> <http://xmlns.com/foaf/0.1/age> "26"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    <http://example.com/a> <http://xmlns.com/foaf/0.1/givenname> "Alice" .
+    <http://example.com/a> <http://xmlns.com/foaf/0.1/knows> <http://example.com/b> .
+    <http://example.com/a> <http://xmlns.com/foaf/0.1/knows> <http://example.com/c> .
+    <http://example.com/a> <http://xmlns.com/foaf/0.1/knows> <http://example.com/d> .
+    <http://example.com/b> <http://xmlns.com/foaf/0.1/age> "36"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    <http://example.com/b> <http://xmlns.com/foaf/0.1/givenname> "Bob" .
+    <http://example.com/b> <http://xmlns.com/foaf/0.1/knows> <http://example.com/a> .
+    <http://example.com/c> <http://xmlns.com/foaf/0.1/age> "46"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    <http://example.com/c> <http://xmlns.com/foaf/0.1/givenname> "Carol" .
+    <http://example.com/c> <http://xmlns.com/foaf/0.1/knows> <http://example.com/a> .
+    <http://example.com/d> <http://xmlns.com/foaf/0.1/age> "56"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    <http://example.com/d> <http://xmlns.com/foaf/0.1/givenname> "Dan" .
+    <http://example.com/d> <http://xmlns.com/foaf/0.1/knows> <http://example.com/a> .
+    <http://example.com/d> <http://xmlns.com/foaf/0.1/knows> <http://example.com/b> .
+
 ### Query information from RDF sources
 
 Use the ResultSet interface to quickly drill into the specific data you want:
 
 ```javascript
-function person_(n){ return rdf.environment.createNamedNode('http://example.com/~'.concat(n)); }
-function foaf_(n){ return rdf.environment.createNamedNode('http://xmlns.com/foaf/0.1/'.concat(n)); }
-var g = rdf.environment.createGraph();
-g.add(rdf.environment.createTriple(person_('a'), foaf_('knows'), person_('b')));
-g.add(rdf.environment.createTriple(person_('a'), foaf_('knows'), person_('c')));
-g.add(rdf.environment.createTriple(person_('a'), foaf_('knows'), person_('d')));
-g.add(rdf.environment.createTriple(person_('a'), foaf_('givenname'), rdf.environment.createLiteral('Alice')));
-g.add(rdf.environment.createTriple(person_('b'), foaf_('givenname'), rdf.environment.createLiteral('Bob')));
-g.add(rdf.environment.createTriple(person_('c'), foaf_('givenname'), rdf.environment.createLiteral('Carol')));
-g.add(rdf.environment.createTriple(person_('d'), foaf_('givenname'), rdf.environment.createLiteral('Dan')));
-
 // Get the name of Alice
-var aliceName = g.reference(person_('a'))
-	.rel(rdf.environment.createNamedNode(foaf('givenname')))
+partyGraph.reference(person_('a'))
+	.rel(foaf_('givenname'))
 	.one()
-	.toString();
-aliceName
+	.toString()
 ```
 
     'Alice'
 
 ```javascript
-// Get me all the names of everyone who Alice knows
-var friendNames = g.reference(person_('a'))
+// Get all the names of everyone who Alice knows
+partyGraph.reference(person_('a'))
 	.rel(rdf.environment.createNamedNode(foaf('knows')))
 	.rel(rdf.environment.createNamedNode(foaf('givenname')))
 	.toArray()
 	.sort()
-	.join(', ');
-
-friendNames
+	.join(', ')
 ```
 
     'Bob, Carol, Dan'
@@ -208,80 +286,14 @@ rdf.environment.createLiteral('1', rdf.xsdns('boolean')).valueOf()
     true
 
 ```javascript
-g.add(rdf.environment.createTriple(person_('a'), foaf_('age'), rdf.environment.createLiteral('26', rdf.xsdns('integer'))));
-g.add(rdf.environment.createTriple(person_('b'), foaf_('age'), rdf.environment.createLiteral('36', rdf.xsdns('integer'))));
-g.add(rdf.environment.createTriple(person_('c'), foaf_('age'), rdf.environment.createLiteral('46', rdf.xsdns('integer'))));
-g.add(rdf.environment.createTriple(person_('d'), foaf_('age'), rdf.environment.createLiteral('56', rdf.xsdns('integer'))));
 // sum the ages of everyone that Alice knows
-var friendAge = g.reference(person_('a'))
+partyGraph.reference(person_('a'))
 	.rel(rdf.environment.createNamedNode(foaf('knows')))
 	.rel(rdf.environment.createNamedNode(foaf('age')))
 	.reduce(function(a, b){ return a.valueOf() + b; }, 0);
-
-friendAge
 ```
 
     138
-
-### Compose RDF graphs as native Objects
-
-Use the `rdf.parse` function to cast a native object into a graph:
-
-```javascript
-var env = rdf.environment;
-// the @id, @context, and @vocab keywords work like in JSON-LD
-// string values are assumed to be URIs, unless decorated
-var document = rdf.parse({
-	'@id': 'http://webr3.org/#me',
-	'@context': {
-		'@vocab': 'http://xmlns.com/foaf/0.1/',
-		'dbr': 'http://dbpedia.org/resource/',
-		'dbp': 'http://dbpedia.org/property/',
-		'foaf': 'http://xmlns.com/foaf/0.1/',
-	},
-	a: 'foaf:Person', // a CURIE
-	foaf$name: env.createLiteral('Nathan'), // an RDF Plain Literal
-	foaf$age: new Date().getFullYear() - 1981, // a Number, and a Typed Literal with the type xsd:integer
-	foaf$holdsAccount: { // an Object, with a BlankNode reference for the .id
-		label: rdf.environment.createLiteral("Nathan's twitter account", 'en'), // a Literal
-		accountName: env.createLiteral('webr3'),
-		homepage: 'http://twitter.com/webr3'
-	},
-	foaf$nick: [env.createLiteral('webr3'), env.createLiteral('nath')], // an Array, also a list of values, like in turtle and n3
-	foaf$homepage: 'http://webr3.org/', // A full IRI
-}, 'http://webr3.org/#me');
-console.log(document.n3());
-```
-
-    <http://webr3.org/#me>
-    	rdf:type foaf:Person;
-    	foaf:name "Nathan";
-    	foaf:age 37;
-    	foaf:holdsAccount [
-    		foaf:label "Nathan's twitter account"@en;
-    		foaf:accountName "webr3";
-    		foaf:homepage <http://twitter.com/webr3>
-    		];
-    	foaf:nick "webr3", "nath";
-    	foaf:homepage <http://webr3.org/> .
-
-Use the `graphify` method to produce an `rdf.Graph` from the data:
-
-```javascript
-var docGraph = document.graphify();
-docGraph.forEach(function(triple){ console.log(triple.toString()); });
-```
-
-    <http://webr3.org/#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
-    <http://webr3.org/#me> <http://xmlns.com/foaf/0.1/name> "Nathan" .
-    <http://webr3.org/#me> <http://xmlns.com/foaf/0.1/age> "37"^^<http://www.w3.org/2001/XMLSchema#integer> .
-    <http://webr3.org/#me> <http://xmlns.com/foaf/0.1/holdsAccount> _:b3 .
-    _:b3 <http://xmlns.com/foaf/0.1/label> "Nathan's twitter account"@en .
-    _:b3 <http://xmlns.com/foaf/0.1/accountName> "webr3" .
-    _:b3 <http://xmlns.com/foaf/0.1/homepage> <http://twitter.com/webr3> .
-    <http://webr3.org/#me> <http://xmlns.com/foaf/0.1/homepage> <http://webr3.org/> .
-    <http://webr3.org/#me> <http://xmlns.com/foaf/0.1/nick> "webr3" .
-    <http://webr3.org/#me> <http://xmlns.com/foaf/0.1/nick> "nath" .
 
 ### Manage documents with RDF data
 
@@ -291,26 +303,33 @@ Here's an example to take an RDF graph, and output a Turtle document with the pr
 
 ```javascript
 var profile = env.createProfile();
-profile.setPrefix('rdf', rdf.rdfns(''));
-profile.setPrefix('w', 'http://webr3.org/#');
-profile.setPrefix('f', 'http://xmlns.com/foaf/0.1/');
-var turtle = docGraph.toArray().map(function(stmt){
+profile.setDefaultPrefix('http://example.com/');
+profile.setPrefix('ff', 'http://xmlns.com/foaf/0.1/');
+var turtle = partyGraph
+	.toArray()
+	.sort(function(a,b){ return a.compare(b); })
+	.map(function(stmt){
 	return stmt.subject.n3(profile) + ' ' + stmt.predicate.n3(profile) + ' ' + stmt.object.n3(profile) + " .";
 });
 //console.log(profile.n3());
 console.log(turtle.join('\n'));
 ```
 
-    w:me rdf:type f:Person .
-    w:me f:name "Nathan" .
-    w:me f:age "37"^^<http://www.w3.org/2001/XMLSchema#integer> .
-    w:me f:holdsAccount _:b3 .
-    _:b3 f:label "Nathan's twitter account"@en .
-    _:b3 f:accountName "webr3" .
-    _:b3 f:homepage <http://twitter.com/webr3> .
-    w:me f:homepage <http://webr3.org/> .
-    w:me f:nick "webr3" .
-    w:me f:nick "nath" .
+    :a ff:age "26"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :a ff:givenname "Alice" .
+    :a ff:knows :b .
+    :a ff:knows :c .
+    :a ff:knows :d .
+    :b ff:age "36"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :b ff:givenname "Bob" .
+    :b ff:knows :a .
+    :c ff:age "46"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :c ff:givenname "Carol" .
+    :c ff:knows :a .
+    :d ff:age "56"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :d ff:givenname "Dan" .
+    :d ff:knows :a .
+    :d ff:knows :b .
 
 ### Treat native data types as RDF data
 
@@ -321,25 +340,13 @@ rdf.setBuiltins();
 
 [
     "http://example.com/".toNT(),
-    (3.0).toNT(),
+    (3 * 4).toNT(),
     true.toNT(),
     new Date('2112-06-06').toNT(),
     "The Hobbit".l('en-GB').toNT(),
     "4.0".tl(rdf.xsdns('decimal')).toNT(),
-].forEach(function(v){ console.log(v); })
+]
 
-```
-
-    <http://example.com/>
-    "3"^^<http://www.w3.org/2001/XMLSchema#integer>
-    "true"^^<http://www.w3.org/2001/XMLSchema#boolean>
-    "2112-06-06T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
-    "The Hobbit"@en-GB
-    "4.0"^^<http://www.w3.org/2001/XMLSchema#decimal>
-
-If you change your mind, unset them later:
-
-```javascript
 rdf.unsetBuiltins();
 ```
 
@@ -400,8 +407,6 @@ Use this library in whatever application you want! Give credit when you do so, o
 
 ## About
 
-An RDF Interfaces implementation in ECMAScript, primarially designed for Node.js, to implement RDF datatypes with Javascript types and provide related APIs and in-memory utilities.
-
 This implements:
 
 * http://www.w3.org/TR/2012/NOTE-rdf-interfaces-20120705/ (Working Group Note)
@@ -445,6 +450,10 @@ Creates an empty in-memory RDF graph.
 
 Adds a triple to the Graph, if it doesn't already exist.
 
+#### Graph#addAll(graph)
+
+Adds the given graph or array of `Triple` instances to the Graph.
+
 #### Graph#remove(Triple triple)
 
 Removes the given triple from the Graph if it exists.
@@ -487,9 +496,9 @@ Where:
 
 Since @base and @prefix directives modify the environment passed to TurtleParser, it's recommended a new TurtleParser be used for each document.
 
-### RDF Environment
+### RDFEnvironment
 
-The RDF Environment is the context that bnodes are described relative to, and where namespaces/prefixes are defined. The API implements the [RDF Environment API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#rdf-environment-interfaces).
+The RDFEnvironment is the context that bnodes are described relative to, and where namespaces/prefixes are defined. The API implements the [RDF Environment API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#rdf-environment-interfaces).
 
 The rdf module creates one such global environment by default, accessible at `rdf.environment`. Others are created where necessary, e.g. when parsing a Turtle document, and may be created using `new rdf.RDFEnvironment`.
 
@@ -511,7 +520,7 @@ This extends the prototype definitions to act as native RDF types as well, for e
 	true.toNT();         // "true"^^<http://www.w3.org/2001/XMLSchema#boolean>
 	(12 * 1.4).toNT();   // "12.3"^^<http://www.w3.org/2001/XMLSchema#decimal>
 
-### Object Builtins
+#### Object Builtins
 
 Any two values may be compared with each other using the `equals` method:
 
@@ -545,7 +554,7 @@ An Array may also be used to make an RDF Collection (linked list), with the `toL
 
 	['rdfs:Class', 'rdfs:Resource'].toList()
 
-### String Builtins
+#### String Builtins
 
 Strings may be used in place of a NamedNode and BlankNode, and have the same properties. There are the following methods:
 
@@ -568,6 +577,7 @@ A Mocha test suite is found in the tests directory. Run `make test` to evaluate 
 * Makefile - Downloads and runs test suite
 * package.json - some metadata about this package
 * README.md - You're looking at it
+* README.ipynb - Sources for execution results in README.md
 * test/*.test.js - Mocha test suite files
 * test/graph-test-lib.js - A generic test for a Graph interface
 * test/TurtleTests/ - Tests from the Turtle test suite are extracted here
