@@ -27,12 +27,6 @@ api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 api.Graph = require("./lib/Graph.js").Graph;
 api.ResultSet = require("./lib/ResultSet.js").ResultSet;
 
-api.setObjectProperties = require('./lib/Builtins').setObjectProperties;
-api.setStringProperties = require('./lib/Builtins').setStringProperties;
-api.setArrayProperties = require('./lib/Builtins').setArrayProperties;
-api.setBooleanProperties = require('./lib/Builtins').setBooleanProperties;
-api.setDateProperties = require('./lib/Builtins').setDateProperties;
-api.setNumberProperties = require('./lib/Builtins').setNumberProperties;
 api.environment = require('./lib/environment').environment;
 api.setBuiltins = require('./lib/Builtins').setBuiltins;
 api.unsetBuiltins = require('./lib/Builtins').unsetBuiltins;
