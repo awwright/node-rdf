@@ -497,12 +497,12 @@ The rdf module creates one such global environment by default, accessible at `rd
 
 Instead of using NamedNode, URIs by default are represented as plain strings. The RDFNode interface may be overloaded onto the standard String object using `rdf.setBuiltins()` or onto a particular prototype by using:
 
-	rdf.setObjectProperties(Object.prototype);
-	rdf.setStringProperties(String.prototype);
-	rdf.setArrayProperties(Array.prototype);
-	rdf.setBooleanProperties(Boolean.prototype);
-	rdf.setDateProperties(Date.prototype);
-	rdf.setNumberProperties(Number.prototype);
+	rdf.builtins.setObjectProperties(Object.prototype);
+	rdf.builtins.setStringProperties(String.prototype);
+	rdf.builtins.setArrayProperties(Array.prototype);
+	rdf.builtins.setBooleanProperties(Boolean.prototype);
+	rdf.builtins.setDateProperties(Date.prototype);
+	rdf.builtins.setNumberProperties(Number.prototype);
 
 as done in the setBuiltins function call in `lib/Builtins.js`.
 
