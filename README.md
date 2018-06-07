@@ -163,6 +163,7 @@ function foaf_(n){ return rdf.environment.createNamedNode('http://xmlns.com/foaf
 var partyDocument = rdf.parse({
 	"@context": {
 		"@vocab": "http://xmlns.com/foaf/0.1/",
+		"foaf": "http://xmlns.com/foaf/0.1/",
 		"person": "http://example.com/",
 	},
 	"@id": person_('a'),
@@ -193,20 +194,20 @@ console.log(partyDocument.n3());
 ```
 
     [
-    	<http://xmlns.com/foaf/0.1/givenname> "Alice";
-    	<http://xmlns.com/foaf/0.1/age> 26;
-    	<http://xmlns.com/foaf/0.1/knows> [
-    		<http://xmlns.com/foaf/0.1/givenname> "Bob";
-    		<http://xmlns.com/foaf/0.1/age> 36;
-    		<http://xmlns.com/foaf/0.1/knows> person:a
+    	foaf:givenname "Alice";
+    	foaf:age 26;
+    	foaf:knows [
+    		foaf:givenname "Bob";
+    		foaf:age 36;
+    		foaf:knows person:a
     		], [
-    		<http://xmlns.com/foaf/0.1/givenname> "Carol";
-    		<http://xmlns.com/foaf/0.1/age> 46;
-    		<http://xmlns.com/foaf/0.1/knows> person:a
+    		foaf:givenname "Carol";
+    		foaf:age 46;
+    		foaf:knows person:a
     		], [
-    		<http://xmlns.com/foaf/0.1/givenname> "Dan";
-    		<http://xmlns.com/foaf/0.1/age> 56;
-    		<http://xmlns.com/foaf/0.1/knows> person:a, person:b
+    		foaf:givenname "Dan";
+    		foaf:age 56;
+    		foaf:knows person:a, person:b
     		]
     	]
 
@@ -309,8 +310,8 @@ var turtle = partyGraph
 	.toArray()
 	.sort(function(a,b){ return a.compare(b); })
 	.map(function(stmt){
-	return stmt.subject.n3(profile) + ' ' + stmt.predicate.n3(profile) + ' ' + stmt.object.n3(profile) + " .";
-});
+		return stmt.subject.n3(profile) + ' ' + stmt.predicate.n3(profile) + ' ' + stmt.object.n3(profile) + " .";
+	});
 //console.log(profile.n3());
 console.log(turtle.join('\n'));
 ```
@@ -333,7 +334,7 @@ console.log(turtle.join('\n'));
 
 ### Treat native data types as RDF data
 
-If you think `rdf.environment.createLiteral` is too verbose, enable builtins mode. This amends the prototype of primitives like `String`:
+If you think `rdf.environment.createLiteral` is too verbose, enable builtins mode with `setBuiltins()`. This amends the prototype of primitives like `String`:
 
 ```javascript
 rdf.setBuiltins();
@@ -346,7 +347,18 @@ rdf.setBuiltins();
     "The Hobbit".l('en-GB').toNT(),
     "4.0".tl(rdf.xsdns('decimal')).toNT(),
 ]
+```
 
+    [ '<http://example.com/>',
+      '"12"^^<http://www.w3.org/2001/XMLSchema#integer>',
+      '"true"^^<http://www.w3.org/2001/XMLSchema#boolean>',
+      '"2112-06-06T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>',
+      '"The Hobbit"@en-GB',
+      '"4.0"^^<http://www.w3.org/2001/XMLSchema#decimal>' ]
+
+Change your mind? Use `unsetBuiltins` to remove them:
+
+```javascript
 rdf.unsetBuiltins();
 ```
 
