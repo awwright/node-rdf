@@ -154,5 +154,85 @@ describe('ResultSet', function(){
 			var knows2 = knows1.rev(new rdf.NamedNode(foaf('givenname')));
 			assert.equal(knows2.length, 2);
 		});
+		it('some (does alice know someone at least n years old)', function(){
+			var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+			var g = new rdf.Graph();
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~b')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~c')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~d')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Carol')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Dan')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('age')), new rdf.Literal('26', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('age')), new rdf.Literal('36', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('age')), new rdf.Literal('46', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('age')), new rdf.Literal('56', rdf.xsdns('integer'))));
+			var result1 = g.reference(new rdf.NamedNode('http://example.com/~a'))
+				.rel(new rdf.NamedNode(foaf('knows')))
+				.rel(new rdf.NamedNode(foaf('age')))
+				.some(function(item){ return item.valueOf() >= 30; });
+			assert.equal(result1, true);
+			var result2 = g.reference(new rdf.NamedNode('http://example.com/~a'))
+				.rel(new rdf.NamedNode(foaf('knows')))
+				.rel(new rdf.NamedNode(foaf('age')))
+				.some(function(item){ return item.valueOf() >= 80; });
+			assert.equal(result2, false);
+		});
+		it('every (is everyone alice knows at least n years old)', function(){
+			var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+			var g = new rdf.Graph();
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~b')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~c')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~d')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Carol')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Dan')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('age')), new rdf.Literal('26', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('age')), new rdf.Literal('36', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('age')), new rdf.Literal('46', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('age')), new rdf.Literal('56', rdf.xsdns('integer'))));
+			var result1 = g.reference(new rdf.NamedNode('http://example.com/~a'))
+				.rel(new rdf.NamedNode(foaf('knows')))
+				.rel(new rdf.NamedNode(foaf('age')))
+				.every(function(item){ return item.valueOf() >= 40; });
+			assert.equal(result1, false);
+			var result2 = g.reference(new rdf.NamedNode('http://example.com/~a'))
+				.rel(new rdf.NamedNode(foaf('knows')))
+				.rel(new rdf.NamedNode(foaf('age')))
+				.every(function(item){ return item.valueOf() >= 20; });
+			assert.equal(result2, true);
+		});
+		it('reduce (sum ages of people who alice knows)', function(){
+			var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+			var g = new rdf.Graph();
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~b')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~c')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~d')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Carol')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Dan')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('age')), new rdf.Literal('26', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('age')), new rdf.Literal('36', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('age')), new rdf.Literal('46', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('age')), new rdf.Literal('56', rdf.xsdns('integer'))));
+			// Find everyone with the same name as ~a
+			var sum = g.reference(new rdf.NamedNode('http://example.com/~a'))
+				.rel(new rdf.NamedNode(foaf('knows')))
+				.rel(new rdf.NamedNode(foaf('age')))
+				.reduce(function(item, partial){ return item.valueOf() + partial; }, 0);
+			assert.equal(sum, 138);
+		});
 	});
 });
