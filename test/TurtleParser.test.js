@@ -9,13 +9,18 @@ var m$ = rdf.ns('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#');
 var manifestBase = 'http://www.w3.org/2013/TurtleTests/manifest.ttl';
 //var manifestBase = 'file://'+__dirname+'/TurtleTests/manifest.ttl';
 var manifestData = require('fs').readFileSync('test/TurtleTests/manifest.ttl');
-var manifestGraph = env.createGraph();
-var manifestParse = new TurtleParser;
-manifestParse.parse(manifestData, undefined, manifestBase, null, manifestGraph);
+var manifestParse = TurtleParser.parse(manifestData, manifestBase);
+var manifestGraph = manifestParse.graph;
 
 var manifest = manifestGraph.match(manifestBase, m$('entries'), null).toArray();
 var manifestTests = manifestGraph.getCollection(manifest[0].object);
 
+describe('TurtleParser', function(){
+	it('TurtleParser.parse', function(){
+		var parse = rdf.TurtleParser.parse('<> a <Page> .', 'http://example.com/');
+		assert.equal(parse.graph.toArray().join("\n"), '<http://example.com/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Page> .');
+	});
+});
 
 describe('Turtle test suite', function(){
 	it('Parse Turtle test suite manifest', function(){
@@ -37,15 +42,13 @@ describe('Turtle test suite', function(){
 							var resultFile = resultURI.replace('http://www.w3.org/2013/', 'test/');
 							fs.readFile(resultFile, 'utf8', function(err, data){
 								if(err) throw err;
-								var expectedGraph = env.createGraph();
-								var expectedParser = new TurtleParser;
-								expectedParser.parse(data, undefined, resultURI, null, expectedGraph);
+								var expectedParser = TurtleParser.parse(data, resultURI);
+								var expectedGraph = expectedParser.graph;
 								// Now parse the Turtle file
 								fs.readFile(filename, 'utf8', function(err, data){
 									if(err) throw err;
-									var graph = env.createGraph();
-									var parser = new TurtleParser;
-									parser.parse(data, undefined, fileURI, null, graph);
+									var parser = TurtleParser.parse(data, fileURI);
+									var graph = parser.graph;
 									// Have the data, compare
 									var expectedTriples = expectedGraph.toArray().sort();
 									var outputTriples = graph.toArray().sort();
@@ -59,27 +62,22 @@ describe('Turtle test suite', function(){
 							});
 						});
 						break;
-					case 'http://www.w3.org/ns/rdftest#TestTurtleNegativeEval':
-						break;
 					case 'http://www.w3.org/ns/rdftest#TestTurtlePositiveSyntax':
 						it('positive test <'+filename+'>', function(done){
 							fs.readFile(filename, 'utf8', function(err, data){
 								if(err) throw err;
-								var graph = env.createGraph();
-								var parser = new TurtleParser;
-								parser.parse(data, undefined, fileURI, null, graph);
+								var parser = TurtleParser.parse(data, fileURI);
 								done();
 							});
 						});
 						break;
 					case 'http://www.w3.org/ns/rdftest#TestTurtleNegativeSyntax':
+					case 'http://www.w3.org/ns/rdftest#TestTurtleNegativeEval':
 						it('negative test <'+filename+'>', function(done){
 							fs.readFile(filename, 'utf8', function(err, data){
 								if(err) throw err;
-								var graph = env.createGraph();
-								var parser = new TurtleParser;
 								assert.throws(function(){
-									parser.parse(data, undefined, file, null, graph);
+									TurtleParser.parse(data, file);
 								});
 								done();
 							});

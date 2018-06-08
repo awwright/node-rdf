@@ -12,9 +12,8 @@ files.forEach(function(filepath){
 	try {
 		//console.error(filepath);
 		var inputContents = fs.readFileSync(filepath, 'UTF-8');
-		var turtleParser = new TurtleParser();
-		var outputGraph = rdfenv.createGraph();
-		turtleParser.parse(inputContents, null, baseURI, null, outputGraph);
+		var turtleParser = TurtleParser.parse(inputContents, baseURI);
+		var outputGraph = turtleParser.graph;
 		console.log(outputGraph.toArray().map(function(t){ return t.toString()+'\n'; }).join(''));
 	}catch(err){
 		console.error(err.stack);
