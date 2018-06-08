@@ -544,6 +544,15 @@ Represents a content literal in an RDF graph. Literals may have edges pointing o
 * `Literal#type` - getter that returns `null` if the datatype is an xsd:string, or a language literal, as seen in RDF1.0 semantics.
 * `Literal#language` - stores the language tag, if any, or `null` otherwise.
 
+#### Literal#valueOf()
+
+Returns a native representation of the literal, based on its datatype.
+
+* The numeric datatypes will produce a number: `xsd:float`, `xsd:integer`, `xsd:long`, `xsd:double`, `xsd:decimal`, `xsd:nonPositiveInteger`, `xsd:nonNegativeInteger`, `xsd:negativeInteger`, `xsd:int`, `xsd:unsignedLong`, `xsd:positiveInteger`, `xsd:short`, `xsd:unsignedInt`, `xsd:byte`, `xsd:unsignedShort`, `xsd:unsignedByte`
+* The datetime datatypes will produce a Date object: `xsd:date`, `xsd:time`, `xsd:dateTime`
+* The boolean datatype will produce a boolean: `xsd:boolean`
+* The string datatypes will produce a string: `xsd:string` `rdf:langString`
+
 #### Literal#equals(other)
 
 Returns true if the given Literal `other` has the same contents, datatype, and language tag. See `RDFNode#equals` for details.
