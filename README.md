@@ -603,9 +603,9 @@ Same behavior as `Array#forEach`: Evaluates `callback` over each Triple in the G
 
 Determines if the provided graph is isomorphic with the current one: Determines if all the Literal and NamedNode instances equal, and is there a one-to-one mapping of bnodes between the two graphs. If so, it returns the mapping, the toString blanknode as the key, the graph argument's BlankNode instance as value. If there's no match, it returns null.
 
-#### Graph#merge(graph)
+#### Graph#union(graph)
 
-Returns a new Graph that's the concatenation of the current graph plus the new one.
+Returns a new Graph that's the concatenation of this graph with the argument.
 
 ### TurtleParser
 

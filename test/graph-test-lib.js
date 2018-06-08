@@ -300,14 +300,15 @@ module.exports = function GenerateGraphTest(Graph){
 			assert.equal(matches.toArray().length, 1);
 			assert(matches.toArray()[0].equals(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI'))));
 		});
-		it('merge', function(){
+		// TODO add test for `merge` which, despite the description in RDF Interfaces, should produce a different but isomorphic graph.
+		it('union', function(){
 			var g = new Graph;
 			var h = new Graph;
 			g.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
 			h.add(triple('http://example.com/A', rdfns('type'), 'http://example.com/Letter'));
 			h.add(triple('http://example.com/B', rdfns('type'), 'http://example.com/Letter'));
 			h.add(triple('http://example.com/C', rdfns('type'), 'http://example.com/Letter'));
-			var m = g.merge(h);
+			var m = g.union(h);
 			assert.equal(g.length, 1);
 			assert.equal(h.length, 3);
 			assert.equal(m.length, 4);
