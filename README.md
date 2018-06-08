@@ -101,7 +101,7 @@ results.forEach(function(triple){ console.log(triple.toString()); });
 
 ### Compare nodes, triples, and graphs for equality
 
-Use the `NamedNode#equals`, `BlankNode#equals`, `Literal#equals`, `Triple#equals`, and `Graph#equals` methods to compare equality.
+Use the `NamedNode#equals`, `BlankNode#equals`, `Literal#equals`, `Triple#equals`, and `Graph#isomorphic` methods to compare equality.
 
 Literals verify codepoint, datatype, and language tag equality. Triples verify equality of each three nodes.
 
@@ -127,7 +127,7 @@ graph2.add(rdf.environment.createTriple(
 	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal'))
 	));
 
-graph.equals(graph2)
+graph.isomorphic(graph2)
 ```
 
     { '_:b1': BlankNode { nominalValue: 'b2' } }
@@ -445,11 +445,119 @@ The ultimate documentation is the source code. The lib/rdf.js file should be esp
 
 For parsing the IRI and converting to a URI that can be used in an HTTP request, see the [IRI package](https://github.com/Acubed/node-iri).
 
+### Triple
+
+Represents an edge in an RDF Graph, also known as a Statement or a Triple.
+
+Create an instance of a triple with `rdf.environment.createTriple(subject, predicate, object)`.
+
+Use the `Triple#subject`, `Triple#predicate`, and `Triple#object` properties to access the respective RDF nodes in the Triple.
+
+#### Triple#toString()
+
+Returns the triple encoded as N-Triples. Same as `Triple#toNT()`.
+
+#### Triple#toNT()
+
+Returns the triple encoded as N-Triples.
+
+#### Triple#toTurtle(profile)
+
+Returns the triple encoded as a statement in Turtle, optionally with the given prefix map applied.
+
+### RDFNode
+
+Also exposed as `Term`, this is the abstract superclass of things that can be found in an RDF Triple.
+
+#### RDFNode#equals(other)
+
+Returns true if the given node `other` would be considered the same node as itself in an RDF graph.
+
+`Literal`s and `NamedNode`s always compare by their contents. `BlankNode`s sometimes compare by their label, but sometimes may only be equal if they're the same instance.
+
+If you're managing a single RDF graph, you should keep a mapping of labels to BlankNode instances, and use the instances from this mapping, instead of creating a new BlankNode and setting the label.
+
+### NamedNode
+
+Represents an IRI node in an RDF graph. Instances are uniquely identified by their contents, so two different contents will still be considered equal if the inner IRIs are the same.
+
+Create an instance of a triple with `rdf.environment.createTriple(subject, predicate, object)`.
+
+#### NamedNode#equals(other)
+
+Returns true if the given NamedNode `other` is the same IRI, otherwise false. See `RDFNode#equals` for details
+
+#### NamedNode#toString()
+
+Returns the inner IRI as a string.
+
+#### NamedNode#toNT()
+
+Serializes the node as an IRI for N-Triples, inside angle brackets.
+
+#### NamedNode#toTurtle(profile)
+
+Serializes the node as an IRI for N-Triples inside angle brackets, or the shrunken CURIE form if provided in the optional `profile`.
+
+### BlankNode
+
+Represents a blank node in an RDF graph. BlankNode instances are typically identified by their instance, so two instances may be considered different even if they have the same label.
+
+Create an instance of a triple with `rdf.environment.createBlankNode()`.
+
+#### BlankNode#equals(other)
+
+Returns true if the given NamedNode `other` is the same IRI, otherwise false. See `RDFNode#equals` for details
+
+#### BlankNode#toString()
+
+Serializes the node as a Turtle-style BlankNode. See toTurtle for information.
+
+#### BlankNode#toNT()
+
+Serializes the node as a Turtle-style BlankNode. See toTurtle for information.
+
+#### BlankNode#toTurtle()
+
+Serializes the BlankNode as a Turtle-style blank node, e.g.:
+
+* `_:bn0`
+* `_:label`
+
+### Literal
+
+Represents a content literal in an RDF graph. Literals may have edges pointing only towards them (i.e. they're only found in the object position of a triple). Literals are Unicode strings with a datatype IRI, and optional associated language tag.
+
+* `Literal#value` - the string contents of the literal (note that ECMAScript/JavaScript uses UTF-16 to encode Unicode strings)
+* `Literal#datatype` - NamedNode that identifies the datatype of the literal.
+* `Literal#type` - getter that returns `null` if the datatype is an xsd:string, or a language literal, as seen in RDF1.0 semantics.
+* `Literal#language` - stores the language tag, if any, or `null` otherwise.
+
+#### Literal#equals(other)
+
+Returns true if the given Literal `other` has the same contents, datatype, and language tag. See `RDFNode#equals` for details.
+
+#### Literal#toString()
+
+Returns the literal contents as a string, discarding the other type/tags.
+
+#### Literal#toNT()
+
+Serializes the node as a string with datatype for N-Triples, inside double-quotes followed by language tag or datatype IRI (if not xsd:string).
+
+#### Literal#toTurtle(profile)
+
+Serializes the node as a string. For datatypes of xsd:integer, xsd:decimal, xsd:double, xsd:boolean, and xsd:string, the literal is printed without the datatype IRI.
+
+If the datatype IRI can be shrunk with the given profile, it is printed as a CURIE, otherwise it prints the full brackted IRI.
+
 ### Graph
 
-An implementation of [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) that stores triples in three indexes for fast querying.
+Represents a set of RDF `Triple` instances. Since a graph in RDF is a set of edges, nodes are only known to exist in the graph if there is an edge (a Triple) containing them.
 
-Graphs in this package are uniquely identified by their instance, and are mutable during execution. Methods with a return value are pure, methods that are mutating have no return value.
+This implements [RDF Interfaces: Graph](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#idl-def-Graph) with three indexes for fast querying.
+
+Instances of Graph are uniquely identified by their instance (however, Graph#equals tests isomorphism). Graphs are mutable. Methods with a return value are pure, non-pure (mutating) methods always return undefined.
 
 #### new Graph
 
@@ -465,11 +573,11 @@ Adds the given graph or array of `Triple` instances to the Graph.
 
 #### Graph#remove(Triple triple)
 
-Removes the given triple from the Graph if it exists.
+Removes the given triple from the Graph, if it exists.
 
 #### Graph#removeMatches(subject, predicate, object)
 
-Removes the given triple from the Graph if it exists.
+Removes the given triple from the Graph, if it exists.
 
 #### Graph#toArray()
 
@@ -486,6 +594,18 @@ Same behavior as `Array#every`: Evaluates `callback` over each Triple in the Gra
 #### Graph#filter(function callback)
 
 Same behavior as `Array#filter`: Evaluates `callback` over each Triple in the Graph, and returns a Graph with the triples that evaluated truthy.
+
+#### Graph#forEach(function callback)
+
+Same behavior as `Array#forEach`: Evaluates `callback` over each Triple in the Graph.
+
+#### Graph#isomorphic(graph)
+
+Determines if the provided graph is isomorphic with the current one: Determines if all the Literal and NamedNode instances equal, and is there a one-to-one mapping of bnodes between the two graphs. If so, it returns the mapping, the toString blanknode as the key, the graph argument's BlankNode instance as value. If there's no match, it returns null.
+
+#### Graph#merge(graph)
+
+Returns a new Graph that's the concatenation of the current graph plus the new one.
 
 ### TurtleParser
 
