@@ -89,6 +89,60 @@ describe('Triple', function(){
 			);
 		});
 	});
+	it('Triple: null subject throws', function(){
+		var env = new rdf.RDFEnvironment;
+		assert.throws(function(){
+			new rdf.Triple(
+				null,
+				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+			);
+		});
+	});
+	it('Triple: null predicate throws', function(){
+		var env = new rdf.RDFEnvironment;
+		assert.throws(function(){
+			new rdf.Triple(
+				env.createNamedNode('http://example.com/foo'),
+				null,
+				env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+			);
+		});
+	});
+	it('Triple: null object throws', function(){
+		var env = new rdf.RDFEnvironment;
+		assert.throws(function(){
+			new rdf.Triple(
+				env.createNamedNode('http://example.com/foo'),
+				env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+				null,
+			);
+		});
+	});
+	it('Triple: string subject', function(){
+		var env = new rdf.RDFEnvironment;
+		new rdf.Triple(
+			'http://example.com/foo',
+			env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+			env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+		);
+	});
+	it('Triple: string predicate', function(){
+		var env = new rdf.RDFEnvironment;
+		new rdf.Triple(
+			env.createNamedNode('http://example.com/foo'),
+			'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+			env.createNamedNode('http://www.w3.org/2000/01/rdf-schema#Class'),
+		);
+	});
+	it('Triple: string object', function(){
+		var env = new rdf.RDFEnvironment;
+		new rdf.Triple(
+			env.createNamedNode('http://example.com/foo'),
+			env.createNamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+			'http://www.w3.org/2000/01/rdf-schema#Class',
+		);
+	});
 	it("toString", function(){
 		var nn = new rdf.NamedNode('http://example.com/');
 		var t = new rdf.Triple(nn, nn, nn);
