@@ -36,12 +36,7 @@ api.parse = function(o, id){
 	return api.builtins.ref.call(o, id);
 }
 
-api.ns = function(ns){
-	return function(suffix){
-		if(typeof suffix!='string') throw new TypeError('Expected argument[0] `suffix` to be a string');
-		return ns+suffix;
-	};
-}
-api.rdfns = api.ns('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-api.rdfsns = api.ns('http://www.w3.org/2000/01/rdf-schema#');
-api.xsdns = api.ns('http://www.w3.org/2001/XMLSchema#');
+api.ns = require('./lib/ns.js').ns;
+api.rdfns = require('./lib/ns.js').rdfns;
+api.rdfsns = require('./lib/ns.js').rdfsns;
+api.xsdns = require('./lib/ns.js').xsdns;
