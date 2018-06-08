@@ -46,60 +46,57 @@ describe('rdf.environment.resolve', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('Some Literal');
 		assert.ok(t instanceof rdf.Literal);
+		assert.strictEqual(t.toString(), 'Some Literal');
+		assert.strictEqual(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#string');
+		assert.strictEqual(t.language, null);
 	});
 	it('createLiteral(value, datatype)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('<p>Some Literal</p>', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.language, null);
 	});
 	it('createLiteral(value, NamedNode)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('<p>Some Literal</p>', new rdf.NamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral'));
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.language, null);
 	});
 	it('createLiteral(value, language)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('Some Literal', 'en');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), 'Some Literal');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.equal(t.language, 'en');
-		assert.equal(t.datatype, undefined);
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 	});
 	it('createLiteral(value, LangTag)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('Some Literal', '@en');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), 'Some Literal');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.equal(t.language, 'en');
-		assert.equal(t.datatype, undefined);
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 	});
 	it('createLiteral(value, null, datatype)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('<p>Some Literal</p>', null, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.language, null);
 	});
 	it('createLiteral(value, null, NamedNode)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createLiteral('<p>Some Literal</p>', null, new rdf.NamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral'));
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.language, null);
 	});
 	it('createLanguageLiteral(value) throws', function(){
 		var env = new rdf.RDFEnvironment;
@@ -118,9 +115,8 @@ describe('rdf.environment.resolve', function(){
 		var t = env.createLiteral('Some Literal', 'en');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), 'Some Literal');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.equal(t.language, 'en');
-		assert.equal(t.datatype, undefined);
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 	});
 	it('createTypedLiteral(value) throws', function(){
 		var env = new rdf.RDFEnvironment;
@@ -133,18 +129,16 @@ describe('rdf.environment.resolve', function(){
 		var t = env.createTypedLiteral('<p>Some Literal</p>', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.language, null);
 	});
 	it('createTypedLiteral(value, NamedNode)', function(){
 		var env = new rdf.RDFEnvironment;
 		var t = env.createTypedLiteral('<p>Some Literal</p>', new rdf.NamedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral'));
 		assert.ok(t instanceof rdf.Literal);
 		assert.equal(t.toString(), '<p>Some Literal</p>');
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
-		assert.equal(t.datatypeIRI, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral');
+		assert.equal(t.language, null);
 	});
 	it('createTypedLiteral(value, language) throws', function(){
 		var env = new rdf.RDFEnvironment;
