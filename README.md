@@ -41,7 +41,6 @@ blanknode.toNT()
 ```javascript
 var literal = rdf.environment.createLiteral('plain string')
 literal.toNT()
-
 ```
 
     '"plain string"'
@@ -72,12 +71,12 @@ var graph = rdf.environment.createGraph();
 graph.add(statement1);
 graph.add(rdf.environment.createTriple(
 	blanknode,
-	rdf.environment.createNamedNode(rdf.rdfsns('label')),
+	rdf.rdfsns('label'),
 	rdf.environment.createLiteral('Price'))
 	);
 graph.add(rdf.environment.createTriple(
 	blanknode,
-	rdf.environment.createNamedNode(rdf.rdfns('value')),
+	rdf.rdfns('value'),
 	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal')))
 	);
 graph.length
@@ -119,12 +118,12 @@ graph2.add(rdf.environment.createTriple(
 	));
 graph2.add(rdf.environment.createTriple(
 	bn2,
-	rdf.environment.createNamedNode(rdf.rdfsns('label')),
+	rdf.rdfsns('label'),
 	rdf.environment.createLiteral('Price')
 	));
 graph2.add(rdf.environment.createTriple(
 	bn2,
-	rdf.environment.createNamedNode(rdf.rdfns('value')),
+	rdf.rdfns('value'),
 	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal'))
 	));
 
@@ -140,7 +139,7 @@ Use the `ns` function to create a URI factory.
 Use the builtin `rdfns`, `rdfsns`, and `xsdns` functions too.
 
 ```javascript
-var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+const foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
 foaf('knows')
 ```
 
@@ -157,36 +156,34 @@ rdf.rdfsns('label')
 Use the `rdf.parse` function to cast a native object into a graph:
 
 ```javascript
-var env = rdf.environment;
-function person_(n){ return rdf.environment.createNamedNode('http://example.com/'.concat(n)); }
-function foaf_(n){ return rdf.environment.createNamedNode('http://xmlns.com/foaf/0.1/'.concat(n)); }
-var partyDocument = rdf.parse({
+const person = rdf.ns('http://example.com/');
+const partyDocument = rdf.parse({
 	"@context": {
 		"@vocab": "http://xmlns.com/foaf/0.1/",
 		"foaf": "http://xmlns.com/foaf/0.1/",
 		"person": "http://example.com/",
 	},
-	"@id": person_('a'),
+	"@id": person('a'),
 	givenname: rdf.environment.createLiteral("Alice"),
 	age: 26,
 	knows: [
 		{
-			"@id": person_('b'),
+			"@id": person('b'),
 			givenname: rdf.environment.createLiteral("Bob"),
 			age: 36,
-			knows: person_('a'),
+			knows: person('a'),
 		},
 		{
-			"@id": person_('c'),
+			"@id": person('c'),
 			givenname: rdf.environment.createLiteral("Carol"),
 			age: 46,
-			knows: person_('a'),
+			knows: person('a'),
 		},
 		{
-			"@id": person_('d'),
+			"@id": person('d'),
 			givenname: rdf.environment.createLiteral("Dan"),
 			age: 56,
-			knows: [person_('a'), person_('b')],
+			knows: [person('a'), person('b')],
 		}
 	]
 })
@@ -217,9 +214,9 @@ Use the `graphify` method to produce an `rdf.Graph` from the data:
 var partyGraph = partyDocument.graphify();
 
 partyGraph
-    .toArray()
-    .sort(function(a,b){ return a.compare(b); })
-    .forEach(function(triple){ console.log(triple.toString()); });
+	.toArray()
+	.sort(function(a,b){ return a.compare(b); })
+	.forEach(function(triple){ console.log(triple.toString()); });
 ```
 
     <http://example.com/a> <http://xmlns.com/foaf/0.1/age> "26"^^<http://www.w3.org/2001/XMLSchema#integer> .
@@ -244,8 +241,8 @@ Use the ResultSet interface to quickly drill into the specific data you want:
 
 ```javascript
 // Get the name of Alice
-partyGraph.reference(person_('a'))
-	.rel(foaf_('givenname'))
+partyGraph.reference(person('a'))
+	.rel(foaf('givenname'))
 	.one()
 	.toString()
 ```
@@ -254,9 +251,9 @@ partyGraph.reference(person_('a'))
 
 ```javascript
 // Get all the names of everyone who Alice knows
-partyGraph.reference(person_('a'))
-	.rel(rdf.environment.createNamedNode(foaf('knows')))
-	.rel(rdf.environment.createNamedNode(foaf('givenname')))
+partyGraph.reference(person('a'))
+	.rel(foaf('knows'))
+	.rel(foaf('givenname'))
 	.toArray()
 	.sort()
 	.join(', ')
@@ -288,9 +285,9 @@ rdf.environment.createLiteral('1', rdf.xsdns('boolean')).valueOf()
 
 ```javascript
 // sum the ages of everyone that Alice knows
-partyGraph.reference(person_('a'))
-	.rel(rdf.environment.createNamedNode(foaf('knows')))
-	.rel(rdf.environment.createNamedNode(foaf('age')))
+partyGraph.reference(person('a'))
+	.rel(foaf('knows'))
+	.rel(foaf('age'))
 	.reduce(function(a, b){ return a.valueOf() + b; }, 0);
 ```
 
@@ -303,7 +300,7 @@ Use the `RDFEnvironment`, `Profile`, `TermMap`, and `ProfileMap` interfaces to w
 Here's an example to take an RDF graph, and output a Turtle document with the prefixes applied:
 
 ```javascript
-var profile = env.createProfile();
+var profile = rdf.environment.createProfile();
 profile.setDefaultPrefix('http://example.com/');
 profile.setPrefix('ff', 'http://xmlns.com/foaf/0.1/');
 var turtle = partyGraph
@@ -366,46 +363,46 @@ rdf.unsetBuiltins();
 
 The domains of the functions ensure constistency with all the other applications found in the RDF universe.
 
-`Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString. The RDF1.1 datatype is available through the `Literal#datatypeIRI` property.
+`Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString. The RDF1.1 datatype is available through the `Literal#datatype` property. The RDF1.0 datatype, which null for plain literals and language strings, is available through `Literal#type`.
 
 ```javascript
-var literal = env.createLiteral('Foo');
-console.dir(literal.datatype);
-console.dir(literal.datatypeIRI);
+var literal = createLiteral('Foo');
+console.dir(literal.datatype.toNT());
+console.dir(literal.type);
 console.dir(literal.language);
 ```
 
-    undefined
-    'http://www.w3.org/2001/XMLSchema#string'
-    undefined
+    '<http://www.w3.org/2001/XMLSchema#string>'
+    null
+    null
 
 ```javascript
-var langLiteral = env.createLiteral('Foo', '@en');
-console.dir(langLiteral.datatype);
-console.dir(langLiteral.datatypeIRI);
+var langLiteral = createLiteral('Foo', '@en');
+console.dir(langLiteral.datatype.toNT());
+console.dir(langLiteral.type);
 console.dir(langLiteral.language);
 ```
 
-    undefined
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString'
+    '<http://www.w3.org/1999/02/22-rdf-syntax-ns#langString>'
+    null
     'en'
 
 ```javascript
-var typedLiteral = env.createLiteral('Foo', rdf.xsdns('string'));
-console.dir(typedLiteral.datatype);
-console.dir(typedLiteral.datatypeIRI);
+var typedLiteral = createLiteral('Foo', rdf.xsdns('string'));
+console.dir(typedLiteral.datatype.toNT());
+console.dir(typedLiteral.type);
 console.dir(typedLiteral.language);
 ```
 
-    undefined
-    'http://www.w3.org/2001/XMLSchema#string'
+    '<http://www.w3.org/2001/XMLSchema#string>'
+    null
     undefined
 
 The data model is enforced in the domain of each of the functions; `Triple` doesn't allow bnodes as predicates, for example:
 
 ```javascript
 try {
-    env.createTriple(env.createBlankNode(), env.createBlankNode(), env.createBlankNode());
+    rdf.environment.createTriple(createBlankNode(), createBlankNode(), createBlankNode());
 }catch(e){
     console.log(e.toString());
 }
