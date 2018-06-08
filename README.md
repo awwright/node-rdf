@@ -410,6 +410,17 @@ try {
 
     Error: predicate must be a NamedNode
 
+### Parse Turtle data
+
+Use the `TurtleParser.parse(document, base)` function to parse Turtle data into a Graph object:
+
+```javascript
+var parse = rdf.TurtleParser.parse('<> a <Page> .', 'http://example.com/');
+parse.graph.toArray().join("\n")
+```
+
+    '<http://example.com/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.com/Page> .'
+
 ### Public Domain unlicensed
 
 Use this library in whatever application you want! Give credit when you do so, or don't (but preferably the former). Use it to take over the world, or don't (but preferably the latter).
@@ -607,23 +618,32 @@ Determines if the provided graph is isomorphic with the current one: Determines 
 
 Returns a new Graph that's the concatenation of this graph with the argument.
 
+### Variable
+
+Represents a variable for subgraph matching, in e.g. SPARQL queries. This is also an instance of `RDFNode`.
+
+A `Variable` instance may be used in a `TriplePattern` instance. Instances are not allowed in `Triple` statements, since they're for subgraph matching, and not actual graph data.
+
+### TriplePattern
+
+A variant of `Triple` that allows `Variable` instances in the subject, predicate, or object.
+
 ### TurtleParser
 
 An implementation of [the Data parser API of RDF Interfaces](http://www.w3.org/TR/2011/WD-rdf-interfaces-20110510/#parsing-and-serializing-data).
 
-	var turtleParser = new rdf.TurtleParser(environment);
-	turtleParser.parse(turtle, callback, base, filter, graph);
+To synchronously parse a Turtle document, use `TurtleParser.parse()`
 
-Where:
+### TurtleParser.parse(document, base)
 
-* `environment` is the optional RDF Environment that will resolve prefixes and create bnodes. If left out, a new, empty environment will be created. The enviornment is accessible from the `environment` property.
-* `turtle` is the document body to be processed.
-* `callback` is an optional function(Graph) to be called when processing is completed. This should normally be undefined, the parser is fully synchronous and processing is completed after the parse() function returns.
-* `base` is the base URI that relative URIs will be resolved against.
-* `filter` is an optional function(Triple) that will restrict which triples are added to the output graph. The function takes an input Triple and returns true to include the triple in the output graph.
-* `graph` is an optional Graph that triples will be add()ed to. If left out, a new IndexedGraph will be used.
+Returns a TurtleParser that has processed `document` with given `base`.
 
-Since @base and @prefix directives modify the environment passed to TurtleParser, it's recommended a new TurtleParser be used for each document.
+The parsed Graph instance is available at `TurtleParser#graph`:
+
+```
+var parse = rdf.TurtleParser('<http://example.com/> a <http://example.com/Page> .');
+console.log(parse.graph.toArray().join("\n"));
+```
 
 ### RDFEnvironment
 
