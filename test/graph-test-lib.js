@@ -365,7 +365,7 @@ module.exports = function GenerateGraphTest(Graph){
 			assert(Array.isArray(a));
 			assert.equal(a.length, 4);
 		});
-		it('equals', function(){
+		it('isomorphic', function(){
 			function gen(idx){
 				var gg = new Graph;
 				for(var ba = []; ba.length<5; ba.push(new rdf.BlankNode));
@@ -380,9 +380,9 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen(1);
 			var gh = gen(1);
-			assert(ga.equals(gh));
+			assert(ga.isomorphic(gh));
 			var gm = gen(2);
-			assert(!gm.equals(ga));
+			assert(!gm.isomorphic(ga));
 		});
 		it('equals (no bnodes positive)', function(){
 			function gen(sub){
@@ -408,7 +408,7 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen('http://example.com/A');
 			var gb = gen('http://example.com/B');
-			assert(!ga.equals(gb));
+			assert(!ga.isomorphic(gb));
 		});
 		it('equals (various data positive)', function(){
 			function gen(){
@@ -422,7 +422,7 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen();
 			var gb = gen();
-			assert(ga.equals(gb));
+			assert(ga.isomorphic(gb));
 		});
 		it('equals (various data negative)', function(){
 			function gen(l){
@@ -437,7 +437,7 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen('@fr');
 			var gb = gen('@ja');
-			assert(!ga.equals(gb));
+			assert(!ga.isomorphic(gb));
 		});
 	});
 }

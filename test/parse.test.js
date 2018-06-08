@@ -31,9 +31,9 @@ function generateRefTest(subject, topic, expectedn3, expectedNT, expectedtriples
 		// Have the data, compare
 		var expectedTriples = expectedGraph.toArray().sort();
 		var outputTriples = outputGraph.toArray().sort();
-		if(!expectedGraph.equals(outputGraph)){
+		if(!expectedGraph.isomorphic(outputGraph)){
 			assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
-			assert(expectedGraph.equals(outputGraph));
+			assert(expectedGraph.isomorphic(outputGraph));
 		}
 	});
 	it('parse('+subject+').n3() expected output', function(){
@@ -52,9 +52,9 @@ function generateRefTest(subject, topic, expectedn3, expectedNT, expectedtriples
 		// Have the data, compare
 		var expectedTriples = expectedGraph.toArray().sort();
 		var outputTriples = outputGraph.toArray().sort();
-		if(!expectedGraph.equals(outputGraph)){
+		if(!expectedGraph.isomorphic(outputGraph)){
 			assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
-			assert(expectedGraph.equals(outputGraph));
+			assert(expectedGraph.isomorphic(outputGraph));
 		}
 		});
 	if(expectedNT) it('parse('+subject+').toNT() expected output', function(){
@@ -73,9 +73,9 @@ function generateRefTest(subject, topic, expectedn3, expectedNT, expectedtriples
 		// Have the data, compare
 		var expectedTriples = expectedGraph.toArray().sort();
 		var outputTriples = outputGraph.toArray().sort();
-		if(!expectedGraph.equals(outputGraph)){
+		if(!expectedGraph.isomorphic(outputGraph)){
 			assert.equal(outputTriples.join('\n'), expectedTriples.join('\n'));
-			assert(expectedGraph.equals(outputGraph));
+			assert(expectedGraph.isomorphic(outputGraph));
 		}
 	});
 }
