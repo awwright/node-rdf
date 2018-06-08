@@ -66,7 +66,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.datatype.value, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.toNT(), '"That Seventies Show"@en');
 		assert.strictEqual(t.toTurtle(), '"That Seventies Show"@en');
-		assert.strictEqual(t.n3(), '"That Seventies Show"@en');
+		assert.strictEqual(t.toTurtle(), '"That Seventies Show"@en');
 		// Equality tests
 		assert.ok(t.equals(new rdf.Literal('That Seventies Show', '@en')));
 		//assert.ok(t.equals('That Seventies Show'));
@@ -80,7 +80,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.toNT(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
 		// Equality tests
 		assert.ok(t.equals(new rdf.Literal('Cette Série des Années Septante', '@fr-be')));
 		assert.ok(!t.equals(new rdf.Literal('Cette Serie des Annees Septante', '@fr-be')));
@@ -94,7 +94,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.termType, 'Literal');
 		assert.equal(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#integer');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '123');
 		// Equality tests
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals('123'));
@@ -109,7 +109,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.termType, 'Literal');
 		assert.equal(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#integer');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
@@ -124,7 +124,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.termType, 'Literal');
 		assert.equal(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#string');
 		assert.strictEqual(t.toNT(), '"123"');
-		//assert.strictEqual(t.n3(), '123');
+		//assert.strictEqual(t.toTurtle(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
 		assert.ok(t.equals(new rdf.Literal('123')));
 		assert.ok(!t.equals('123'));
@@ -140,7 +140,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.termType, 'Literal');
 		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.toNT(), '"123"@en');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '"123"@en');
 		assert.ok(t.equals(new rdf.Literal('123', '@en')));
 		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('123')));
@@ -154,7 +154,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.termType, 'Literal');
 		assert.equal(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#string');
 		assert.strictEqual(t.toNT(), '"123"');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '"123"');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
 		assert.ok(t.equals(new rdf.Literal('123')));
 		assert.ok(!t.equals('123'));
@@ -177,7 +177,7 @@ describe('Literal (with builtins)', function(){
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"A String"');
-		assert.strictEqual(t.n3(), '"A String"');
+		assert.strictEqual(t.toTurtle(), '"A String"');
 		assert.strictEqual(t.interfaceName, 'Literal'); // 2012 Note variant
 		assert.strictEqual(t.termType, 'Literal'); // 2017 Community Group variant
 	});
@@ -189,7 +189,7 @@ describe('Literal (with builtins)', function(){
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"That Seventies Show"@en');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '"That Seventies Show"@en');
 		// "If tocompare is an instance of RDFNode then this method returns true if an only if all attributes on the two interfaces are equivalent."
 		assert.ok(t.equals('That Seventies Show'.l('en')));
 		// "If tocompare is NOT an instance of RDFNode then the it must be compared against the result of calling toValue on this node."
@@ -206,7 +206,7 @@ describe('Literal (with builtins)', function(){
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
 		assert.ok(t.equals(new rdf.Literal('Cette Série des Années Septante', '@fr-be')));
 		assert.ok(!t.equals(new rdf.Literal('Cette Serie des Annees Septante', '@fr-be')));
 		assert.ok(!t.equals(new rdf.Literal('Cette Série des Années Septante', '@en')));
@@ -220,7 +220,7 @@ describe('Literal (with builtins)', function(){
 		assert.strictEqual(t.nodeType(), 'TypedLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
@@ -233,7 +233,7 @@ describe('Literal (with builtins)', function(){
 		assert.strictEqual(t.nodeType(), 'TypedLiteral');
 		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
-		//assert.strictEqual(t.n3(), '123');
+		assert.strictEqual(t.toTurtle(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
