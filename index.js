@@ -10,6 +10,7 @@ var api = exports;
 
 api.Triple = require('./lib/RDFNode.js').Triple;
 api.RDFNode = require("./lib/RDFNode.js").RDFNode;
+api.Term = api.RDFNode;
 api.NamedNode = require("./lib/RDFNode.js").NamedNode;
 api.BlankNode = require("./lib/RDFNode.js").BlankNode;
 api.Literal = require("./lib/RDFNode.js").Literal;
