@@ -169,4 +169,13 @@ describe('Profile', function(){
 		assert.equal(profile.shrink('http://example.com/vocab/dragon/🐲🐧'), '\uD83D\uDC09:\uD83D\uDC32\uD83D\uDC27');
 		assert.equal(profile.shrink('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'), 'a');
 	});
+	it("remove", function(){
+		var profile = new rdf.Profile;
+		profile.setTerm('term', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+		profile.setPrefix('prefix', 'http://example.com/vocab/foo/');
+		profile.terms.remove('term');
+		profile.prefixes.remove('prefix');
+		assert.strictEqual(profile.resolve('term'), null);
+		assert.strictEqual(profile.resolve('prefix:foo'), null);
+	});
 });
