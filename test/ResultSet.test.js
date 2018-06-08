@@ -108,5 +108,51 @@ describe('ResultSet', function(){
 			var knows2 = knows1.rev(new rdf.NamedNode(foaf('knows')));
 			assert.equal(knows2.length, 1);
 		});
+		it('literals are figurative blackholes (rel)', function(){
+			var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+			var g = new rdf.Graph();
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~b')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~c')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~d')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Bob')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Carol')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Dan')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('age')), new rdf.Literal('26', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('age')), new rdf.Literal('36', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('age')), new rdf.Literal('46', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('age')), new rdf.Literal('56', rdf.xsdns('integer'))));
+			// Find everyone who knows a string literal (i.e. the query makes no sense, will produce zero results)
+			var knows0 = g.reference(new rdf.NamedNode('http://example.com/~a'));
+			var knows1 = knows0.rel(new rdf.NamedNode(foaf('givenname')));
+			var knows2 = knows1.rel(new rdf.NamedNode(foaf('knows')));
+			assert.equal(knows2.length, 0);
+		});
+		it('backtracking from a literal', function(){
+			var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+			var g = new rdf.Graph();
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~b')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~c')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~d')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('knows')), new rdf.NamedNode('http://example.com/~a')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Alice')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Carol')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('givenname')), new rdf.Literal('Dan')));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~a'), new rdf.NamedNode(foaf('age')), new rdf.Literal('26', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~b'), new rdf.NamedNode(foaf('age')), new rdf.Literal('36', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~c'), new rdf.NamedNode(foaf('age')), new rdf.Literal('46', rdf.xsdns('integer'))));
+			g.add(new rdf.Triple(new rdf.NamedNode('http://example.com/~d'), new rdf.NamedNode(foaf('age')), new rdf.Literal('56', rdf.xsdns('integer'))));
+			// Find everyone with the same name as ~a
+			var knows0 = g.reference(new rdf.NamedNode('http://example.com/~a'));
+			var knows1 = knows0.rel(new rdf.NamedNode(foaf('givenname')));
+			var knows2 = knows1.rev(new rdf.NamedNode(foaf('givenname')));
+			assert.equal(knows2.length, 2);
+		});
 	});
 });
