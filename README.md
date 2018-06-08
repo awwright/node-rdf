@@ -307,24 +307,24 @@ var turtle = partyGraph
 	.toArray()
 	.sort(function(a,b){ return a.compare(b); })
 	.map(function(stmt){
-		return stmt.subject.n3(profile) + ' ' + stmt.predicate.n3(profile) + ' ' + stmt.object.n3(profile) + " .";
+		return stmt.toTurtle(profile);
 	});
 //console.log(profile.n3());
 console.log(turtle.join('\n'));
 ```
 
-    :a ff:age "26"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :a ff:age 26 .
     :a ff:givenname "Alice" .
     :a ff:knows :b .
     :a ff:knows :c .
     :a ff:knows :d .
-    :b ff:age "36"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :b ff:age 36 .
     :b ff:givenname "Bob" .
     :b ff:knows :a .
-    :c ff:age "46"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :c ff:age 46 .
     :c ff:givenname "Carol" .
     :c ff:knows :a .
-    :d ff:age "56"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    :d ff:age 56 .
     :d ff:givenname "Dan" .
     :d ff:knows :a .
     :d ff:knows :b .
