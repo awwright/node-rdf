@@ -6,6 +6,17 @@ describe('ns', function(){
 		var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
 		assert.equal(foaf('name'), 'http://xmlns.com/foaf/0.1/name');
 	});
+	it('rdf.ns expects string', function(){
+		assert.throws(function(){
+			rdf.ns(1);
+		});
+	});
+	it('rdf.ns output function expects string', function(){
+		var foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+		assert.throws(function(){
+			foaf(2);
+		});
+	});
 });
 describe('ns builtins', function(){
 	it('rdf.rdfns', function(){
