@@ -359,7 +359,7 @@ Change your mind? Use `unsetBuiltins` to remove them:
 rdf.unsetBuiltins();
 ```
 
-### Native support for RDF1.1 semantics
+### Native support for RDF 1.1 semantics
 
 The domains of the functions ensure constistency with all the other applications found in the RDF universe.
 
@@ -650,7 +650,7 @@ Returns a TurtleParser that has processed `document` with given `base`.
 The parsed Graph instance is available at `TurtleParser#graph`:
 
 ```javascript
-const parse = rdf.TurtleParser('<http://example.com/> a <http://example.com/Page> .');
+const parse = rdf.TurtleParser.parse('<http://example.com/> a <http://example.com/Page> .');
 console.log(parse.graph.toArray().join("\n"));
 ```
 
