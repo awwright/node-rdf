@@ -16,6 +16,6 @@ test/TurtleTests:
 # $ ijsnotebook README.ipynb
 # `cat -s` collapses multiple newlines into a single newline
 README.md: README.ipynb
-	jupyter-nbconvert $< --to markdown --stdout | cat -s > $@
+	jupyter-nbconvert $< --to markdown --stdout | sed 's/^var /const /' | cat -s > $@
 
 .PHONY: test

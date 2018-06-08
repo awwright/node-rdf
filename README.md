@@ -20,26 +20,26 @@ The library also exposes a function to decorate the builtin ECMAScript protoypes
 The `NamedNode`, `BlankNode`, and `Literal` represent nodes in an RDF graph.
 
 ```javascript
-var rdf = require('rdf');
-var createNamedNode = rdf.environment.createNamedNode.bind(rdf.environment);
-var createBlankNode = rdf.environment.createBlankNode.bind(rdf.environment);
-var createLiteral = rdf.environment.createLiteral.bind(rdf.environment);
+const rdf = require('rdf');
+const createNamedNode = rdf.environment.createNamedNode.bind(rdf.environment);
+const createBlankNode = rdf.environment.createBlankNode.bind(rdf.environment);
+const createLiteral = rdf.environment.createLiteral.bind(rdf.environment);
 
-var namednode = createNamedNode('http://example.com/');
+const namednode = createNamedNode('http://example.com/');
 namednode.toNT()
 ```
 
     '<http://example.com/>'
 
 ```javascript
-var blanknode = rdf.environment.createBlankNode();
+const blanknode = rdf.environment.createBlankNode();
 blanknode.toNT()
 ```
 
     '_:b1'
 
 ```javascript
-var literal = rdf.environment.createLiteral('plain string')
+const literal = rdf.environment.createLiteral('plain string')
 literal.toNT()
 ```
 
@@ -56,7 +56,7 @@ namednode.equals(literal)
 A `Triple` instance represents an edge in an RDF graph (also known as a Statement).
 
 ```javascript
-var statement1 = rdf.environment.createTriple(blanknode, namednode, literal);
+const statement1 = rdf.environment.createTriple(blanknode, namednode, literal);
 statement1.toString()
 ```
 
@@ -67,7 +67,7 @@ statement1.toString()
 A `Graph` instance stores and queries.
 
 ```javascript
-var graph = rdf.environment.createGraph();
+const graph = rdf.environment.createGraph();
 graph.add(statement1);
 graph.add(rdf.environment.createTriple(
 	blanknode,
@@ -85,7 +85,7 @@ graph.length
     3
 
 ```javascript
-var results = graph.match(blanknode, null, null);
+const results = graph.match(blanknode, null, null);
 results.length
 ```
 
@@ -108,8 +108,8 @@ Literals verify codepoint, datatype, and language tag equality. Triples verify e
 Graphs test for isomorphism, that there's a mapping that can map the blank nodes in one graph to the blank nodes in the other one-to-one. If so isomorphic, it returns the mapping.
 
 ```javascript
-var graph2 = rdf.environment.createGraph();
-var bn2 = rdf.environment.createBlankNode();
+const graph2 = rdf.environment.createGraph();
+const bn2 = rdf.environment.createBlankNode();
 
 graph2.add(rdf.environment.createTriple(
 	bn2,
@@ -211,7 +211,7 @@ console.log(partyDocument.n3());
 Use the `graphify` method to produce an `rdf.Graph` from the data:
 
 ```javascript
-var partyGraph = partyDocument.graphify();
+const partyGraph = partyDocument.graphify();
 
 partyGraph
 	.toArray()
@@ -300,10 +300,10 @@ Use the `RDFEnvironment`, `Profile`, `TermMap`, and `ProfileMap` interfaces to w
 Here's an example to take an RDF graph, and output a Turtle document with the prefixes applied:
 
 ```javascript
-var profile = rdf.environment.createProfile();
+const profile = rdf.environment.createProfile();
 profile.setDefaultPrefix('http://example.com/');
 profile.setPrefix('ff', 'http://xmlns.com/foaf/0.1/');
-var turtle = partyGraph
+const turtle = partyGraph
 	.toArray()
 	.sort(function(a,b){ return a.compare(b); })
 	.map(function(stmt){
@@ -366,7 +366,7 @@ The domains of the functions ensure constistency with all the other applications
 `Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString. The RDF1.1 datatype is available through the `Literal#datatype` property. The RDF1.0 datatype, which null for plain literals and language strings, is available through `Literal#type`.
 
 ```javascript
-var literal = createLiteral('Foo');
+const literal = createLiteral('Foo');
 console.dir(literal.datatype.toNT());
 console.dir(literal.type);
 console.dir(literal.language);
@@ -377,7 +377,7 @@ console.dir(literal.language);
     null
 
 ```javascript
-var langLiteral = createLiteral('Foo', '@en');
+const langLiteral = createLiteral('Foo', '@en');
 console.dir(langLiteral.datatype.toNT());
 console.dir(langLiteral.type);
 console.dir(langLiteral.language);
@@ -388,7 +388,7 @@ console.dir(langLiteral.language);
     'en'
 
 ```javascript
-var typedLiteral = createLiteral('Foo', rdf.xsdns('string'));
+const typedLiteral = createLiteral('Foo', rdf.xsdns('string'));
 console.dir(typedLiteral.datatype.toNT());
 console.dir(typedLiteral.type);
 console.dir(typedLiteral.language);
@@ -415,7 +415,7 @@ try {
 Use the `TurtleParser.parse(document, base)` function to parse Turtle data into a Graph object:
 
 ```javascript
-var parse = rdf.TurtleParser.parse('<> a <Page> .', 'http://example.com/');
+const parse = rdf.TurtleParser.parse('<> a <Page> .', 'http://example.com/');
 parse.graph.toArray().join("\n")
 ```
 
@@ -650,7 +650,7 @@ Returns a TurtleParser that has processed `document` with given `base`.
 The parsed Graph instance is available at `TurtleParser#graph`:
 
 ```javascript
-var parse = rdf.TurtleParser('<http://example.com/> a <http://example.com/Page> .');
+const parse = rdf.TurtleParser('<http://example.com/> a <http://example.com/Page> .');
 console.log(parse.graph.toArray().join("\n"));
 ```
 
@@ -685,7 +685,7 @@ The `environment` export is the default instance of RDFEnvironment.
 Generally, you'll want to alias this to something:
 
 ```javascript
-var rdfenv = require('rdf').environment;
+const rdfenv = require('rdf').environment;
 ```
 
 ### Builtins
