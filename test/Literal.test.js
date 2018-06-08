@@ -1,7 +1,7 @@
 var assert = require('assert');
 var rdf = require('..');
 
-describe('Literal', function(){
+function LiteralTests(){
 	it("js3", function(){
 		var t = new rdf.Literal("A String");
 		assert.strictEqual(t.nodeType(), 'PlainLiteral');
@@ -132,7 +132,7 @@ describe('Literal', function(){
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
 		assert.ok(!t.equals('1'));
 	});
-	it("Typed instance (string) (rdf:langString)", function(){
+	it("Language string (rdf:langString)", function(){
 		var t = new rdf.Literal('123', '@en', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.ok(t instanceof rdf.Literal);
 		// Leave this behavior undefined for now, consider this deprecated anyways
@@ -161,82 +161,40 @@ describe('Literal', function(){
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
 	});
-});
-
-describe('Literal (with builtins)', function(){
-	before(function(){
-		rdf.setBuiltins();
-	});
-	after(function(){
-		rdf.unsetBuiltins();
-	});
-
-	it("Plain instance", function(){
-		var t = new rdf.Literal("A String");
-		assert.ok(t instanceof rdf.Literal);
-		assert.strictEqual(t.nodeType(), 'PlainLiteral');
-		assert.strictEqual(t.termType, 'Literal');
-		assert.strictEqual(t.toNT(), '"A String"');
-		assert.strictEqual(t.toTurtle(), '"A String"');
-		assert.strictEqual(t.interfaceName, 'Literal'); // 2012 Note variant
-		assert.strictEqual(t.termType, 'Literal'); // 2017 Community Group variant
-	});
-	it("Language instance @en", function(){
-		var t = new rdf.Literal('That Seventies Show', '@en');
-		assert.ok(t instanceof rdf.Literal);
-		assert.equal(t.language, 'en');
-		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
-		assert.strictEqual(t.nodeType(), 'PlainLiteral');
-		assert.strictEqual(t.termType, 'Literal');
-		assert.strictEqual(t.toNT(), '"That Seventies Show"@en');
-		assert.strictEqual(t.toTurtle(), '"That Seventies Show"@en');
-		// "If tocompare is an instance of RDFNode then this method returns true if an only if all attributes on the two interfaces are equivalent."
-		assert.ok(t.equals('That Seventies Show'.l('en')));
-		// "If tocompare is NOT an instance of RDFNode then the it must be compared against the result of calling toValue on this node."
-		assert.ok(!t.equals('String'.l('en')));
-		assert.ok(!t.equals('That Seventies Show'.l('fr-be')));
-		// In Builtins mode a string will be treated as a NamedNode so this won't work as expected
-		//assert.ok(t.equals('That Seventies Show'));
-	});
-	it("Language instance @fr-be", function(){
-		var t = new rdf.Literal('Cette Série des Années Septante', 'fr-be');
-		assert.ok(t instanceof rdf.Literal);
-		assert.equal(t.language, 'fr-be');
-		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
-		assert.strictEqual(t.nodeType(), 'PlainLiteral');
-		assert.strictEqual(t.termType, 'Literal');
-		assert.strictEqual(t.toNT(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
-		assert.strictEqual(t.toTurtle(), '"Cette S\\u00E9rie des Ann\\u00E9es Septante"@fr-be');
-		assert.ok(t.equals(new rdf.Literal('Cette Série des Années Septante', '@fr-be')));
-		assert.ok(!t.equals(new rdf.Literal('Cette Serie des Annees Septante', '@fr-be')));
-		assert.ok(!t.equals(new rdf.Literal('Cette Série des Années Septante', '@en')));
-
-	});
-	it("Typed instance (string)", function(){
+	it("TypedLiteral xsd:integer", function(){
 		var t = new rdf.Literal('123', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#integer'));
-		assert.ok(t instanceof rdf.Literal);
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#integer');
-		assert.strictEqual(t.nodeType(), 'TypedLiteral');
-		assert.strictEqual(t.termType, 'Literal');
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
 		assert.strictEqual(t.toTurtle(), '123');
-		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
-		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
-		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
 	});
-	it("Typed instance (NamedNode)", function(){
-		var t = new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer');
-		assert.ok(t instanceof rdf.Literal);
-		assert.equal(t.language, undefined);
-		assert.equal(t.datatype.toString(), 'http://www.w3.org/2001/XMLSchema#integer');
-		assert.strictEqual(t.nodeType(), 'TypedLiteral');
-		assert.strictEqual(t.termType, 'Literal');
-		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
-		assert.strictEqual(t.toTurtle(), '123');
-		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
-		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
-		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
+	it("TypedLiteral invalid xsd:integer", function(){
+		var t = new rdf.Literal('something', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#integer'));
+		assert.strictEqual(t.toNT(), '"something"^^<http://www.w3.org/2001/XMLSchema#integer>');
+		assert.strictEqual(t.toTurtle(), '"something"^^<http://www.w3.org/2001/XMLSchema#integer>');
+	});
+	it("TypedLiteral xsd:string", function(){
+		var t = new rdf.Literal('a string', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#string'));
+		assert.strictEqual(t.toNT(), '"a string"'); // NT strips xsd:string as a historical relic
+		assert.strictEqual(t.toTurtle(), '"a string"');
+	});
+	it("TypedLiteral xsd:decimal", function(){
+		var t = new rdf.Literal('123.0', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#decimal'));
+		assert.strictEqual(t.toNT(), '"123.0"^^<http://www.w3.org/2001/XMLSchema#decimal>');
+		assert.strictEqual(t.toTurtle(), '123.0');
+	});
+	it("TypedLiteral xsd:double", function(){
+		var t = new rdf.Literal('4.2E9', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#double'));
+		assert.strictEqual(t.toNT(), '"4.2E9"^^<http://www.w3.org/2001/XMLSchema#double>');
+		assert.strictEqual(t.toTurtle(), '4.2E9');
+	});
+	it("TypedLiteral xsd:boolean", function(){
+		var t = new rdf.Literal('true', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#boolean'));
+		assert.strictEqual(t.toNT(), '"true"^^<http://www.w3.org/2001/XMLSchema#boolean>');
+		assert.strictEqual(t.toTurtle(), 'true');
+	});
+	it("TypedLiteral xsd:boolean (number)", function(){
+		var t = new rdf.Literal('1', new rdf.NamedNode('http://www.w3.org/2001/XMLSchema#boolean'));
+		assert.strictEqual(t.toNT(), '"1"^^<http://www.w3.org/2001/XMLSchema#boolean>');
+		assert.strictEqual(t.toTurtle(), '"1"^^<http://www.w3.org/2001/XMLSchema#boolean>');
 	});
 	describe("valueOf", function(){
 		testValueOf("A STRING", 'string', "A STRING");
@@ -265,6 +223,18 @@ describe('Literal (with builtins)', function(){
 		testValueOf("2001-10-26T21:32:52.12679", "dateTime", new Date('2001-10-26T21:32:52.12679'));
 		// TODO probbly should verify the inputs are of the correct range?
 	});
+}
+
+describe('Literal', LiteralTests);
+
+describe('Literal (with builtins)', function(){
+	before(function(){
+		rdf.setBuiltins();
+	});
+	after(function(){
+		rdf.unsetBuiltins();
+	});
+	LiteralTests();
 });
 
 function testValueOf(literal, type, test){
