@@ -83,10 +83,10 @@ describe('Literal', function(){
 		//assert.strictEqual(t.n3(), '123');
 		// Equality tests
 		assert.ok(t.equals(new rdf.Literal('Cette Série des Années Septante', '@fr-be')));
-		//assert.ok(t.equals('Cette Série des Années Septante'));
 		assert.ok(!t.equals(new rdf.Literal('Cette Serie des Annees Septante', '@fr-be')));
 		assert.ok(!t.equals(new rdf.Literal('Cette Série des Années Septante', '@en')));
-		//assert.ok(!t.equals('That Seventies Show'));
+		assert.ok(!t.equals('Cette Série des Années Septante'));
+		assert.ok(!t.equals('That Seventies Show'));
 	});
 	it("Typed instance (string)", function(){
 		var t = new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer');
@@ -97,7 +97,7 @@ describe('Literal', function(){
 		//assert.strictEqual(t.n3(), '123');
 		// Equality tests
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
-		assert.ok(t.equals('123'));
+		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
 		assert.ok(!t.equals('1'));
@@ -111,7 +111,7 @@ describe('Literal', function(){
 		assert.strictEqual(t.toNT(), '"123"^^<http://www.w3.org/2001/XMLSchema#integer>');
 		//assert.strictEqual(t.n3(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#integer')));
-		assert.ok(t.equals('123'));
+		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
 		assert.ok(!t.equals('1'));
@@ -127,7 +127,7 @@ describe('Literal', function(){
 		//assert.strictEqual(t.n3(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
 		assert.ok(t.equals(new rdf.Literal('123')));
-		assert.ok(t.equals('123'));
+		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
 		assert.ok(!t.equals('1'));
@@ -141,8 +141,8 @@ describe('Literal', function(){
 		assert.equal(t.datatype.toString(), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString');
 		assert.strictEqual(t.toNT(), '"123"@en');
 		//assert.strictEqual(t.n3(), '123');
-		assert.ok(t.equals('123'));
 		assert.ok(t.equals(new rdf.Literal('123', '@en')));
+		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('123')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
 		assert.ok(!t.equals('1'));
@@ -157,10 +157,9 @@ describe('Literal', function(){
 		//assert.strictEqual(t.n3(), '123');
 		assert.ok(t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#string')));
 		assert.ok(t.equals(new rdf.Literal('123')));
-		assert.ok(t.equals('123'));
+		assert.ok(!t.equals('123'));
 		assert.ok(!t.equals(new rdf.Literal('1', 'http://www.w3.org/2001/XMLSchema#integer')));
 		assert.ok(!t.equals(new rdf.Literal('123', 'http://www.w3.org/2001/XMLSchema#decimal')));
-		assert.ok(!t.equals('1'));
 	});
 });
 
