@@ -688,6 +688,29 @@ Generally, you'll want to alias this to something:
 const rdfenv = require('rdf').environment;
 ```
 
+### Prefixes
+
+#### ns(prefix)
+
+Returns an IRI factory, a function that produces an IRI of `prefix` plus the provided argument. It's a simple wrapper around string concatenation:
+
+```javascript
+const foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+foaf('knows')
+```
+
+#### rdfns(name)
+
+Returns an IRI produced by appending `name` to the rdf: namespace, `http://www.w3.org/1999/02/22-rdf-syntax-ns#`.
+
+#### rdfsns(name)
+
+Returns an IRI produced by appending `name` to the rdfs: namespace, `http://www.w3.org/2000/01/rdf-schema#`.
+
+#### xsdns(name)
+
+Returns an IRI produced by appending `name` to the xsd: namespace, `http://www.w3.org/2001/XMLSchema#`.
+
 ### Builtins
 
 Instead of using NamedNode, URIs by default are represented as plain strings. The RDFNode interface may be overloaded onto the standard String object using `rdf.setBuiltins()` or onto a particular prototype by using:
