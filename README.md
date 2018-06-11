@@ -17,7 +17,7 @@ The library also exposes a function to decorate the builtin ECMAScript protoypes
 
 ### Represent RDF nodes
 
-The `NamedNode`, `BlankNode`, and `Literal` represent nodes in an RDF graph.
+`NamedNode`, `BlankNode`, and `Literal` instances represent nodes in an RDF graph.
 
 ```javascript
 const rdf = require('rdf');
@@ -45,12 +45,6 @@ literal.toNT()
 
     '"plain string"'
 
-```javascript
-namednode.equals(literal)
-```
-
-    false
-
 ### Represent RDF statements
 
 A `Triple` instance represents an edge in an RDF graph (also known as a Statement).
@@ -64,20 +58,24 @@ statement1.toString()
 
 ### Represent RDF graphs
 
-A `Graph` instance stores and queries.
+A `Graph` instance stores and queries for Triples:
 
 ```javascript
 const graph = rdf.environment.createGraph();
-graph.add(statement1);
 graph.add(rdf.environment.createTriple(
-	blanknode,
+	createBlankNode(),
 	rdf.rdfsns('label'),
-	rdf.environment.createLiteral('Price'))
+	createLiteral('Book', '@en'))
 	);
 graph.add(rdf.environment.createTriple(
-	blanknode,
+	createBlankNode(),
 	rdf.rdfns('value'),
-	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal')))
+	createLiteral('10.0', rdf.xsdns('decimal')))
+	);
+graph.add(rdf.environment.createTriple(
+	createBlankNode(),
+	rdf.rdfns('value'),
+	createLiteral('10.1', rdf.xsdns('decimal')))
 	);
 graph.length
 ```
@@ -85,19 +83,32 @@ graph.length
     3
 
 ```javascript
-const results = graph.match(blanknode, null, null);
-results.length
+graph
+	.match(null, rdf.rdfns('value'), null)
+	.forEach(function(triple){ console.log(triple.toString()); });
 ```
 
-    3
+    _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+    _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+### Simplify RDF namespaces
+
+Use the `ns` function to create a URI factory.
 
 ```javascript
-results.forEach(function(triple){ console.log(triple.toString()); });
+const foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
+foaf('knows')
 ```
 
-    _:b1 <http://example.com/> "plain string" .
-    _:b1 <http://www.w3.org/2000/01/rdf-schema#label> "Price" .
-    _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+    'http://xmlns.com/foaf/0.1/knows'
+
+Use the builtin `rdfns`, `rdfsns`, and `xsdns` functions too:
+
+```javascript
+rdf.rdfsns('label')
+```
+
+    'http://www.w3.org/2000/01/rdf-schema#label'
 
 ### Compare nodes, triples, and graphs for equality
 
@@ -129,27 +140,6 @@ graph2.add(rdf.environment.createTriple(
 
 graph.isomorphic(graph2)
 ```
-
-    { '_:b1': BlankNode { nominalValue: 'b2' } }
-
-### Simplify RDF namespaces
-
-Use the `ns` function to create a URI factory.
-
-Use the builtin `rdfns`, `rdfsns`, and `xsdns` functions too.
-
-```javascript
-const foaf = rdf.ns('http://xmlns.com/foaf/0.1/');
-foaf('knows')
-```
-
-    'http://xmlns.com/foaf/0.1/knows'
-
-```javascript
-rdf.rdfsns('label')
-```
-
-    'http://www.w3.org/2000/01/rdf-schema#label'
 
 ### Compose RDF graphs as native Objects
 
@@ -272,16 +262,18 @@ rdf.environment.createLiteral('2018-06-04T23:11:25Z', rdf.xsdns('date')).valueOf
     2018-06-04T23:11:25.000Z
 
 ```javascript
-rdf.environment.createLiteral('24.440', rdf.xsdns('decimal')).valueOf()
+rdf.environment.createLiteral('24.4400', rdf.xsdns('decimal')).valueOf()
 ```
 
     24.44
 
 ```javascript
-rdf.environment.createLiteral('1', rdf.xsdns('boolean')).valueOf()
+rdf.environment.createLiteral('0', rdf.xsdns('boolean')).valueOf()
 ```
 
-    true
+    false
+
+Read the ages of everyone that Alice knows as a native number, and sum them:
 
 ```javascript
 // sum the ages of everyone that Alice knows
@@ -396,7 +388,7 @@ console.dir(typedLiteral.language);
 
     '<http://www.w3.org/2001/XMLSchema#string>'
     null
-    undefined
+    null
 
 The data model is enforced in the domain of each of the functions; `Triple` doesn't allow bnodes as predicates, for example:
 
@@ -447,8 +439,6 @@ Implementation largely adapted from webr3's js3, rdfa-api, and rdf-api implement
 This is free and unencumbered software released into the public domain. For information, see <http://unlicense.org/>.
 
 ## Usage
-
-The ultimate documentation is the source code. The lib/rdf.js file should be especially useful.
 
 ### RDFNode
 
@@ -627,11 +617,73 @@ Determines if the provided graph is isomorphic with the current one: Determines 
 
 Returns a new Graph that's the concatenation of this graph with the argument.
 
+#### Graph#reference(resource)
+
+Returns a `ResultSet`, a pointer to a node in a graph that can be walked to query for data.
+
+The provided `resource` does not necessarially have to exist in the graph, however, any operations on it will produce an empty set.
+
 ### Variable
 
 Represents a variable for subgraph matching, in e.g. SPARQL queries. This is also an instance of `RDFNode`.
 
 A `Variable` instance may be used in a `TriplePattern` instance. Instances are not allowed in `Triple` statements, since they're for subgraph matching, and not actual graph data.
+
+### ResultSet
+
+Represents a node in an instance of a graph, whose relationships inside the graph can be walked and then queried. This is called ResultSet instead of NodeSet because it also contains a pointer to the graph of data and other nodes that can be walked.
+
+Properties:
+
+* `ResultSet#length` - provides the size of the set
+
+#### ResultSet#rel(predicate)
+
+Walks the `predicate` relationship over each node in the set, returning a new ResultSet with the destination nodes, and a reference to the same graph.
+
+If the current set is an empty set, the return value will also be an empty set.
+
+If any nodes in the current set are literals, they will be ignored and will not produce any destination nodes.
+
+#### ResultSet#rev(predicate)
+
+Walks the `predicate` relationship _backwards_ from each node in the set, returning a new ResultSet with the destination nodes, and a reference to the same graph.
+
+If the current set is an empty set, the return value will also be an empty set.
+
+This method will walk backwards from `Literal`, destination nodes will be `BlankNode` or `NamedNode`.
+
+#### ResultSet#toArray()
+
+Return the nodes in the set as an Array.
+
+#### ResultSet#some(function callback)
+
+Same behavior as `Array#some`: Evaluates `callback` over each RDFNode in the ResultSet, and returns true if the callback returns truthy for any of them.
+
+#### ResultSet#every(function callback)
+
+Same behavior as `Array#every`: Evaluates `callback` over each RDFNode in the ResultSet, and returns true if the callback returns truthy for all of them.
+
+#### ResultSet#filter(function callback)
+
+Same behavior as `Array#filter`: Evaluates `callback` over each RDFNode in the ResultSet, and returns a new ResultSet with the triples that evaluated truthy.
+
+#### ResultSet#forEach(function callback)
+
+Same behavior as `Array#forEach`: Evaluates `callback` over each RDFNode in the ResultSet.
+
+#### ResultSet#map(function callback)
+
+Same behavior as `Array#map`: Evaluates `callback` over each RDFNode in the ResultSet, and returns a new ResultSet of each of the returned triples.
+
+#### ResultSet#reduce(function callback, any initial)
+
+Same behavior as `Array#reduce`: Evaluates `callback` over each RDFNode in the ResultSet with the current node and the previous return value, or `initial` if the first item.
+
+#### ResultSet#one()
+
+Returns the only item in the set if there is one, or `null` otherwise. Or else if there is more than one item in the set, throws an Error.
 
 ### TriplePattern
 
