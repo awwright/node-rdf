@@ -8,14 +8,11 @@
 
 var api = exports;
 
-api.Triple = require('./lib/RDFNode.js').Triple;
 api.RDFNode = require("./lib/RDFNode.js").RDFNode;
 api.Term = api.RDFNode;
 api.NamedNode = require("./lib/RDFNode.js").NamedNode;
 api.BlankNode = require("./lib/RDFNode.js").BlankNode;
 api.Literal = require("./lib/RDFNode.js").Literal;
-
-api.TriplePattern = require('./lib/RDFNode.js').TriplePattern;
 api.Variable = require('./lib/RDFNode.js').Variable;
 
 api.Profile = require('./lib/Profile.js').Profile;
@@ -26,7 +23,11 @@ api.RDFEnvironment = require('./lib/RDFEnvironment.js').RDFEnvironment;
 api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 
 api.Graph = require("./lib/Graph.js").Graph;
+api.Triple = require('./lib/RDFNode.js').Triple;
+api.TriplePattern = require('./lib/RDFNode.js').TriplePattern;
 api.ResultSet = require("./lib/ResultSet.js").ResultSet;
+
+api.Quad = require('./lib/RDFNode.js').Quad;
 
 api.environment = require('./lib/environment').environment;
 api.setBuiltins = require('./lib/Builtins').setBuiltins;
