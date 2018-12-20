@@ -27,6 +27,7 @@ api.Triple = require('./lib/RDFNode.js').Triple;
 api.TriplePattern = require('./lib/RDFNode.js').TriplePattern;
 api.ResultSet = require("./lib/ResultSet.js").ResultSet;
 
+api.Dataset = require('./lib/Dataset.js').Dataset;
 api.Quad = require('./lib/RDFNode.js').Quad;
 
 api.environment = require('./lib/environment').environment;
