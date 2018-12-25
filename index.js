@@ -19,6 +19,7 @@ api.Profile = require('./lib/Profile.js').Profile;
 api.TermMap = require('./lib/Profile.js').TermMap;
 api.PrefixMap = require('./lib/Profile.js').PrefixMap;
 api.RDFEnvironment = require('./lib/RDFEnvironment.js').RDFEnvironment;
+api.BlankNodeMap = require('./lib/BlankNodeMap.js').BlankNodeMap;
 
 api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 
