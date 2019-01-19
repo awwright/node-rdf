@@ -440,5 +440,60 @@ module.exports = function GenerateGraphTest(Graph){
 			var gb = gen('@ja');
 			assert(!ga.isomorphic(gb));
 		});
+		it('consistent (various data positive)', function(){
+			function gen(){
+				var g = new Graph;
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI')));
+				return g;
+			}
+			// Graph a
+			var ga = gen();
+			var gb = gen();
+			assert(ga.consistent(gb));
+		});
+		it('consistent (subset positive)', function(){
+			var ga = new Graph;
+			ga.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+			ga.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en')));
+			ga.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string')));
+			ga.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI')));
+
+			var gb = new Graph;
+			gb.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+			assert(ga.consistent(gb));
+		});
+		it('consistent (bnode positive)', function(){
+			function gen(node){
+				var g = new Graph;
+				var bn = 
+				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en')));
+				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string')));
+				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI')));
+				return g;
+			}
+			// Graph a
+			var ga = gen('http://example.com/Letter');
+			var gb = gen(new rdf.BlankNode);
+			assert(ga.consistent(gb));
+		});
+		it('consistent (various data negative)', function(){
+			function gen(l){
+				var g = new Graph;
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#anyURI')));
+				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', l)));
+				return g;
+			}
+			// Graph a
+			var ga = gen('@fr');
+			var gb = gen('@ja');
+			assert(!ga.consistent(gb));
+		});
 	});
 }
