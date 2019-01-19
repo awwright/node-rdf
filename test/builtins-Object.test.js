@@ -265,7 +265,7 @@ describe('Object builtins', function(){
 					},
 					a: 'foaf:Person', // a CURIE
 					foaf$name: env.createLiteral('Nathan'),
-					foaf$age: new Date().getFullYear() - 1981,
+					foaf$age: 2018 - 1981,
 					foaf$holdsAccount: {
 						a: 'OnlineAccount',
 						rdfs$label: rdf.environment.createLiteral("Nathan's twitter account", 'en'),
