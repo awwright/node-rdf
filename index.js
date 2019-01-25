@@ -8,7 +8,7 @@
 
 var api = exports;
 
-api.RDFNode = require("./lib/RDFNode.js").RDFNode;
+api.RDFNode = require('./lib/RDFNode.js').RDFNode;
 api.Term = api.RDFNode;
 api.NamedNode = require("./lib/RDFNode.js").NamedNode;
 api.BlankNode = require("./lib/RDFNode.js").BlankNode;
@@ -37,7 +37,7 @@ api.unsetBuiltins = require('./lib/Builtins').unsetBuiltins;
 api.builtins = require('./lib/Builtins');
 api.parse = function(o, id){
 	return api.builtins.ref.call(o, id);
-}
+};
 
 api.ns = require('./lib/ns.js').ns;
 api.rdfns = require('./lib/ns.js').rdfns;
