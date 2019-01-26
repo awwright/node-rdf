@@ -1,11 +1,11 @@
 
 # RDF Interfaces implementation
 
-This package is a set of simple utilities aimed at making it simple to represent RDF data.
+This package is a set of utilities aimed at making it simple to represent RDF data.
 
-RDF can be considered a superset of typical link relationships found on the Web: It allows a collection of directional relationships from some _subject_, with a relationship _predicate_, to some _object_.
+RDF can be considered a superset of typical links found on the Web: It allows a collection of directional relationships from some _subject_, with a relationship _predicate_, to some _object_.
 
-On the Web, normally all three are documents. In RDF, the object may also be a literal string containing data; and the subject or object may be an anonymous resource called a _blank node_.
+On the Web, normally all three are documents. In RDF, the object may also be a literal string containing data; and the subject or object may be an existential quantifier called a _blank node_.
 
 The `NamedNode`, `BlankNode`, and `Literal` objects represent the fundemental types of data that can be found in an RDF Statement. Statements are represented as `Triple`.
 
