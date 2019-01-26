@@ -440,7 +440,7 @@ module.exports = function GenerateGraphTest(Graph){
 			var gb = gen('@ja');
 			assert(!ga.isomorphic(gb));
 		});
-		it('consistent (various data positive)', function(){
+		it('simplyEntails (various data positive)', function(){
 			function gen(){
 				var g = new Graph;
 				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
@@ -452,9 +452,9 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen();
 			var gb = gen();
-			assert(ga.consistent(gb));
+			assert(ga.simplyEntails(gb));
 		});
-		it('consistent (subset positive)', function(){
+		it('simplyEntails (subset positive)', function(){
 			var ga = new Graph;
 			ga.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
 			ga.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en')));
@@ -463,9 +463,9 @@ module.exports = function GenerateGraphTest(Graph){
 
 			var gb = new Graph;
 			gb.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
-			assert(ga.consistent(gb));
+			assert(ga.simplyEntails(gb));
 		});
-		it('consistent (bnode positive)', function(){
+		it('simplyEntails (bnode positive)', function(){
 			function gen(node){
 				var g = new Graph;
 				var bn = 
@@ -478,9 +478,9 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen('http://example.com/Letter');
 			var gb = gen(new rdf.BlankNode);
-			assert(ga.consistent(gb));
+			assert(ga.simplyEntails(gb));
 		});
-		it('consistent (various data negative)', function(){
+		it('simplyEntails (various data negative)', function(){
 			function gen(l){
 				var g = new Graph;
 				g.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
@@ -493,7 +493,7 @@ module.exports = function GenerateGraphTest(Graph){
 			// Graph a
 			var ga = gen('@fr');
 			var gb = gen('@ja');
-			assert(!ga.consistent(gb));
+			assert(!ga.simplyEntails(gb));
 		});
 	});
 }
