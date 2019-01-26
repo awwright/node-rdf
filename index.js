@@ -10,9 +10,9 @@ var api = exports;
 
 api.RDFNode = require('./lib/RDFNode.js').RDFNode;
 api.Term = api.RDFNode;
-api.NamedNode = require("./lib/RDFNode.js").NamedNode;
-api.BlankNode = require("./lib/RDFNode.js").BlankNode;
-api.Literal = require("./lib/RDFNode.js").Literal;
+api.NamedNode = require('./lib/RDFNode.js').NamedNode;
+api.BlankNode = require('./lib/RDFNode.js').BlankNode;
+api.Literal = require('./lib/RDFNode.js').Literal;
 api.Variable = require('./lib/RDFNode.js').Variable;
 
 api.Profile = require('./lib/Profile.js').Profile;
@@ -23,7 +23,7 @@ api.BlankNodeMap = require('./lib/BlankNodeMap.js').BlankNodeMap;
 
 api.TurtleParser = require('./lib/TurtleParser.js').Turtle;
 
-api.Graph = require("./lib/Graph.js").Graph;
+api.Graph = require('./lib/Graph.js').Graph;
 api.Triple = require('./lib/RDFNode.js').Triple;
 api.TriplePattern = require('./lib/RDFNode.js').TriplePattern;
 api.ResultSet = require("./lib/ResultSet.js").ResultSet;
