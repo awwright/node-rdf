@@ -19,6 +19,7 @@ test/TurtleTests:
 test/rdf-mt-tests/manifest.ttl: | test/rdf-mt-tests
 
 test/rdf-mt-tests:
+	mkdir $@
 	$(GET) 'https://www.w3.org/2013/rdf-mt-tests/TESTS.tar.gz' | tar -zx -C test/rdf-mt-tests -f -
 
 # Edit with:
