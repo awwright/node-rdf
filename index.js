@@ -28,8 +28,19 @@ api.Triple = require('./lib/RDFNode.js').Triple;
 api.TriplePattern = require('./lib/RDFNode.js').TriplePattern;
 api.ResultSet = require("./lib/ResultSet.js").ResultSet;
 
+api.DefaultGraph = require('./lib/RDFNode.js').DefaultGraph;
 api.Dataset = require('./lib/Dataset.js').Dataset;
 api.Quad = require('./lib/RDFNode.js').Quad;
+
+// DataFactory support
+api.factory = require('./lib/DataFactory.js');
+api.namedNode = require('./lib/DataFactory.js').namedNode;
+api.blankNode = require('./lib/DataFactory.js').blankNode;
+api.literal = require('./lib/DataFactory.js').literal;
+api.variable = require('./lib/DataFactory.js').variable;
+api.defaultGraph = require('./lib/DataFactory.js').defaultGraph;
+api.triple = require('./lib/DataFactory.js').triple;
+api.quad = require('./lib/DataFactory.js').quad;
 
 api.environment = require('./lib/environment').environment;
 api.setBuiltins = require('./lib/Builtins').setBuiltins;
