@@ -70,6 +70,7 @@ describe('Turtle test suite', function(){
 							fs.readFile(filename, 'utf8', function(err, data){
 								if(err) throw err;
 								var parser = TurtleParser.parse(data, fileURI);
+								assert(parser.graph);
 								done();
 							});
 						});
