@@ -5,7 +5,7 @@ ISTANBUL=./node_modules/.bin/nyc
 
 all: README.md
 
-test: test/TurtleTests/manifest.ttl
+test: test/TurtleTests/manifest.ttl test/rdf-mt-tests/manifest.ttl
 	$(MOCHA)
 
 coverage: test/TurtleTests/manifest.ttl
@@ -14,7 +14,12 @@ coverage: test/TurtleTests/manifest.ttl
 test/TurtleTests/manifest.ttl: | test/TurtleTests
 
 test/TurtleTests:
-	$(GET) 'http://www.w3.org/2013/TurtleTests/TESTS.tar.gz' | tar -zx -C test -f -
+	$(GET) 'https://www.w3.org/2013/TurtleTests/TESTS.tar.gz' | tar -zx -C test -f -
+
+test/rdf-mt-tests/manifest.ttl: | test/rdf-mt-tests
+
+test/rdf-mt-tests:
+	$(GET) 'https://www.w3.org/2013/rdf-mt-tests/TESTS.tar.gz' | tar -zx -C test/rdf-mt-tests -f -
 
 # Edit with:
 # $ ijsnotebook README.ipynb

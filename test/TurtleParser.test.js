@@ -1,7 +1,10 @@
+// This expects the RDF Semantics test suite to be extracted,
+// with the manifest file at ./TurtleTests/manifest.ttl
+// Run `make test` to download this
+
 var assert = require('assert');
 var fs = require('fs');
 var rdf = require('..');
-var env = rdf.environment;
 var TurtleParser = rdf.TurtleParser;
 
 var m$ = rdf.ns('http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#');
