@@ -154,4 +154,26 @@ describe('Triple', function(){
 		var nn2 = new rdf.NamedNode('http://example.com/');
 		assert.ok(t.equals(new rdf.Triple(nn2, nn2, nn2)));
 	});
+	it("equals (negative subject)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Triple(nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Triple(nn3, nn2, nn2)));
+	});
+	it("equals (negative predicate)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Triple(nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Triple(nn2, nn3, nn2)));
+	});
+	it("equals (negative object)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Triple(nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Triple(nn2, nn2, nn3)));
+	});
+	// TODO: behavior for testing equal of things that are not Triple
 });

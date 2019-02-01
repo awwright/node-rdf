@@ -169,4 +169,32 @@ describe('Quad', function(){
 		var nn2 = new rdf.NamedNode('http://example.com/');
 		assert.ok(t.equals(new rdf.Quad(nn2, nn2, nn2, nn2)));
 	});
+	it("equals (negative subject)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Quad(nn, nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Quad(nn3, nn2, nn2, nn2)));
+	});
+	it("equals (negative predicate)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Quad(nn, nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Quad(nn2, nn3, nn2, nn2)));
+	});
+	it("equals (negative object)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Quad(nn, nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Quad(nn2, nn2, nn3, nn2)));
+	});
+	it("equals (negative graph)", function(){
+		var nn = new rdf.NamedNode('http://example.com/');
+		var t = new rdf.Quad(nn, nn, nn, nn);
+		var nn2 = new rdf.NamedNode('http://example.com/');
+		var nn3 = new rdf.NamedNode('http://example.org/foo');
+		assert(!t.equals(new rdf.Quad(nn2, nn2, nn2, nn3)));
+	});
 });
