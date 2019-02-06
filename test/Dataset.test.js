@@ -18,7 +18,7 @@ function quad(s, p, o, g){
 var Dataset = rdf.Dataset;
 
 describe('Dataset', function GenerateDatasetTest(){
-	describe(Dataset.name+' methods exist', function(){
+	describe('methods exist', function(){
 		var t = new Dataset;
 		it('add exists', function(){ assert.equal(typeof t.add, 'function'); });
 		it('remove exists', function(){ assert.equal(typeof t.remove, 'function'); });
@@ -91,6 +91,13 @@ describe('Dataset', function GenerateDatasetTest(){
 			assert.equal(gg.match(ex('A'), rdfns('type'), null, null).length, 1);
 			assert.equal(gg.match(ex('A'), rdfns('type'), ex('Letter'), null).length, 1);
 			assert.equal(gg.match(ex('A'), rdfns('type'), ex('Letter'), ex('graph')).length, 1);
+		});
+		it('has', function(){
+			// "Universal quantification method, tests whether every quad in the Dataset passes the test implemented by the provided quadFilter."
+			var g = new Dataset;
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph')));
+			assert(g.has(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph'))));
+			assert(!g.has(quad(ex('B'), rdfns('type'), ex('Letter'), ex('graph'))));
 		});
 		it('every', function(){
 			// "Universal quantification method, tests whether every quad in the Dataset passes the test implemented by the provided quadFilter."
@@ -387,7 +394,7 @@ describe('Dataset', function GenerateDatasetTest(){
 			assert.equal(g.length, 5);
 			assert.equal(g.toArray().length, 5);
 		});
-		it('removeMatches', function(){
+		it('removeMatches (exact)', function(){
 			var g = new Dataset;
 			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph1')));
 			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph2')));
@@ -413,6 +420,82 @@ describe('Dataset', function GenerateDatasetTest(){
 			);
 			assert.equal(g.length, 3);
 			assert.equal(g.toArray().length, 3);
+		});
+		it('removeMatches (subject)', function(){
+			var g = new Dataset;
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph1')));
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph2')));
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph3')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph1')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph2')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph3')));
+			assert.equal(g.length, 6);
+			assert.equal(g.toArray().length, 6);
+			g.removeMatches(
+				new rdf.NamedNode(ex('A')),
+				null,
+				null,
+				null,
+			);
+			assert.equal(g.length, 3);
+			assert.equal(g.toArray().length, 3);
+		});
+		it('removeMatches (predicate)', function(){
+			var g = new Dataset;
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph1')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph2')));
+			g.add(quad(ex('A'), ex('label'), ex('1'), ex('graph1')));
+			g.add(quad(ex('A'), ex('label'), ex('1'), ex('graph2')));
+			assert.equal(g.length, 4);
+			assert.equal(g.toArray().length, 4);
+			g.removeMatches(
+				null,
+				new rdf.NamedNode(ex('label')),
+				null,
+				null,
+			);
+			assert.equal(g.length, 2);
+			assert.equal(g.toArray().length, 2);
+		});
+		it('removeMatches (object)', function(){
+			var g = new Dataset;
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph1')));
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph2')));
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph3')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph1')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph2')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph3')));
+			assert.equal(g.length, 6);
+			assert.equal(g.toArray().length, 6);
+			g.removeMatches(
+				null,
+				null,
+				new rdf.NamedNode(rdfsns('Class')),
+				null,
+			);
+			assert.equal(g.length, 3);
+			assert.equal(g.toArray().length, 3);
+		});
+		it('removeMatches (graph)', function(){
+			var g = new Dataset;
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph1')));
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph2')));
+			g.add(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph3')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph1')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph2')));
+			g.add(quad(ex('A'), rdfns('type'), ex('Letter'), ex('graph3')));
+			assert.equal(g.length, 6);
+			assert.equal(g.toArray().length, 6);
+			g.removeMatches(
+				null,
+				null,
+				null,
+				new rdf.NamedNode(ex('graph1')),
+			);
+			assert.equal(g.length, 4);
+			assert.equal(g.toArray().length, 4);
+			assert(!g.has(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph1'))));
+			assert(g.has(quad(ex('Letter'), rdfns('type'), rdfsns('Class'), ex('graph2'))));
 		});
 		it('some', function(){
 			var g = new Dataset;
