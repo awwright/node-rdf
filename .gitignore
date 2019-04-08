@@ -1,3 +1,4 @@
 /node_modules/
 /test/TurtleTests/
 /test/rdf-mt-tests/
+/.ipynb_checkpoints
