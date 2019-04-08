@@ -34,6 +34,66 @@ describe('Dataset', function GenerateDatasetTest(){
 		//it('actions exists', function(){ assert.ok(Array.isArray(t.actions)); });
 		//it('addAction exists', function(){ assert.equal(typeof t.addAction, 'function'); });
 	});
+	describe("RDF Representation CG", function(){
+		/*
+		interface DatasetCore {
+			readonly attribute unsigned long  size;
+			Dataset                           add (Quad quad);
+			Dataset                           delete (Quad quad);
+			boolean                           has (Quad quad);
+			Dataset                           match (optional Term? subject, optional Term? predicate, optional Term? object, optional Term? graph);
+			iterable<Quad>;
+		};
+		interface Dataset : DatasetCore {
+			Dataset                           addAll ((Dataset or sequence<Quad>) quads);
+			Dataset                           deleteMatches (optional Term subject, optional Term predicate, optional Term object, optional Term graph);
+			Dataset                           difference (Dataset other);
+			boolean                           equals (Dataset other);
+			boolean                           every (QuadFilterIteratee iteratee);
+			Dataset                           filter (QuadFilterIteratee iteratee);
+			void                              forEach (QuadRunIteratee iteratee);
+			Promise<Dataset>                  import (Stream stream);
+			Dataset                           intersection (Dataset other);
+			Dataset                           map (QuadMapIteratee iteratee);
+			any                               reduce (QuadReduceIteratee iteratee, optional any initialValue);
+			boolean                           some (QuadFilterIteratee iteratee);
+			sequence<Quad>                    toArray ();
+			String                            toCanonical ();
+			Stream                            toStream ();
+			String                            toString ();
+			Dataset                           union (Dataset quads);
+		};
+		*/
+		var g;
+		before(function(){
+			g = new rdf.Dataset();
+		});
+		it('instanceof ', function(){ assert(g instanceof rdf.Dataset); });
+		// DatasetCore
+		it('size', function(){ assert.equal(typeof g.size, 'number'); });
+		it('add', function(){ assert.equal(typeof g.add, 'function'); });
+		it('delete', function(){ assert.equal(typeof g.delete, 'function'); });
+		it('has', function(){ assert.equal(typeof g.has, 'function'); });
+		it('match', function(){ assert.equal(typeof g.match, 'function'); });
+		// Dataset
+		it('addAll', function(){ assert.equal(typeof g.addAll, 'function'); });
+		it('deleteMatches', function(){ assert.equal(typeof g.deleteMatches, 'function'); });
+		it('difference', function(){ assert.equal(typeof g.difference, 'function'); });
+		it('equals', function(){ assert.equal(typeof g.equals, 'function'); });
+		it('every', function(){ assert.equal(typeof g.every, 'function'); });
+		it('filter', function(){ assert.equal(typeof g.filter, 'function'); });
+		it('forEach', function(){ assert.equal(typeof g.forEach, 'function'); });
+		it('import', function(){ assert.equal(typeof g.import, 'function'); });
+		it('intersection', function(){ assert.equal(typeof g.intersection, 'function'); });
+		it('map', function(){ assert.equal(typeof g.map, 'function'); });
+		it('reduce', function(){ assert.equal(typeof g.reduce, 'function'); });
+		it('some', function(){ assert.equal(typeof g.some, 'function'); });
+		it('toArray', function(){ assert.equal(typeof g.toArray, 'function'); });
+		it('toCanonical', function(){ assert.equal(typeof g.toCanonical, 'function'); });
+		it('toStream', function(){ assert.equal(typeof g.toStream, 'function'); });
+		it('toString', function(){ assert.equal(typeof g.toString, 'function'); });
+		it('union', function(){ assert.equal(typeof g.union, 'function'); });
+	});
 	describe(Dataset.name+' data', function(){
 		it('add', function(){
 			var g = new Dataset;
