@@ -24,6 +24,6 @@
 	"license": "Unlicense",
 	"devDependencies": {
 		"mocha": "^5.2.0",
-		"nyc": "^13.1.0"
+		"nyc": "^14.0.0"
 	}
 }
