@@ -24,6 +24,7 @@ describe('TermMap', function(){
 		var map = new rdf.TermMap;
 		assert.equal(typeof map.set, 'function');
 		assert.equal(typeof map.set('type', 'http://example.com/type'), 'undefined');
+		assert.equal(map.get('type'), 'http://example.com/type');
 		assert.equal(map.resolve('type'), 'http://example.com/type');
 	});
 	it('TermMap#setDefault(string)', function(){
