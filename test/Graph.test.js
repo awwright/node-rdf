@@ -488,6 +488,68 @@ function GenerateGraphTest(Graph){
 			var gb = gen('@ja');
 			assert(!ga.isomorphic(gb));
 		});
+	});
+	describe('Graph#simplyEntails', function(){
+		// Test that a graph G simply entails a graph E
+		it('the empty graph is simply entailed by any graph', function(){
+			var empty = new Graph;
+			var anyGraph = new Graph;
+			anyGraph.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+			assert(anyGraph.simplyEntails(empty));
+		});
+		it('the empty graph does not simply entail any graph except itself', function(){
+			var empty = new Graph;
+			var anyGraph = new Graph;
+			anyGraph.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
+			assert(!empty.simplyEntails(anyGraph));
+			assert(empty.simplyEntails(new Graph));
+		});
+		it('a graph simply entails all its subgraphs', function(){
+			var G = new Graph;
+			G.add(triple('http://example.com/Letter', rdfsns('label'), new rdf.Literal('Letter')));
+			G.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			var E = new Graph;
+			G.add(triple('http://example.com/Letter', rdfns('type'), 'http://www.w3.org/2000/01/rdf-schema#Class'));
+			assert(G.simplyEntails(E));
+		});
+		it('a graph is simply entailed by any of its instances (1)', function(){
+			var graph = new Graph;
+			var b1 = new rdf.BlankNode;
+			graph.add(triple('http://example.com/Letter', rdfsns('label'), b1));
+			assert(graph.length, 1);
+			var instance = new Graph;
+			var b2 = new rdf.BlankNode;
+			instance.add(triple('http://example.com/Letter', rdfsns('label'), b2));
+			assert(instance.length, 1);
+			var map = graph.simplyEntails(instance);
+			console.error(map);
+			assert(map);
+			assert(b1.equals(map[b2]));
+		});
+		it('a graph is simply entailed by any of its instances (2)', function(){
+			var graph = new Graph;
+			var b1 = new rdf.Literal('string');
+			graph.add(triple('http://example.com/Letter', rdfsns('label'), b1));
+			assert(graph.length, 1);
+			var instance = new Graph;
+			var b2 = new rdf.BlankNode;
+			instance.add(triple('http://example.com/Letter', rdfsns('label'), b2));
+			assert(instance.length, 1);
+			var map = graph.simplyEntails(instance);
+			console.error(map);
+			assert(map);
+			assert(b1.equals(map[b2]));
+		});
+		it('If E is a lean graph and E1 is a proper instance of E, then E does not simply entail E1', function(){
+			var E = new Graph;
+			var bx = new rdf.BlankNode;
+			E.add(triple('http://example.com/a', 'http://example.com/P', bx));
+			E.add(triple(bx, 'http://example.com/P', bx));
+			var E1 = new Graph;
+			E1.add(triple('http://example.com/a', 'http://example.com/P', 'http://example.com/w'));
+			E1.add(triple('http://example.com/w', 'http://example.com/P', 'http://example.com/w'));
+			assert(!E.simplyEntails(E1));
+		});
 		it('simplyEntails (various data positive)', function(){
 			function gen(){
 				var g = new Graph;
@@ -516,7 +578,6 @@ function GenerateGraphTest(Graph){
 		it('simplyEntails (bnode positive)', function(){
 			function gen(node){
 				var g = new Graph;
-				var bn = 
 				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class')));
 				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', '@en')));
 				g.add(triple(node, rdfsns('label'), new rdf.Literal('http://www.w3.org/2000/01/rdf-schema#Class', 'http://www.w3.org/2001/XMLSchema#string')));

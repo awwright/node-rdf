@@ -410,7 +410,6 @@ describe('Dataset', function GenerateDatasetTest(){
 			var matches = g.match(null, null, rdf.environment.createLiteral(rdfsns('Class'), xsdns('string')), null);
 			assert.equal(matches.length, 1);
 			assert.equal(matches.toArray().length, 1);
-			debugger;
 			assert(matches.toArray()[0].equals(quad(ex('Letter'), rdfsns('label'), rdf.environment.createLiteral(rdfsns('Class'), xsdns('string')), ex('graph'))));
 			assert(matches.toArray()[0].equals(quad(ex('Letter'), rdfsns('label'), rdf.environment.createLiteral(rdfsns('Class')), ex('graph'))));
 		});
