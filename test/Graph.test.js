@@ -522,7 +522,6 @@ function GenerateGraphTest(Graph){
 			instance.add(triple('http://example.com/Letter', rdfsns('label'), b2));
 			assert(instance.length, 1);
 			var map = graph.simplyEntails(instance);
-			console.error(map);
 			assert(map);
 			assert(b1.equals(map[b2]));
 		});
@@ -536,7 +535,6 @@ function GenerateGraphTest(Graph){
 			instance.add(triple('http://example.com/Letter', rdfsns('label'), b2));
 			assert(instance.length, 1);
 			var map = graph.simplyEntails(instance);
-			console.error(map);
 			assert(map);
 			assert(b1.equals(map[b2]));
 		});

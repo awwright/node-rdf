@@ -16,20 +16,20 @@ function DefaultGraphTests(){
 		assert.strictEqual(t.value, '');
 	});
 	it("DefaultGraph#toNT", function(){
-		var t = new rdf.factory.defaultGraph();
+		var t = rdf.factory.defaultGraph();
 		assert.throws(function(){ t.toNT(); });
 	});
 	it("DefaultGraph#toTurtle", function(){
-		var t = new rdf.factory.defaultGraph();
+		var t = rdf.factory.defaultGraph();
 		assert.throws(function(){ t.toTurtle(); });
 	});
 	it("DefaultGraph#toString", function(){
-		var t = new rdf.factory.defaultGraph();
+		var t = rdf.factory.defaultGraph();
 		assert.strictEqual(t.toString(), '');
 	});
 	it("DefaultGraph#equals", function(){
-		var t1 = new rdf.factory.defaultGraph();
-		var t2 = new rdf.factory.defaultGraph();
+		var t1 = rdf.factory.defaultGraph();
+		var t2 = rdf.factory.defaultGraph();
 		assert(t1.equals(t2));
 	});
 }

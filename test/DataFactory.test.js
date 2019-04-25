@@ -41,7 +41,7 @@ function DataFactoryTests(){
 	it("variable", function(){
 		assert(factory.variable("n") instanceof rdf.Variable);
 		assert(factory.variable("n").equals(new rdf.Variable('n')));
-		assert(!factory.variable("n").equals(new rdf.Variable('n')));
+		assert(!factory.variable("n").equals(new rdf.Variable('q')));
 	});
 	it("defaultGraph", function(){
 		assert(factory.defaultGraph() instanceof rdf.DefaultGraph);

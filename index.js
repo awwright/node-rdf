@@ -33,7 +33,8 @@ api.Dataset = require('./lib/Dataset.js').Dataset;
 api.Quad = require('./lib/RDFNode.js').Quad;
 
 // DataFactory support
-api.factory = require('./lib/DataFactory.js');
+api.DataFactory = require('./lib/DataFactory.js').DataFactory;
+api.factory = new api.DataFactory;
 // api.namedNode = require('./lib/DataFactory.js').namedNode;
 // api.blankNode = require('./lib/DataFactory.js').blankNode;
 // api.literal = require('./lib/DataFactory.js').literal;
