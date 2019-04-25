@@ -69,11 +69,24 @@ function DataFactoryTests(){
 			var term = factory.fromTerm({termType:'BlankNode', value:'b1'});
 			assert(term instanceof rdf.BlankNode);
 		});
-		it("fromTerm(Literal)", function(){
+		it("fromTerm(xsd:string)", function(){
 			var term = factory.fromTerm({termType:'Literal', value:'foo', datatype:{termType:"NamedNode", value:rdf.xsdns("string")}});
 			assert(term instanceof rdf.Literal);
+			assert(term.equals(new rdf.Literal('foo', rdf.xsdns("string"))));
 			assert(term.equals(new rdf.Literal('foo')));
 			assert(!term.equals(new rdf.Literal('foo', '@en')));
+		});
+		it("fromTerm(xsd:boolean)", function(){
+			var term = factory.fromTerm({termType:'Literal', value:'foo', datatype:{termType:"NamedNode", value:rdf.xsdns("boolean")}});
+			assert(term instanceof rdf.Literal);
+			assert(term.equals(new rdf.Literal('foo', rdf.xsdns("boolean"))));
+			assert(!term.equals(new rdf.Literal('foo')));
+		});
+		it("fromTerm(rdf:langString)", function(){
+			var term = factory.fromTerm({termType:'Literal', value:'foo', datatype:{termType:"NamedNode", value:rdf.rdfns("langString")}, language:"en"});
+			assert(term instanceof rdf.Literal);
+			assert(term.equals(new rdf.Literal('foo', '@en')));
+			assert(!term.equals(new rdf.Literal('foo')));
 		});
 		it("fromTerm(Variable)", function(){
 			var term = factory.fromTerm({termType:'Variable', value:'name'});
