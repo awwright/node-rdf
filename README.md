@@ -1,7 +1,7 @@
 
-# RDF Interfaces implementation
+# RDF for ECMAScript
 
-This package is a set of utilities aimed at making it simple to represent RDF data.
+This package is a set of utilities aimed at making it simple to represent RDF data. It is targeted at Node.js, but should work cross-environment.
 
 RDF can be considered a superset of typical links found on the Web: It allows a collection of directional relationships from some _subject_, with a relationship _predicate_, to some _object_.
 
@@ -21,36 +21,52 @@ The library also exposes a function to decorate the builtin ECMAScript protoypes
 
 ```javascript
 const rdf = require('rdf');
-const createNamedNode = rdf.environment.createNamedNode.bind(rdf.environment);
-const createBlankNode = rdf.environment.createBlankNode.bind(rdf.environment);
-const createLiteral = rdf.environment.createLiteral.bind(rdf.environment);
+const { NamedNode, BlankNode, Literal } = rdf;
 
-const namednode = createNamedNode('http://example.com/');
+const namednode = new NamedNode('http://example.com/');
 namednode.toNT()
 ```
 
     '<http://example.com/>'
 
 ```javascript
-const blanknode = rdf.environment.createBlankNode();
+const blanknode = new BlankNode();
 blanknode.toNT()
 ```
 
     '_:b1'
 
 ```javascript
-const literal = rdf.environment.createLiteral('plain string')
+const literal = new Literal('plain string');
 literal.toNT()
 ```
 
     '"plain string"'
+
+A factory-style interface is also available:
+
+```javascript
+const rdfjs = rdf.factory;
+rdfjs.blankNode()
+```
+
+    BlankNode { nominalValue: 'b2' }
+
+As well as the RDF Interfaces environment:
+
+```javascript
+const rdfenv = rdf.environment;
+rdfenv.createLiteral("true", null, rdf.xsdns("boolean")).toTurtle()
+```
+
+    'true'
 
 ### Represent RDF statements
 
 A `Triple` instance represents an edge in an RDF graph (also known as a Statement).
 
 ```javascript
-const statement1 = rdf.environment.createTriple(blanknode, namednode, literal);
+const statement1 = rdfjs.triple(blanknode, namednode, literal);
 statement1.toString()
 ```
 
@@ -61,21 +77,21 @@ statement1.toString()
 A `Graph` instance stores and queries for Triples:
 
 ```javascript
-const graph = rdf.environment.createGraph();
-graph.add(rdf.environment.createTriple(
-	createBlankNode(),
+const graph = new rdf.Graph();
+graph.add(new rdf.Triple(
+	new BlankNode(),
 	rdf.rdfsns('label'),
-	createLiteral('Book', '@en'))
+	new Literal('Book', '@en'))
 	);
-graph.add(rdf.environment.createTriple(
-	createBlankNode(),
+graph.add(new rdf.Triple(
+	new BlankNode(),
 	rdf.rdfns('value'),
-	createLiteral('10.0', rdf.xsdns('decimal')))
+	new Literal('10.0', rdf.xsdns('decimal')))
 	);
-graph.add(rdf.environment.createTriple(
-	createBlankNode(),
+graph.add(new rdf.Triple(
+	new BlankNode(),
 	rdf.rdfns('value'),
-	createLiteral('10.1', rdf.xsdns('decimal')))
+	new Literal('10.1', rdf.xsdns('decimal')))
 	);
 graph.length
 ```
@@ -88,8 +104,8 @@ graph
 	.forEach(function(triple){ console.log(triple.toString()); });
 ```
 
-    _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-    _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+    _:b4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+    _:b5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "10.1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
 ### Simplify RDF namespaces
 
@@ -119,23 +135,23 @@ Literals verify codepoint, datatype, and language tag equality. Triples verify e
 Graphs test for isomorphism, that there's a mapping that can map the blank nodes in one graph to the blank nodes in the other one-to-one. If so isomorphic, it returns the mapping.
 
 ```javascript
-const graph2 = rdf.environment.createGraph();
-const bn2 = rdf.environment.createBlankNode();
+const graph2 = new rdf.Graph();
+const bn2 = rdf.factory.blankNode();
 
-graph2.add(rdf.environment.createTriple(
+graph2.add(rdf.factory.triple(
 	bn2,
 	namednode,
 	literal
 	));
-graph2.add(rdf.environment.createTriple(
+graph2.add(rdf.factory.triple(
 	bn2,
 	rdf.rdfsns('label'),
-	rdf.environment.createLiteral('Price')
+	rdfjs.literal('Price')
 	));
-graph2.add(rdf.environment.createTriple(
+graph2.add(rdf.factory.triple(
 	bn2,
 	rdf.rdfns('value'),
-	rdf.environment.createLiteral('10.0', rdf.xsdns('decimal'))
+	rdfjs.literal('10.0', rdf.xsdns('decimal'))
 	));
 
 graph.isomorphic(graph2)
@@ -154,24 +170,24 @@ const partyDocument = rdf.parse({
 		"person": "http://example.com/",
 	},
 	"@id": person('a'),
-	givenname: rdf.environment.createLiteral("Alice"),
+	givenname: rdfjs.literal("Alice"),
 	age: 26,
 	knows: [
 		{
 			"@id": person('b'),
-			givenname: rdf.environment.createLiteral("Bob"),
+			givenname: rdfjs.literal("Bob"),
 			age: 36,
 			knows: person('a'),
 		},
 		{
 			"@id": person('c'),
-			givenname: rdf.environment.createLiteral("Carol"),
+			givenname: rdfjs.literal("Carol"),
 			age: 46,
 			knows: person('a'),
 		},
 		{
 			"@id": person('d'),
-			givenname: rdf.environment.createLiteral("Dan"),
+			givenname: rdfjs.literal("Dan"),
 			age: 56,
 			knows: [person('a'), person('b')],
 		}
@@ -256,19 +272,19 @@ partyGraph.reference(person('a'))
 Use `Literal#valueOf` to convert from lexical data space to native value space:
 
 ```javascript
-rdf.environment.createLiteral('2018-06-04T23:11:25Z', rdf.xsdns('date')).valueOf()
+rdfjs.literal('2018-06-04T23:11:25Z', rdf.xsdns('date')).valueOf()
 ```
 
     2018-06-04T23:11:25.000Z
 
 ```javascript
-rdf.environment.createLiteral('24.4400', rdf.xsdns('decimal')).valueOf()
+rdfjs.literal('24.4400', rdf.xsdns('decimal')).valueOf()
 ```
 
     24.44
 
 ```javascript
-rdf.environment.createLiteral('0', rdf.xsdns('boolean')).valueOf()
+rdfjs.literal('0', rdf.xsdns('boolean')).valueOf()
 ```
 
     false
@@ -323,7 +339,11 @@ console.log(turtle.join('\n'));
 
 ### Treat native data types as RDF data
 
-If you think `rdf.environment.createLiteral` is too verbose, enable builtins mode with `setBuiltins()`. This amends the prototype of primitives like `String`:
+If you think creating RDF Term is too verbose, enable builtins mode with `setBuiltins()`. This amends the prototype of primitives:
+* Strings are treated as a `NamedNode`
+* String#l(langtag) produces a language `Literal`
+* String#tl(datatype) produces a typed `Literal`
+* Date, Boolean, Number are treated as a `Literal`
 
 ```javascript
 rdf.setBuiltins();
@@ -358,7 +378,7 @@ The domains of the functions ensure constistency with all the other applications
 `Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString. The RDF1.1 datatype is available through the `Literal#datatype` property. The RDF1.0 datatype, which null for plain literals and language strings, is available through `Literal#type`.
 
 ```javascript
-const literal = createLiteral('Foo');
+const literal = new Literal('Foo');
 console.dir(literal.datatype.toNT());
 console.dir(literal.type);
 console.dir(literal.language);
@@ -369,7 +389,7 @@ console.dir(literal.language);
     null
 
 ```javascript
-const langLiteral = createLiteral('Foo', '@en');
+const langLiteral = new Literal('Foo', '@en');
 console.dir(langLiteral.datatype.toNT());
 console.dir(langLiteral.type);
 console.dir(langLiteral.language);
@@ -380,7 +400,7 @@ console.dir(langLiteral.language);
     'en'
 
 ```javascript
-const typedLiteral = createLiteral('Foo', rdf.xsdns('string'));
+const typedLiteral = new Literal('Foo', rdf.xsdns('string'));
 console.dir(typedLiteral.datatype.toNT());
 console.dir(typedLiteral.type);
 console.dir(typedLiteral.language);
@@ -394,7 +414,7 @@ The data model is enforced in the domain of each of the functions; `Triple` does
 
 ```javascript
 try {
-    rdf.environment.createTriple(createBlankNode(), createBlankNode(), createBlankNode());
+    rdfjs.triple(rdfjs.blankNode(), rdfjs.blankNode(), rdfjs.blankNode());
 }catch(e){
     console.log(e.toString());
 }
@@ -622,6 +642,14 @@ Returns a new Graph that's the concatenation of this graph with the argument.
 Returns a `ResultSet`, a pointer to a node in a graph that can be walked to query for data.
 
 The provided `resource` does not necessarially have to exist in the graph, however, any operations on it will produce an empty set.
+
+### Dataset
+
+Represents a set of RDF `Quad` instances.
+
+This implements most of the [RDF/JS: Dataset specification](https://rdf.js.org/dataset-spec/), using six indexes for fast querying.
+
+Instances of Dataset are uniquely identified by their instance. Datasets are mutable. Methods with a return value are pure, non-pure (mutating) methods always return undefined.
 
 ### Variable
 
