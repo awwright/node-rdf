@@ -34,7 +34,7 @@ api.Quad = require('./lib/RDFNode.js').Quad;
 
 // DataFactory support
 api.DataFactory = require('./lib/DataFactory.js').DataFactory;
-api.factory = new api.DataFactory;
+api.factory = require('./lib/environment').factory;
 // api.namedNode = require('./lib/DataFactory.js').namedNode;
 // api.blankNode = require('./lib/DataFactory.js').blankNode;
 // api.literal = require('./lib/DataFactory.js').literal;
