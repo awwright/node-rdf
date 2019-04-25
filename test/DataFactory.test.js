@@ -34,9 +34,9 @@ function DataFactoryTests(){
 		assert(factory.blankNode("foo") instanceof rdf.BlankNode);
 	});
 	it("literal", function(){
-		assert(factory.namedNode("http://example.com/") instanceof rdf.NamedNode);
-		assert(factory.namedNode("http://example.com/").equals(new rdf.NamedNode('http://example.com/')));
-		assert(!factory.namedNode("http://example.com/").equals(new rdf.NamedNode('http://foo.example.net/')));
+		assert(factory.literal("foo bar") instanceof rdf.Literal);
+		assert(factory.literal("foo bar").equals(new rdf.Literal('foo bar')));
+		assert(!factory.literal("foo bar").equals(new rdf.Literal('foo bar', '@en')));
 	});
 	it("variable", function(){
 		assert(factory.variable("n") instanceof rdf.Variable);
