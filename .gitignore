@@ -2,3 +2,4 @@
 /test/TurtleTests/
 /test/rdf-mt-tests/
 /.ipynb_checkpoints
+/.nyc_output
