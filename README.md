@@ -7,9 +7,9 @@ RDF can be considered a superset of typical links found on the Web: It allows a 
 
 On the Web, normally all three are documents. In RDF, the object may also be a literal string containing data; and the subject or object may be an existential quantifier called a _blank node_.
 
-The `NamedNode`, `BlankNode`, and `Literal` objects represent the fundemental types of data that can be found in an RDF Statement. Statements are represented as `Triple`.
+The `NamedNode`, `BlankNode`, and `Literal` objects represent the fundamental types of data that can be found in an RDF Statement. Statements are represented as `Triple`.
 
-RDF doesn't define any representation of a blank nodes, except for the fact it is possible to compare two blank nodes to see if they are the same. In RDF Interfaces, a bnode is uniquely represented as an instance of `BlankNode`. This interface optionally allows a label, this is primarially for debugging, and two instances of BlankNodes with the same label may still represent different blank nodes.
+RDF doesn't define any representation of a blank nodes, except for the fact it is possible to compare two blank nodes to see if they are the same. In RDF Interfaces, a bnode is uniquely represented as an instance of `BlankNode`. This interface optionally allows a label, this is primarily for debugging, and two instances of BlankNodes with the same label may still represent different blank nodes.
 
 The library also exposes a function to decorate the builtin ECMAScript protoypes with methods.
 
@@ -373,7 +373,7 @@ rdf.unsetBuiltins();
 
 ### Native support for RDF 1.1 semantics
 
-The domains of the functions ensure constistency with all the other applications found in the RDF universe.
+The domains of the functions ensure consistency with all the other applications found in the RDF universe.
 
 `Literal` treats xsd:string as no datatype, and treats any language literal as rdf:langString. The RDF1.1 datatype is available through the `Literal#datatype` property. The RDF1.0 datatype, which null for plain literals and language strings, is available through `Literal#type`.
 
@@ -641,7 +641,7 @@ Returns a new Graph that's the concatenation of this graph with the argument.
 
 Returns a `ResultSet`, a pointer to a node in a graph that can be walked to query for data.
 
-The provided `resource` does not necessarially have to exist in the graph, however, any operations on it will produce an empty set.
+The provided `resource` does not necessarily have to exist in the graph, however, any operations on it will produce an empty set.
 
 ### Dataset
 
@@ -849,7 +849,7 @@ Strings may be used in place of a NamedNode and BlankNode, and have the same pro
 
 * `tl(type)` creates a typed literal out of the given value.
 * `l(lang)` creates a standard literal, with an optional language value.
-* `resolve()` resolves a CURIE/term to an IRI. Unlike the enviornment/profile method, this returns the original string if unsuccessful (for instance, if the string is already a URI).
+* `resolve()` resolves a CURIE/term to an IRI. Unlike the environment/profile method, this returns the original string if unsuccessful (for instance, if the string is already a URI).
 
 URIs passed to these functions may be CURIEs and are resolved with the global `rdf.environment`.
 
