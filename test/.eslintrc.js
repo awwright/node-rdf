@@ -1,20 +1,19 @@
 "use strict";
 module.exports = {
 	"env": {
-		"node": true,
-		"es6": true,
+		"mocha": true,
 	},
 	"extends": "eslint:recommended",
 	"parserOptions": {
-		"ecmaVersion": 6,
+		"ecmaVersion": 5,
 	},
 	"rules": {
-		"indent": [ "error", "tab", { SwitchCase: 1 } ],
-		"strict": ["error", "global"],
-		"no-unused-vars": [ "warn", { "args": "none" } ],
+		"indent": [ "error", "tab", {
+			SwitchCase: 1,
+		} ],
 		"no-unreachable": [ "error" ],
 		"linebreak-style": [  "error", "unix" ],
-		"semi": [ "error", "always" ],
+		//"semi": [ "error", "always" ],
 		"comma-dangle": [ "error", "always-multiline" ],
 		"no-console": [ "error" ],
 	},
