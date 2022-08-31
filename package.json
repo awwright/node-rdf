@@ -17,13 +17,13 @@
 		"url": "git://github.com/awwright/node-rdf.git",
 		"web": "https://github.com/awwright/node-rdf"
 	},
-	"main": "lib/rdf.js",
+	"main": "index.js",
 	"scripts": {
 		"test": "mocha"
 	},
 	"license": "Unlicense",
 	"devDependencies": {
-		"mocha": "^5.2.0",
-		"nyc": "^14.0.0"
+		"mocha": "^10.0.0",
+		"nyc": "^15.1.0"
 	}
 }
