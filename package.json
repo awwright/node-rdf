@@ -17,7 +17,7 @@
 		"url": "git://github.com/awwright/node-rdf.git",
 		"web": "https://github.com/awwright/node-rdf"
 	},
-	"main": "lib/rdf.js",
+	"main": "index.js",
 	"scripts": {
 		"test": "mocha"
 	},
